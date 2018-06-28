@@ -1,0 +1,14 @@
+﻿using FNO.Domain.Models;
+using System;
+
+namespace FNO.Domain.Events.Factory
+{
+    public class FactoryResearchStartedEvent : FactoryActivityBaseEvent
+    {
+        public FactoryResearchStartedEvent(Guid factoryId, string type, long tick) : base(factoryId, type, tick)
+        {
+        }
+
+        public LuaTechnology Technology { get; set; }
+    }
+}
