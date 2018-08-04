@@ -3,9 +3,9 @@
     public static class KafkaTopics
     {
         /// <summary>
-        /// Warehouse _and_ market transactions
+        /// All determistic events (+ transactions)
         /// </summary>
-        public static string TRANSACTIONS = "transactions";
+        public static string EVENTS = "factorino_events";
 
         /// <summary>
         /// Global chat, consumed by all factories

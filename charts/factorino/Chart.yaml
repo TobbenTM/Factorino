@@ -1,0 +1,11 @@
+apiVersion: v1
+appVersion: "1.0"
+description: A metagame for Factorio!
+name: factorino
+version: 0.1.0
+sources:
+  - https://github.com/TobbenTM/Factorino
+maintainers:
+  - name: TobbenTM
+    email: m@dsen.tv
+    url: http://tobbentm.com

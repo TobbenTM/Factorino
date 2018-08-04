@@ -1,0 +1,12 @@
+
+Your release is named {{ .Release.Name }}.
+
+To learn more about the project, check out https://github.com/TobbenTM/Factorino
+
+You can access the factorino webapp at the following url:
+
+Apache Kafka has been installed with the following results:
+
+You can access the Zookeeper broker at:
+
+You can access the PostgreSQL server at:
