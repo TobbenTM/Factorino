@@ -18,6 +18,7 @@ namespace FNO.FactoryPod
         public string Seed { get; set; }
         public string SeedPath { get; set; }
         public string SavePath { get; set; }
+        public string DataPath { get; set; }
         public string SaveFile { get; set; }
 
         public string SeedFilePath => Path.GetFullPath(Path.Combine(SeedPath, Seed + ".zip"));
@@ -34,8 +35,10 @@ namespace FNO.FactoryPod
         public string ModsPath { get; set; }
         public string StorePath { get; set; }
         public string SettingsFile { get; set; }
+        public string ConfigFile { get; set; }
 
         public string SettingsFilePath => Path.GetFullPath(Path.Combine(StorePath, SettingsFile));
+        public string ConfigFilePath => Path.GetFullPath(Path.Combine(StorePath, ConfigFile));
         public FactorioArguments Arguments => new FactorioArguments(Args);
     }
 
@@ -62,6 +65,16 @@ namespace FNO.FactoryPod
             _arguments.AddRange(new string[]{
                 "--server-settings",
                 settingsFile
+            });
+            return this;
+        }
+
+        public FactorioArguments WithFactorioConfig(string configFile)
+        {
+            _arguments.AddRange(new string[]
+            {
+                "--config",
+                configFile
             });
             return this;
         }

@@ -23,6 +23,8 @@ namespace FNO.Domain
         // Corporations
         public DbSet<Corporation> Corporations { get; set; }
         // CorporationResearch
+        // Invitations
+        public DbSet<CorporationInvitation> CorporationInvitations {get;set;}
         // EntityLibrary
         public DbSet<FactorioEntity> EntityLibrary { get; set; }
         // ReseachLibrary
@@ -34,24 +36,45 @@ namespace FNO.Domain
 
         public static ReadModelDbContext CreateContext(IConfiguration config)
         {
+            return new ReadModelDbContext(CreateOptions(config));
+        }
+
+        public static DbContextOptions<ReadModelDbContext> CreateOptions(IConfiguration config)
+        {
             var builder = new DbContextOptionsBuilder<ReadModelDbContext>();
+            ConfigureBuilder(builder, config);
+            return builder.Options;
+        }
+
+        public static DbContextOptionsBuilder ConfigureBuilder(DbContextOptionsBuilder builder, IConfiguration config)
+        {
             var connectionString = config.GetConnectionString("ReadModel");
             builder.UseNpgsql(connectionString);
-            return new ReadModelDbContext(builder.Options);
+            return builder;
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
+            var systemId = Guid.Parse("00000000-0000-0000-0000-000000000001");
             var testCorpId = Guid.NewGuid();
-            var testFactoryId = Guid.Parse("00000000-0000-0000-0000-000000000001");
+
+            modelBuilder.Entity<Player>()
+                .HasData(new Player
+                {
+                    Name = "<system>",
+                    SteamId = "<system>",
+                    PlayerId = systemId,
+                });
 
             modelBuilder.Entity<Corporation>()
                 .HasData(new Corporation
                 {
-                    Name = "Test Corporation",
+                    Name = "TEST Corporation",
+                    Description = "Please Ignore",
                     CorporationId = testCorpId,
+                    CreatedByPlayerId = systemId,
                 });
 
             modelBuilder.Entity<Warehouse>()
@@ -64,8 +87,8 @@ namespace FNO.Domain
             modelBuilder.Entity<Factory>()
                 .HasData(new Factory
                 {
-                    Name = "Test Factory",
-                    FactoryId = testFactoryId,
+                    Name = "TEST Factory",
+                    FactoryId = systemId,
                     CorporationId = testCorpId,
                 });
 
@@ -74,6 +97,10 @@ namespace FNO.Domain
 
             modelBuilder.Entity<FactorioTechnology>()
                 .HasData(Seed.TechnologyLibrary.Data());
+
+            modelBuilder.Entity<Player>()
+                .HasIndex(p => p.SteamId)
+                .IsUnique();
         }
     }
 }

@@ -8,10 +8,14 @@ using FNO.EventStream.Serialization;
 using System.Collections.Generic;
 using FNO.Common;
 using Serilog;
+using FNO.EventSourcing;
+using FNO.Domain.Models;
+using System.Linq;
+using FNO.EventStream.Extensions;
 
 namespace FNO.EventStream
 {
-    public class KafkaProducer : IDisposable
+    public class KafkaProducer : IEventStore, IDisposable
     {
         private readonly Producer<Null, string> _producer;
         private readonly ConfigurationBase _configuration;
@@ -30,12 +34,23 @@ namespace FNO.EventStream
         }
 
         /// <summary>
+        /// Will produce to the Kafka default persistent topic and wait for delivery reports
+        /// </summary>
+        /// <param name="topic">The topic to produce to</param>
+        /// <param name="events">The events to produce</param>
+        /// <returns>Delivery reports for the produced events</returns>
+        public Task<EventMetadata[]> ProduceAsync(params IEvent[] events)
+        {
+            return ProduceAsync(KafkaTopics.EVENTS, events);
+        }
+
+        /// <summary>
         /// Will produce to Kafka and wait for delivery reports
         /// </summary>
         /// <param name="topic">The topic to produce to</param>
         /// <param name="events">The events to produce</param>
         /// <returns>Delivery reports for the produced events</returns>
-        public async Task<Message<Null, string>[]> ProduceAsync(string topic, params IEvent[] events)
+        public async Task<EventMetadata[]> ProduceAsync(string topic, params IEvent[] events)
         {
             List<Task<Message<Null, string>>> tasks = new List<Task<Message<Null, string>>>();
             foreach (var evnt in events)
@@ -43,7 +58,8 @@ namespace FNO.EventStream
                 var content = JsonConverterExtensions.SerializeEvent(evnt);
                 tasks.Add(_producer.ProduceAsync(topic, null, content));
             }
-            return await Task.WhenAll(tasks.ToArray());
+            var result = await Task.WhenAll(tasks.ToArray());
+            return result.Select(m => m.ToEventMetadata()).ToArray();
         }
 
         /// <summary>

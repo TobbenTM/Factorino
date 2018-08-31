@@ -35,6 +35,7 @@ namespace FNO.FactoryPod
                     Arguments = _configuration.Factorio.Arguments
                         .WithSaveFile(_configuration.Factorino.FactorySavePath)
                         .WithServerSettings(_configuration.Factorio.SettingsFilePath)
+                        .WithFactorioConfig(_configuration.Factorio.ConfigFilePath)
                         .WithModsDirectory(_configuration.Factorio.ModsPath)
                         .WithRconSettings(_configuration.Factorio.Rcon)
                         .ToString(),
@@ -63,6 +64,7 @@ namespace FNO.FactoryPod
 
             if (e.Data.Contains("Starting RCON interface"))
             {
+                _logger.Debug("Factorio says RCON interface is ready!");
                 OnRconReady?.Invoke(this, e);
             }
 
@@ -85,7 +87,7 @@ namespace FNO.FactoryPod
             var settingsPath = _configuration.Factorio.SettingsFilePath;
             if (!File.Exists(settingsPath))
             {
-                _logger.Information($"Factorio server configuration not found, creating at {settingsPath}...");
+                _logger.Information($"Factorio server settings not found, creating at {settingsPath}...");
 
                 var settings = new FactorioServerConfiguration();
                 var content = JsonConvert.SerializeObject(settings, Formatting.Indented);
@@ -100,7 +102,20 @@ namespace FNO.FactoryPod
                     }
                 }
 
-                _logger.Information($"Successfully created Factorio server configuration at {settingsPath}!");
+                _logger.Information($"Successfully created Factorio server settings at {settingsPath}!");
+            }
+
+            var configPath = _configuration.Factorio.ConfigFilePath;
+            if (!File.Exists(configPath))
+            {
+                _logger.Information($"Factorio server configuration not found, creating at {configPath}...");
+
+                using (var sw = File.CreateText(Path.GetFullPath(configPath)))
+                {
+                    sw.WriteLine($"write-data={_configuration.Factorino.DataPath}");
+                }
+
+                _logger.Information($"Successfully created Factorio server configuration at {configPath}!");
             }
         }
 

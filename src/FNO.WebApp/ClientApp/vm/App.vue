@@ -4,7 +4,7 @@
       <img class="logo" src="../assets/logo-inverse-layered.png" />
 
       <router-link tag="div" class="nav-link" :to="{ name: 'about' }" exact>
-        <icon icon="home" class="nav-icon"/> About
+        <icon icon="home" class="nav-icon"/> Home
       </router-link>
       <router-link tag="div" class="nav-link" :to="{ name: 'world' }">
         <icon icon="globe" class="nav-icon"/> World
@@ -24,6 +24,10 @@
       <router-link tag="div" class="nav-link" :to="{ name: 'servers' }">
         <icon icon="server" class="nav-icon"/> Servers
       </router-link>
+
+      <a class="nav-link bottom" href="/auth/login">
+        <icon :icon="['fab', 'steam']" class="nav-icon"/> Log in
+      </a>
     </div>
     <div class="chat container sticky">
       <h3>Chat</h3>
@@ -74,6 +78,7 @@ h1 {
   margin: 2em 0;
 }
 .nav-link {
+  display: block;
   cursor: pointer;
   color: #748195;
   padding: 1em 2em;
@@ -83,6 +88,7 @@ h1 {
   transition: color .2s linear;
   border-top: 1px solid rgba(0, 0, 0, 0);
   border-bottom: 1px solid rgba(0, 0, 0, 0);
+  text-decoration: none;
 }
 .nav-link.router-link-active, .nav-link.router-link-active:hover {
   color: #ffffff;
@@ -113,5 +119,6 @@ h1 {
 .content {
   margin: 0 18em;
   display: block;
+  height: 100%;
 }
 </style>

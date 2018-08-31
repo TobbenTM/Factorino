@@ -12,6 +12,13 @@
   <ItemGroup>
     <ProjectReference Include="..\FNO.Common\FNO.Common.csproj" />
     <ProjectReference Include="..\FNO.Domain\FNO.Domain.csproj" />
+    <ProjectReference Include="..\FNO.EventStream\FNO.EventStream.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="appsettings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

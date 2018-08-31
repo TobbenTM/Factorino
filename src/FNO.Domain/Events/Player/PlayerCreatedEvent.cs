@@ -1,11 +1,18 @@
-﻿using System;
-
-namespace FNO.Domain.Events.Player
+﻿namespace FNO.Domain.Events.Player
 {
-    class PlayerCreatedEvent : EntityEvent
+    public class PlayerCreatedEvent : EntityEvent
     {
-        public PlayerCreatedEvent(Guid playerId) : base(playerId)
+        public string Name { get; set; }
+        public string SteamId { get; set; }
+
+        public PlayerCreatedEvent()
         {
+        }
+
+        public PlayerCreatedEvent(Models.Player player) : base(player.PlayerId)
+        {
+            Name = player.Name;
+            SteamId = player.SteamId;
         }
     }
 }

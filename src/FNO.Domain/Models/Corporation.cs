@@ -1,14 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FNO.Domain.Models
 {
     public class Corporation
     {
         public Guid CorporationId { get; set; }
+
         public string Name { get; set; }
+        public string Description { get; set; }
+
         public int Credits { get; set; }
+
         public Warehouse Warehouse { get; set; }
-        public IList<Player> Members { get; set; }
+
+        [InverseProperty("Corporation")]
+        public IEnumerable<Player> Members { get; set; }
+
+        public Guid CreatedByPlayerId { get; set; }
+        public Player CreatedByPlayer { get; set; }
     }
 }

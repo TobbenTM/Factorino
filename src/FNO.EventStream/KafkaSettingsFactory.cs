@@ -38,6 +38,12 @@ namespace FNO.EventStream
             return this;
         }
 
+        public KafkaSettingsFactory WithAutoCommit(bool enabled)
+        {
+            _settings["enable.auto.commit"] = enabled;
+            return this;
+        }
+
         public KafkaSettingsFactory WithDebugLogging()
         {
             _settings["debug"] = "all";

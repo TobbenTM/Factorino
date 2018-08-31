@@ -11,5 +11,10 @@ namespace FNO.Domain.Models
         public Corporation Corporation { get; set; }
 
         public IList<WarehouseInventory> Inventory { get; set; }
+
+        public Warehouse()
+        {
+
+        }
     }
 }

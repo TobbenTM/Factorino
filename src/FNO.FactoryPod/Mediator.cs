@@ -1,4 +1,5 @@
 ﻿using CoreRCON;
+using FNO.Domain.Events;
 using FNO.Domain.Events.Factory;
 using FNO.EventStream;
 using FNO.FactoryPod.Models;
@@ -16,16 +17,18 @@ namespace FNO.FactoryPod
     /// Responsible for handling communication between the factorio RCON
     /// interface and the cluster event stream
     /// </summary>
-    internal class Mediator : IDisposable
+    internal class Mediator : IEventConsumer, IDisposable
     {
         private const int POLL_INTERVAL_MS = 2000;
-
+        
         private readonly FactoryPodConfiguration _configuration;
         private readonly ILogger _logger;
         private readonly Timer _pollTimer;
         private readonly KafkaProducer _producer;
 
         private RCON _rcon;
+
+        internal event EventHandler OnDisconnect;
 
         internal Mediator(FactoryPodConfiguration configuration, ILogger logger)
         {
@@ -46,7 +49,18 @@ namespace FNO.FactoryPod
 
         private async Task PollServer()
         {
-            var result = await _rcon.SendCommandAsync("/factorino_export");
+            _logger.Debug($"Polling factorio server...");
+
+            string result;
+            try
+            {
+                result = await _rcon.SendCommandAsync("/factorino_export");
+            }
+            catch (Exception e)
+            {
+                _logger.Error(e, $"Could not finish RCON command! {e.Message}");
+                return;
+            }
 
             if (result.Length > 2)
             {
@@ -75,6 +89,7 @@ namespace FNO.FactoryPod
 
         internal Task LogOutput(DataReceivedEventArgs e)
         {
+            if (string.IsNullOrEmpty(e.Data)) return Task.CompletedTask;
             return _producer.Produce(KafkaTopics.FACTORY_LOGS, new FactoryLogEvent(_configuration.Factorino.FactoryId)
             {
                 IsError = false,
@@ -84,6 +99,7 @@ namespace FNO.FactoryPod
 
         internal Task LogError(DataReceivedEventArgs e)
         {
+            if (string.IsNullOrEmpty(e.Data)) return Task.CompletedTask;
             return _producer.Produce(KafkaTopics.FACTORY_LOGS, new FactoryLogEvent(_configuration.Factorino.FactoryId)
             {
                 IsError = true,
@@ -93,15 +109,25 @@ namespace FNO.FactoryPod
 
         internal async Task Connect()
         {
+            _logger.Debug("Connecting to RCON interface...");
+
             var settings = _configuration.Factorio.Rcon;
             var address = IPAddress.Parse("127.0.0.1");
-            _rcon = new RCON(address, (ushort)settings.Port, settings.Password);
 
-            await _rcon.ConnectAsync();
+            _rcon = new RCON(address, (ushort)settings.Port, settings.Password);
+            _rcon.OnDisconnected += () =>
+            {
+                _logger.Error("RCON interface unexpectedly disconnected!");
+                OnDisconnect?.Invoke(this, null);
+            };
+
+            // await _rcon.ConnectAsync(); // Should be unecessary
             var response = await _rcon.SendCommandAsync("/version");
             _logger.Information($"Got version response: {response}");
 
             await _producer.Produce(KafkaTopics.FACTORY_ACTIVITY, new FactoryOnlineEvent(_configuration.Factorino.FactoryId));
+
+            _logger.Information($"Factory Online! Starting RCON poll..");
 
             _pollTimer.Start();
         }
@@ -111,6 +137,13 @@ namespace FNO.FactoryPod
             _pollTimer.Stop();
             _rcon?.Dispose();
             _producer.Dispose();
+        }
+
+        public Task HandleEvent<TEvent>(TEvent evnt) where TEvent : IEvent
+        {
+            // TODO: Handle properly
+            _logger.Information($"Got event of type {evnt.GetType().FullName}!");
+            return Task.CompletedTask;
         }
     }
 }

@@ -44,11 +44,13 @@ namespace FNO.FactoryPod
 
             _daemon = new Daemon(_configuration, _logger);
             _mediator = new Mediator(_configuration, _logger);
-            _consumer = new KafkaConsumer(_configuration, _logger);
+            _consumer = new KafkaConsumer(_configuration, _mediator, _logger);
 
             _daemon.OnRconReady += (async (s, e) => await _mediator.Connect());
             _daemon.OnOutputData += (async (s, e) => await _mediator.LogOutput(e));
             _daemon.OnErrorData += (async (s, e) => await _mediator.LogError(e));
+
+            _mediator.OnDisconnect += (s, e) => _resetEvent.Set();
         }
 
         public void Run()

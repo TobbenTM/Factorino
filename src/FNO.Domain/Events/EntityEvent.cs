@@ -6,6 +6,10 @@ namespace FNO.Domain.Events
     {
         public Guid EntityId { get; set; }
 
+        public EntityEvent()
+        {
+        }
+
         public EntityEvent(Guid entityId)
         {
             EntityId = entityId;

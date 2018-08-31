@@ -1,10 +1,10 @@
 ﻿using FNO.Domain.Events;
 using System.Threading.Tasks;
 
-namespace FNO.ReadModel
+namespace FNO.EventSourcing
 {
     public interface IEventDispatcher
     {
-        Task Handle(IEvent evnt);
+        Task Handle<TEvent>(TEvent evnt) where TEvent : IEvent;
     }
 }

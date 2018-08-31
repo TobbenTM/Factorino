@@ -1,7 +1,7 @@
 ﻿local json = require('json')
 
 local version = '0.0.1'
-print('Booting factorino mod version ' .. version)
+print('[factorino.lua] Booting factorino mod version ' .. version)
 
 -- Some offsets
 -- From the awesome mod Automatic-Train-Deployment:
@@ -39,6 +39,7 @@ end
 
 -- Called through RCON by the server to export any events to the global event stream
 function on_export()
+  print('[factorino.lua] Exporting '..#event_buffer..' events!')
   local copy = event_buffer
   event_buffer = {}
   rcon.print(json.encode(copy))
@@ -140,7 +141,7 @@ function create_train(transaction, station, cart_positions)
     end
 
     if rolling_stock == nil then
-      print('[ERR] Train creation failed! Transaction id: '..transaction.transaction_id)
+      print('[ERR] [factorino.lua] Train creation failed! Transaction id: '..transaction.transaction_id)
       return false
     end
 
@@ -221,7 +222,7 @@ script.on_event(defines.events.on_train_changed_state, function(event)
     local station = train.station
     if station.backer_name == 'Factorino - Outgoing' and station.force == game.forces['neutral'] then
       local inventory = train.get_contents()
-      print('Outgoing train has inventory: ' .. json.encode(inventory))
+      print('[factorino.lua] Outgoing train has inventory: ' .. json.encode(inventory))
 
       local inventory_stacks = {}
       for item_name, item_count in pairs(inventory) do
@@ -314,6 +315,8 @@ script.on_event(defines.events.on_player_left_game, function(event)
   })
 end)
 script.on_event(defines.events.on_console_chat, function(event)
+  -- 'Chat' events from console should not be logged
+  if event.player_index == nil then return end
   on_event({
     type = 'on_console_chat',
     tick = event.tick,

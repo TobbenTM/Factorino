@@ -14,7 +14,7 @@ fontawesome.library.add(
   require('@fortawesome/fontawesome-free-solid/faLock'),
 
   // Brands
-  require('@fortawesome/fontawesome-free-brands/faSteam')
+  require('@fortawesome/fontawesome-free-brands/faSteam'),
 );
 
 export default FontAwesomeIcon;

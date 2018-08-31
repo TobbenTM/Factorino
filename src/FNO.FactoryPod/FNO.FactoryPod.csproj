@@ -6,10 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="CoreRCON" Version="3.0.0" />
-  </ItemGroup>
-
-  <ItemGroup>
+    <ProjectReference Include="..\..\vendor\CoreRCON\src\CoreRCON\CoreRCON.csproj" />
     <ProjectReference Include="..\FNO.Common\FNO.Common.csproj" />
     <ProjectReference Include="..\FNO.Domain\FNO.Domain.csproj" />
     <ProjectReference Include="..\FNO.EventStream\FNO.EventStream.csproj" />

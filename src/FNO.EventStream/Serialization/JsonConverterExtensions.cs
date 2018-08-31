@@ -10,19 +10,15 @@ namespace FNO.EventStream.Serialization
             return JsonConvert.SerializeObject(evnt, CreateSettings());
         }
 
-        public static IEvent DeserializeEvent(string evnt)
-        {
-            return DeserializeEvent<IEvent>(evnt);
-        }
-
         public static TEvent DeserializeEvent<TEvent>(string evnt) where TEvent : IEvent
         {
             return JsonConvert.DeserializeObject<TEvent>(evnt, CreateSettings());
         }
 
-        private static JsonSerializerSettings CreateSettings() => new JsonSerializerSettings
+        public static JsonSerializerSettings CreateSettings() => new JsonSerializerSettings
         {
             TypeNameHandling = TypeNameHandling.All,
+            // NullValueHandling = NullValueHandling.Ignore,
         };
     }
 }

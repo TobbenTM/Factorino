@@ -2,13 +2,15 @@
 
 namespace FNO.Domain.Events.Player
 {
-    public class PlayerJoinedCorporationEvent : IEntityEvent
+    public class PlayerJoinedCorporationEvent : EntityEvent
     {
-        /// <summary>
-        /// Player Id
-        /// </summary>
-        public Guid EntityId { get; set; }
-
         public Guid CorporationId { get; set; }
+        public Guid? InvitationId { get; set; }
+        
+        public PlayerJoinedCorporationEvent(Guid playerId, Guid corporationId, Guid? invitationId = null) : base(playerId)
+        {
+            CorporationId = corporationId;
+            InvitationId = invitationId;
+        }
     }
 }

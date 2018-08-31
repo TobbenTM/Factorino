@@ -11,6 +11,7 @@
   <ItemGroup>
     <ProjectReference Include="..\FNO.Common\FNO.Common.csproj" />
     <ProjectReference Include="..\FNO.Domain\FNO.Domain.csproj" />
+    <ProjectReference Include="..\FNO.EventSourcing\FNO.EventSourcing.csproj" />
   </ItemGroup>
 
 </Project>

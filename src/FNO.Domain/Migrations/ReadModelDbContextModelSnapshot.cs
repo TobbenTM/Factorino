@@ -24,17 +24,45 @@ namespace FNO.Domain.Migrations
                     b.Property<Guid>("CorporationId")
                         .ValueGeneratedOnAdd();
 
+                    b.Property<Guid>("CreatedByPlayerId");
+
                     b.Property<int>("Credits");
+
+                    b.Property<string>("Description");
 
                     b.Property<string>("Name");
 
                     b.HasKey("CorporationId");
 
+                    b.HasIndex("CreatedByPlayerId");
+
                     b.ToTable("Corporations");
 
                     b.HasData(
-                        new { CorporationId = new Guid("69b1ab63-a179-4387-a1a8-a52705b5e77e"), Credits = 0, Name = "Test Corporation" }
+                        new { CorporationId = new Guid("2785f191-b5b2-436e-9c6c-56ddd9c741df"), CreatedByPlayerId = new Guid("00000000-0000-0000-0000-000000000001"), Credits = 0, Name = "Test Corporation" }
                     );
+                });
+
+            modelBuilder.Entity("FNO.Domain.Models.CorporationInvitation", b =>
+                {
+                    b.Property<Guid>("InvitationId")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<bool>("Accepted");
+
+                    b.Property<bool>("Completed");
+
+                    b.Property<Guid>("CorporationId");
+
+                    b.Property<Guid>("PlayerId");
+
+                    b.HasKey("InvitationId");
+
+                    b.HasIndex("CorporationId");
+
+                    b.HasIndex("PlayerId");
+
+                    b.ToTable("CorporationInvitations");
                 });
 
             modelBuilder.Entity("FNO.Domain.Models.FactorioEntity", b =>
@@ -570,7 +598,7 @@ namespace FNO.Domain.Migrations
                     b.ToTable("Factories");
 
                     b.HasData(
-                        new { FactoryId = new Guid("00000000-0000-0000-0000-000000000001"), CorporationId = new Guid("69b1ab63-a179-4387-a1a8-a52705b5e77e"), LastSeen = 0L, Name = "Test Factory", PlayersOnline = 0, Port = 0 }
+                        new { FactoryId = new Guid("00000000-0000-0000-0000-000000000001"), CorporationId = new Guid("2785f191-b5b2-436e-9c6c-56ddd9c741df"), LastSeen = 0L, Name = "Test Factory", PlayersOnline = 0, Port = 0 }
                     );
                 });
 
@@ -579,13 +607,24 @@ namespace FNO.Domain.Migrations
                     b.Property<Guid>("PlayerId")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<Guid>("CorporationId");
+                    b.Property<Guid?>("CorporationId");
+
+                    b.Property<string>("Name");
+
+                    b.Property<string>("SteamId");
 
                     b.HasKey("PlayerId");
 
                     b.HasIndex("CorporationId");
 
+                    b.HasIndex("SteamId")
+                        .IsUnique();
+
                     b.ToTable("Players");
+
+                    b.HasData(
+                        new { PlayerId = new Guid("00000000-0000-0000-0000-000000000001"), Name = "<system>", SteamId = "<system>" }
+                    );
                 });
 
             modelBuilder.Entity("FNO.Domain.Models.Warehouse", b =>
@@ -603,7 +642,7 @@ namespace FNO.Domain.Migrations
                     b.ToTable("Warehouses");
 
                     b.HasData(
-                        new { WarehouseId = new Guid("52d967b9-4ce7-4171-8283-07831d348707"), CorporationId = new Guid("69b1ab63-a179-4387-a1a8-a52705b5e77e") }
+                        new { WarehouseId = new Guid("c941a935-20c9-4f99-878a-b265e722f372"), CorporationId = new Guid("2785f191-b5b2-436e-9c6c-56ddd9c741df") }
                     );
                 });
 
@@ -627,6 +666,27 @@ namespace FNO.Domain.Migrations
                     b.ToTable("WarehouseInventories");
                 });
 
+            modelBuilder.Entity("FNO.Domain.Models.Corporation", b =>
+                {
+                    b.HasOne("FNO.Domain.Models.Player", "CreatedByPlayer")
+                        .WithMany()
+                        .HasForeignKey("CreatedByPlayerId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("FNO.Domain.Models.CorporationInvitation", b =>
+                {
+                    b.HasOne("FNO.Domain.Models.Corporation", "Corporation")
+                        .WithMany()
+                        .HasForeignKey("CorporationId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("FNO.Domain.Models.Player", "Player")
+                        .WithMany()
+                        .HasForeignKey("PlayerId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
             modelBuilder.Entity("FNO.Domain.Models.Factory", b =>
                 {
                     b.HasOne("FNO.Domain.Models.Corporation", "Corporation")
@@ -643,8 +703,7 @@ namespace FNO.Domain.Migrations
                 {
                     b.HasOne("FNO.Domain.Models.Corporation", "Corporation")
                         .WithMany("Members")
-                        .HasForeignKey("CorporationId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("CorporationId");
                 });
 
             modelBuilder.Entity("FNO.Domain.Models.Warehouse", b =>

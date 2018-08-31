@@ -1,14 +1,57 @@
 ﻿using System;
 using System.Threading.Tasks;
+using FNO.Domain;
 using FNO.Domain.Events;
+using FNO.Domain.Events.Corporation;
+using FNO.Domain.Events.Player;
+using FNO.EventSourcing;
+using FNO.ReadModel.EventHandlers;
+using Serilog;
 
 namespace FNO.ReadModel
 {
-    class EventDispatcher : IEventDispatcher
+    public class EventDispatcher : IEventDispatcher
     {
-        public Task Handle(IEvent evnt)
+        private readonly EventHandlerResolver _resolver;
+        private readonly ReadModelDbContext _dbContext;
+        private readonly ILogger _logger;
+
+        public EventDispatcher(ReadModelDbContext dbContext, ILogger logger)
         {
-            throw new NotImplementedException();
+            _dbContext = dbContext;
+            _logger = logger;
+
+            _resolver = new EventHandlerResolver();
+
+            RegisterHandlers();
+        }
+
+        private void RegisterHandlers()
+        {
+            _resolver.Register(() => new PlayerEventHandler(_dbContext, _logger),
+                typeof(PlayerCreatedEvent),
+                typeof(PlayerInvitedToCorporationEvent),
+                typeof(PlayerJoinedCorporationEvent),
+                typeof(PlayerRejectedInvitationEvent));
+
+            _resolver.Register(() => new CorporationEventHandler(_dbContext, _logger),
+                typeof(CorporationCreatedEvent));
+        }
+
+        public async Task Handle<TEvent>(TEvent evnt) where TEvent : IEvent
+        {
+            var handlers = _resolver.Resolve(evnt);
+            foreach (var handler in handlers)
+            {
+                try
+                {
+                    await handler.Handle(evnt);
+                }
+                catch (Exception e)
+                {
+                    _logger.Error(e, $"Could not handle event {evnt.GetType().FullName}, error: {e.Message}");
+                }
+            }
         }
     }
 }
