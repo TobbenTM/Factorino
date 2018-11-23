@@ -11,5 +11,7 @@ namespace FNO.Domain.Events
         {
             Metadata = metadata;
         }
+
+        public EventMetadata GetMetadata() => Metadata;
     }
 }

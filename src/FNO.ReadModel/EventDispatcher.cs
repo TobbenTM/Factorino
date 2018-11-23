@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using FNO.Domain;
 using FNO.Domain.Events;
@@ -41,6 +42,11 @@ namespace FNO.ReadModel
         public async Task Handle<TEvent>(TEvent evnt) where TEvent : IEvent
         {
             var handlers = _resolver.Resolve(evnt);
+            if (!handlers.Any())
+            {
+                _logger.Information($"Skipping event of type {evnt.GetType().FullName}, no handlers registered.");
+                return;
+            }
             foreach (var handler in handlers)
             {
                 try
@@ -49,7 +55,7 @@ namespace FNO.ReadModel
                 }
                 catch (Exception e)
                 {
-                    _logger.Error(e, $"Could not handle event {evnt.GetType().FullName}, error: {e.Message}");
+                    _logger.Error(e, $"Handler {handler.GetType().Name} could not handle event {evnt.GetType().FullName}, error: {e.Message}");
                 }
             }
         }

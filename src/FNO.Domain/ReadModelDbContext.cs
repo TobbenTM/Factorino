@@ -30,6 +30,9 @@ namespace FNO.Domain
         // ReseachLibrary
         public DbSet<FactorioTechnology> TechnologyLibrary { get; set; }
 
+        // [Meta] ConsumerState
+        public DbSet<ConsumerState> ConsumerStates { get; set; }
+
         public ReadModelDbContext(DbContextOptions<ReadModelDbContext> options) : base(options)
         {
         }
@@ -46,10 +49,14 @@ namespace FNO.Domain
             return builder.Options;
         }
 
-        public static DbContextOptionsBuilder ConfigureBuilder(DbContextOptionsBuilder builder, IConfiguration config)
+        public static DbContextOptionsBuilder ConfigureBuilder(DbContextOptionsBuilder builder, IConfiguration config, bool disableTracking = false)
         {
             var connectionString = config.GetConnectionString("ReadModel");
             builder.UseNpgsql(connectionString);
+            if (disableTracking)
+            {
+                builder.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
+            }
             return builder;
         }
 
@@ -101,6 +108,9 @@ namespace FNO.Domain
             modelBuilder.Entity<Player>()
                 .HasIndex(p => p.SteamId)
                 .IsUnique();
+
+            modelBuilder.Entity<ConsumerState>()
+                .HasKey(c => new { c.GroupId, c.Topic, c.Partition });
         }
     }
 }

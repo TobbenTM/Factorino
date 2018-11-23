@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace FNO.Domain.Migrations
 {
-    public partial class InitialMigration : Migration
+    public partial class ScriptedMigration : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -83,6 +83,7 @@ namespace FNO.Domain.Migrations
                     PlayerId = table.Column<Guid>(nullable: false),
                     Name = table.Column<string>(nullable: true),
                     SteamId = table.Column<string>(nullable: true),
+                    FactorioId = table.Column<string>(nullable: true),
                     CorporationId = table.Column<Guid>(nullable: true)
                 },
                 constraints: table =>
@@ -387,8 +388,8 @@ namespace FNO.Domain.Migrations
 
             migrationBuilder.InsertData(
                 table: "Players",
-                columns: new[] { "PlayerId", "CorporationId", "Name", "SteamId" },
-                values: new object[] { new Guid("00000000-0000-0000-0000-000000000001"), null, "<system>", "<system>" });
+                columns: new[] { "PlayerId", "CorporationId", "FactorioId", "Name", "SteamId" },
+                values: new object[] { new Guid("00000000-0000-0000-0000-000000000001"), null, null, "<system>", "<system>" });
 
             migrationBuilder.InsertData(
                 table: "TechnologyLibrary",
@@ -640,17 +641,17 @@ namespace FNO.Domain.Migrations
             migrationBuilder.InsertData(
                 table: "Corporations",
                 columns: new[] { "CorporationId", "CreatedByPlayerId", "Credits", "Description", "Name" },
-                values: new object[] { new Guid("2785f191-b5b2-436e-9c6c-56ddd9c741df"), new Guid("00000000-0000-0000-0000-000000000001"), 0, null, "Test Corporation" });
+                values: new object[] { new Guid("965da2ac-e660-426a-a847-38a5b9785721"), new Guid("00000000-0000-0000-0000-000000000001"), 0, "Please Ignore", "TEST Corporation" });
 
             migrationBuilder.InsertData(
                 table: "Factories",
                 columns: new[] { "FactoryId", "CorporationId", "CurrentlyResearchingId", "LastSeen", "Name", "PlayersOnline", "Port" },
-                values: new object[] { new Guid("00000000-0000-0000-0000-000000000001"), new Guid("2785f191-b5b2-436e-9c6c-56ddd9c741df"), null, 0L, "Test Factory", 0, 0 });
+                values: new object[] { new Guid("00000000-0000-0000-0000-000000000001"), new Guid("965da2ac-e660-426a-a847-38a5b9785721"), null, 0L, "TEST Factory", 0, 0 });
 
             migrationBuilder.InsertData(
                 table: "Warehouses",
                 columns: new[] { "WarehouseId", "CorporationId" },
-                values: new object[] { new Guid("c941a935-20c9-4f99-878a-b265e722f372"), new Guid("2785f191-b5b2-436e-9c6c-56ddd9c741df") });
+                values: new object[] { new Guid("949bca62-34c6-4d1b-8f37-03bfd140ebfb"), new Guid("965da2ac-e660-426a-a847-38a5b9785721") });
 
             migrationBuilder.CreateIndex(
                 name: "IX_CorporationInvitations_CorporationId",

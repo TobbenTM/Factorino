@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace FNO.ReadModel.Tests.EventHandlers
 {
-    public class EventHandlerTestBase : IDisposable
+    public abstract class EventHandlerTestBase : IDisposable
     {
         private readonly DbContextOptions<ReadModelDbContext> _dbOpts;
         protected readonly ILogger _logger;

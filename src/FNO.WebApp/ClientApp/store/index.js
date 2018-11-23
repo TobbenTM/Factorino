@@ -1,6 +1,9 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 
+import UserModule from './modules/user';
+import CorporationModule from './modules/corporation';
+
 Vue.use(Vuex);
 
 // Mutation-types
@@ -18,4 +21,8 @@ export default new Vuex.Store({
   state,
   mutations,
   actions,
+  modules: {
+    user: UserModule,
+    corporation: CorporationModule,
+  },
 });

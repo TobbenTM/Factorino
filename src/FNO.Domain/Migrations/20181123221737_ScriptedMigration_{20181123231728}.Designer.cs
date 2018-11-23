@@ -10,8 +10,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace FNO.Domain.Migrations
 {
     [DbContext(typeof(ReadModelDbContext))]
-    [Migration("20180830163058_InitialMigration")]
-    partial class InitialMigration
+    [Migration("20181123221737_ScriptedMigration_{20181123231728}")]
+    partial class ScriptedMigration_20181123231728
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -20,6 +20,21 @@ namespace FNO.Domain.Migrations
                 .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn)
                 .HasAnnotation("ProductVersion", "2.1.1-rtm-30846")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
+
+            modelBuilder.Entity("FNO.Domain.Models.ConsumerState", b =>
+                {
+                    b.Property<string>("GroupId");
+
+                    b.Property<string>("Topic");
+
+                    b.Property<int>("Partition");
+
+                    b.Property<long>("Offset");
+
+                    b.HasKey("GroupId", "Topic", "Partition");
+
+                    b.ToTable("ConsumerStates");
+                });
 
             modelBuilder.Entity("FNO.Domain.Models.Corporation", b =>
                 {
@@ -41,7 +56,7 @@ namespace FNO.Domain.Migrations
                     b.ToTable("Corporations");
 
                     b.HasData(
-                        new { CorporationId = new Guid("2785f191-b5b2-436e-9c6c-56ddd9c741df"), CreatedByPlayerId = new Guid("00000000-0000-0000-0000-000000000001"), Credits = 0, Name = "Test Corporation" }
+                        new { CorporationId = new Guid("ae609789-3f01-4dd6-a118-e8935a9072a1"), CreatedByPlayerId = new Guid("00000000-0000-0000-0000-000000000001"), Credits = 0, Description = "Please Ignore", Name = "TEST Corporation" }
                     );
                 });
 
@@ -600,7 +615,7 @@ namespace FNO.Domain.Migrations
                     b.ToTable("Factories");
 
                     b.HasData(
-                        new { FactoryId = new Guid("00000000-0000-0000-0000-000000000001"), CorporationId = new Guid("2785f191-b5b2-436e-9c6c-56ddd9c741df"), LastSeen = 0L, Name = "Test Factory", PlayersOnline = 0, Port = 0 }
+                        new { FactoryId = new Guid("00000000-0000-0000-0000-000000000001"), CorporationId = new Guid("ae609789-3f01-4dd6-a118-e8935a9072a1"), LastSeen = 0L, Name = "TEST Factory", PlayersOnline = 0, Port = 0 }
                     );
                 });
 
@@ -610,6 +625,8 @@ namespace FNO.Domain.Migrations
                         .ValueGeneratedOnAdd();
 
                     b.Property<Guid?>("CorporationId");
+
+                    b.Property<string>("FactorioId");
 
                     b.Property<string>("Name");
 
@@ -644,7 +661,7 @@ namespace FNO.Domain.Migrations
                     b.ToTable("Warehouses");
 
                     b.HasData(
-                        new { WarehouseId = new Guid("c941a935-20c9-4f99-878a-b265e722f372"), CorporationId = new Guid("2785f191-b5b2-436e-9c6c-56ddd9c741df") }
+                        new { WarehouseId = new Guid("fa6c45cd-4179-4e89-8696-b3b66264814d"), CorporationId = new Guid("ae609789-3f01-4dd6-a118-e8935a9072a1") }
                     );
                 });
 
@@ -684,7 +701,7 @@ namespace FNO.Domain.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("FNO.Domain.Models.Player", "Player")
-                        .WithMany()
+                        .WithMany("Invitations")
                         .HasForeignKey("PlayerId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });

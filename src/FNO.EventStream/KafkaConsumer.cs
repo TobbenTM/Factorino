@@ -9,7 +9,6 @@ using Confluent.Kafka;
 using Confluent.Kafka.Serialization;
 using FNO.Common;
 using FNO.Domain.Events;
-using FNO.Domain.Events.Player;
 using FNO.EventStream.Extensions;
 using FNO.EventStream.Serialization;
 using Newtonsoft.Json;

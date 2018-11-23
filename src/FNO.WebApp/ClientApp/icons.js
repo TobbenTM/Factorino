@@ -12,9 +12,13 @@ fontawesome.library.add(
   require('@fortawesome/fontawesome-free-solid/faCoins'),
   require('@fortawesome/fontawesome-free-solid/faServer'),
   require('@fortawesome/fontawesome-free-solid/faLock'),
+  require('@fortawesome/fontawesome-free-solid/faUser'),
+  require('@fortawesome/fontawesome-free-solid/faSync'),
+  require('@fortawesome/fontawesome-free-solid/faQuestionCircle'),
+  require('@fortawesome/fontawesome-free-solid/faExclamationTriangle'),
 
   // Brands
-  require('@fortawesome/fontawesome-free-brands/faSteam'),
+  require('@fortawesome/fontawesome-free-brands/faSteam')
 );
 
 export default FontAwesomeIcon;

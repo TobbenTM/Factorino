@@ -8,6 +8,8 @@ import Market from 'vm/Market.vue';
 import Servers from 'vm/Servers.vue';
 import World from 'vm/World.vue';
 import Warehouse from 'vm/Warehouse.vue';
+import Player from 'vm/Player.vue';
+import AccessDenied from 'vm/AccessDenied.vue';
 
 Vue.use(VueRouter);
 
@@ -48,6 +50,15 @@ const router = new VueRouter({
       name: 'warehouse',
       path: '/warehouse',
       component: Warehouse,
+    },
+    {
+      name: 'player',
+      path: '/player',
+      component: Player,
+    },
+    {
+      path: '/auth/accessdenied',
+      component: AccessDenied,
     },
   ],
 });

@@ -14,7 +14,7 @@ module.exports = (env, argv) => {
   let mode;
 
   if (argv && argv.mode) {
-    mode = argv.mode;
+    [mode] = argv;
   } else {
     mode = isDevBuild ? 'development' : 'production';
   }

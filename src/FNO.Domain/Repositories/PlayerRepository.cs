@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using FNO.Domain.Models;
 using Microsoft.EntityFrameworkCore;
@@ -22,6 +25,18 @@ namespace FNO.Domain.Repositories
         public Task<Player> GetPlayer(Guid playerId)
         {
             return _dbContext.Players.FirstOrDefaultAsync(p => p.PlayerId.Equals(playerId));
+        }
+
+        public Task<Player> GetPlayer(ClaimsPrincipal user)
+        {
+            var id = Guid.Parse(user.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier).Value);
+            return GetPlayer(id);
+        }
+
+        public async Task<IEnumerable<CorporationInvitation>> GetInvitations(ClaimsPrincipal user)
+        {
+            var player = await GetPlayer(user);
+            return player.Invitations;
         }
     }
 }

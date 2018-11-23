@@ -3,7 +3,9 @@ using FNO.Domain.Events.Player;
 using FNO.Domain.Models;
 using FNO.Domain.Repositories;
 using FNO.EventSourcing;
+using FNO.WebApp.Security;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -36,7 +38,7 @@ namespace FNO.WebApp.Controllers
         [HttpGet, Route("register")]
         public async Task<IActionResult> RegisterSteamUser()
         {
-            var authResult = await HttpContext.AuthenticateAsync("steam");
+            var authResult = await HttpContext.AuthenticateAsync(AuthenticationConfiguration.SteamCookieScheme);
             if (!authResult.Succeeded)
             {
                 // TODO: Should probably add an error here
@@ -69,9 +71,12 @@ namespace FNO.WebApp.Controllers
                 new Claim(ClaimTypes.Name, player.Name),
                 new Claim(ClaimTypes.NameIdentifier, player.PlayerId.ToString()),
             };
-            var identity = new ClaimsIdentity(claims);
+            var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
             var principal = new ClaimsPrincipal(identity);
 
+            // Sign out of the intermediate Steam session..
+            await HttpContext.SignOutAsync(AuthenticationConfiguration.SteamCookieScheme);
+            // ..and into the more permanent cookie scheme
             await HttpContext.SignInAsync(principal);
 
             return RedirectToAction("Index", "Home");

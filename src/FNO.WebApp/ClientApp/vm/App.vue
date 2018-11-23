@@ -9,29 +9,32 @@
       <router-link tag="div" class="nav-link" :to="{ name: 'world' }">
         <icon icon="globe" class="nav-icon"/> World
       </router-link>
-      <router-link tag="div" class="nav-link" :class="{ disabled: !user }" :to="{ name: 'corporation' }">
+      <router-link tag="div" class="nav-link" :class="{ disabled: !user }" :to="{ name: 'corporation' }" :event="user ? 'click' : ''">
         <icon :icon="user ? 'building' : 'lock'" class="nav-icon"/> Corporation
       </router-link>
-      <router-link tag="div" class="nav-link" :class="{ disabled: !user }" :to="{ name: 'warehouse' }">
+      <router-link tag="div" class="nav-link" :class="{ disabled: !user }" :to="{ name: 'warehouse' }" :event="user ? 'click' : ''">
         <icon :icon="user ? 'warehouse' : 'lock'" class="nav-icon"/> Warehouse
       </router-link>
-      <router-link tag="div" class="nav-link" :class="{ disabled: !user }" :to="{ name: 'factory' }">
+      <router-link tag="div" class="nav-link" :class="{ disabled: !user }" :to="{ name: 'factory' }" :event="user ? 'click' : ''">
         <icon :icon="user ? 'industry' : 'lock'" class="nav-icon"/> Factory
       </router-link>
-      <router-link tag="div" class="nav-link" :class="{ disabled: !user }" :to="{ name: 'market' }">
+      <router-link tag="div" class="nav-link" :class="{ disabled: !user }" :to="{ name: 'market' }" :event="user ? 'click' : ''">
         <icon :icon="user ? 'coins' : 'lock'" class="nav-icon"/> Marketplace
       </router-link>
       <router-link tag="div" class="nav-link" :to="{ name: 'servers' }">
         <icon icon="server" class="nav-icon"/> Servers
       </router-link>
 
-      <a class="nav-link bottom" href="/auth/login">
+      <a class="nav-link bottom" href="/auth/login" v-if="loadedUser && !user">
         <icon :icon="['fab', 'steam']" class="nav-icon"/> Log in
       </a>
+      <router-link tag="div" class="nav-link" :to="{ name: 'player' }" v-else-if="loadedUser && user">
+        <icon icon="user" class="nav-icon"/> {{ user.name }}
+      </router-link>
     </div>
-    <div class="chat container sticky">
+    <!--<div class="chat container sticky">
       <h3>Chat</h3>
-    </div>
+    </div>-->
     <div class="content container">
       <router-view class="current-view"></router-view>
     </div>
@@ -44,8 +47,20 @@ import { mapActions, mapState } from 'vuex';
 export default {
   data() {
     return {
-      user: false,
     };
+  },
+  computed: {
+    ...mapState('user', [
+      'user',
+      'loadedUser',
+      'loadingUser',
+    ])
+  },
+  methods: {
+    ...mapActions('user', ['loadUser']),
+  },
+  mounted() {
+    this.loadUser();
   },
 };
 </script>
@@ -117,7 +132,7 @@ h1 {
   height: 100%;
 }
 .content {
-  margin: 0 18em;
+  margin: 0 0 0 18em;
   display: block;
   height: 100%;
 }

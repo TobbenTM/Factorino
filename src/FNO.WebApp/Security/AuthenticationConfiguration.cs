@@ -1,3 +1,4 @@
+using AspNet.Security.OpenId.Steam;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
@@ -8,6 +9,8 @@ namespace FNO.WebApp.Security
 {
     public static class AuthenticationConfiguration
     {
+        public static string SteamCookieScheme = SteamAuthenticationDefaults.AuthenticationScheme + CookieAuthenticationDefaults.AuthenticationScheme;
+
         public static IServiceCollection AddFactorinoAuthentication(this IServiceCollection services, IConfiguration config)
         {
             var steamAppKey = config["Authentication:Steam:AppKey"];
@@ -17,15 +20,16 @@ namespace FNO.WebApp.Security
             }
 
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-                .AddSteam(cfg =>
-                {
-                    cfg.SignInScheme = "steam";
-                    cfg.ApplicationKey = steamAppKey;
-                })
-                .AddCookie("steam")
-                .AddCookie(cfg =>
+                .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, cfg =>
                 {
                     cfg.LoginPath = "/auth/login";
+                    cfg.AccessDeniedPath = "/auth/accessdenied";
+                })
+                .AddCookie(SteamCookieScheme)
+                .AddSteam(SteamAuthenticationDefaults.AuthenticationScheme, cfg =>
+                {
+                    cfg.SignInScheme = SteamCookieScheme;
+                    cfg.ApplicationKey = steamAppKey;
                 });
 
             return services;

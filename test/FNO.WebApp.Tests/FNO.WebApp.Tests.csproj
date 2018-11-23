@@ -2,6 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.1</TargetFramework>
+    <RuntimeFrameworkVersion>2.1.1</RuntimeFrameworkVersion>
   </PropertyGroup>
 
   <ItemGroup>
@@ -22,9 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\FNO.Domain\FNO.Domain.csproj" />
-    <ProjectReference Include="..\..\src\FNO.EventSourcing\FNO.EventSourcing.csproj" />
-    <ProjectReference Include="..\..\src\FNO.ReadModel\FNO.ReadModel.csproj" />
+    <ProjectReference Include="..\..\src\FNO.WebApp\FNO.WebApp.csproj" />
   </ItemGroup>
 
 </Project>

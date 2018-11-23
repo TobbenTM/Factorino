@@ -1,17 +1,18 @@
 ﻿using Confluent.Kafka;
 using Confluent.Kafka.Serialization;
+using FNO.Common;
 using FNO.Domain.Events;
+using FNO.Domain.Models;
+using FNO.EventSourcing;
+using FNO.EventStream.Extensions;
+using FNO.EventStream.Serialization;
+using Serilog;
 using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using FNO.EventStream.Serialization;
-using System.Collections.Generic;
-using FNO.Common;
-using Serilog;
-using FNO.EventSourcing;
-using FNO.Domain.Models;
-using System.Linq;
-using FNO.EventStream.Extensions;
 
 namespace FNO.EventStream
 {
@@ -28,6 +29,7 @@ namespace FNO.EventStream
 
             var config = new KafkaSettingsFactory()
                 .WithConfiguration(_configuration.Kafka)
+                //.WithDebugLogging()
                 .Build();
 
             _producer = new Producer<Null, string>(config, null, new StringSerializer(Encoding.UTF8));
@@ -52,6 +54,8 @@ namespace FNO.EventStream
         /// <returns>Delivery reports for the produced events</returns>
         public async Task<EventMetadata[]> ProduceAsync(string topic, params IEvent[] events)
         {
+            _logger.Information($"Producing {events.Length} events to {topic}..");
+            var sw = Stopwatch.StartNew();
             List<Task<Message<Null, string>>> tasks = new List<Task<Message<Null, string>>>();
             foreach (var evnt in events)
             {
@@ -59,6 +63,8 @@ namespace FNO.EventStream
                 tasks.Add(_producer.ProduceAsync(topic, null, content));
             }
             var result = await Task.WhenAll(tasks.ToArray());
+            _logger.Information($"Done producing {events.Length} in {sw.ElapsedMilliseconds} ms!");
+            sw.Stop();
             return result.Select(m => m.ToEventMetadata()).ToArray();
         }
 
