@@ -23,6 +23,7 @@
     "axios": "^0.18.0",
     "core-js": "^2.5.7",
     "vue": "^2.5.16",
+    "vue-ladda": "^0.0.15",
     "vue-router": "^3.0.1",
     "vue-server-renderer": "^2.5.16",
     "vue-template-compiler": "^2.5.16",

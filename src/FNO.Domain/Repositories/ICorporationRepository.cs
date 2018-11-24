@@ -1,10 +1,11 @@
 ﻿using FNO.Domain.Models;
 using System;
+using System.Threading.Tasks;
 
 namespace FNO.Domain.Repositories
 {
     public interface ICorporationRepository
     {
-        Corporation GetCorporation(Guid corporationId);
+        Task<Corporation> GetCorporation(Guid corporationId);
     }
 }

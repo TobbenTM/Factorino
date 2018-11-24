@@ -51,12 +51,14 @@ namespace FNO.ReadModel
         {
             using (var dbContext = ReadModelDbContext.CreateContext(_configuration))
             {
-                var initialState = dbContext.ConsumerStates.Where(s => s.GroupId == _configurationModel.Kafka.GroupId);
+                var initialState = dbContext.ConsumerStates
+                    .Where(s => s.GroupId == _configurationModel.Kafka.GroupId)
+                    .ToList();
                 if (initialState.Count() > 0)
                 {
                     // We have already rehydrated this context; lets continue where we left off
                     var subscriptions = initialState
-                        .Select(s => new TopicPartitionOffset(s.Topic, s.Partition, s.Offset))
+                        .Select(s => new TopicPartitionOffset(s.Topic, s.Partition, s.Offset + 1))
                         .ToArray();
                     _logger.Information($"Found existing context state, subscribing to: ${string.Join(", ", subscriptions.Select(s => s.ToString()))}");
                     _consumer.Subscribe(subscriptions);

@@ -6,7 +6,11 @@ namespace FNO.Domain.Events.Player
     {
         public Guid CorporationId { get; set; }
         public Guid? InvitationId { get; set; }
-        
+
+        public PlayerJoinedCorporationEvent()
+        {
+        }
+
         public PlayerJoinedCorporationEvent(Guid playerId, Guid corporationId, Guid? invitationId = null) : base(playerId)
         {
             CorporationId = corporationId;

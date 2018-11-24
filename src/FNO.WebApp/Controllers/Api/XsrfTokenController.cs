@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace FNO.WebApp.Controllers.Api
 {
+    [ApiController]
     [Route("api/xsrf")]
     public class XsrfTokenController : Controller
     {

@@ -92,11 +92,18 @@ namespace FNO.EventStream
                 if(_consumer.Consume(out var message, 1000))
                 {
                     var sw = Stopwatch.StartNew();
-                    dynamic evnt = JsonConvert.DeserializeObject(message.Value, serializerSettings);
-                    if (evnt as IEvent == null) continue;
-                    evnt.Enrich(message.ToEventMetadata());
-                    await _handler.HandleEvent(evnt);
-                    _logger.Debug($"Processed event {evnt.GetType().FullName} in {sw.ElapsedMilliseconds} ms.");
+                    try
+                    {
+                        dynamic evnt = JsonConvert.DeserializeObject(message.Value, serializerSettings);
+                        if (evnt as IEvent == null) continue;
+                        evnt.Enrich(message.ToEventMetadata());
+                        await _handler.HandleEvent(evnt);
+                        _logger.Debug($"Processed event {evnt.GetType().FullName} in {sw.ElapsedMilliseconds} ms.");
+                    }
+                    catch (JsonSerializationException e)
+                    {
+                        _logger.Error(e, "Could not deserialize event!");
+                    }
                 }
             }
         }

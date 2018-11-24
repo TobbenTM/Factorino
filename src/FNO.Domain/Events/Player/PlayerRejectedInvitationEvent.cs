@@ -6,6 +6,10 @@ namespace FNO.Domain.Events.Player
     {
         public Guid InvitationId { get; set; }
 
+        public PlayerRejectedInvitationEvent()
+        {
+        }
+
         public PlayerRejectedInvitationEvent(Guid playerId, Guid invitationId) : base(playerId)
         {
             InvitationId = invitationId;

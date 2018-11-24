@@ -1,6 +1,7 @@
-﻿using System;
-using System.Linq;
-using FNO.Domain.Models;
+﻿using FNO.Domain.Models;
+using Microsoft.EntityFrameworkCore;
+using System;
+using System.Threading.Tasks;
 
 namespace FNO.Domain.Repositories
 {
@@ -13,9 +14,12 @@ namespace FNO.Domain.Repositories
             _dbContext = dbContext;
         }
 
-        public Corporation GetCorporation(Guid corporationId)
+        public Task<Corporation> GetCorporation(Guid corporationId)
         {
-            return _dbContext.Corporations.FirstOrDefault(c => c.CorporationId.Equals(corporationId));
+            return _dbContext.Corporations
+                .Include(c => c.Members)
+                .Include(c => c.CreatedByPlayer)
+                .FirstOrDefaultAsync(c => c.CorporationId.Equals(corporationId));
         }
     }
 }

@@ -9,6 +9,10 @@ namespace FNO.Domain.Events.Corporation
         public string Name { get; set; }
         public string Description { get; set; }
 
+        public CorporationCreatedEvent()
+        {
+        }
+
         public CorporationCreatedEvent(Models.Corporation corporation) : base(corporation.CorporationId)
         {
             OwnerId = corporation.CreatedByPlayerId;

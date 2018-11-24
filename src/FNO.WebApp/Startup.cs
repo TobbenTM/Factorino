@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.SpaServices.Webpack;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json;
 using Serilog;
 using Swashbuckle.AspNetCore.Swagger;
 
@@ -33,8 +34,12 @@ namespace FNO.WebApp
             services.AddSingleton(_configuration);
             services.AddSingleton(_logger);
 
-            services.AddMvc();
+            services.AddMvc().AddJsonOptions(opts =>
+            {
+                opts.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
+            });
             services.AddSignalR();
+            services.AddAntiforgery();
             services.AddFactorinoAuthentication(_configuration);
             services.AddSwaggerGen(opts =>
             {

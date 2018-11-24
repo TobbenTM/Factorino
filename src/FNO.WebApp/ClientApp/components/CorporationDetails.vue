@@ -5,8 +5,17 @@
 </template>
 
 <script>
-export default {
+import { mapActions, mapState } from 'vuex';
 
+export default {
+  computed: {
+    ...mapState('corporation', [
+      'corporation',
+    ]),
+  },
+  methods: {
+    ...mapActions('corporation', ['leaveCorporation']),
+  },
 }
 </script>
 

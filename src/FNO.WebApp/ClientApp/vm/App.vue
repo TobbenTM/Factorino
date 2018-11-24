@@ -58,8 +58,10 @@ export default {
   },
   methods: {
     ...mapActions('user', ['loadUser']),
+    ...mapActions(['getXsrfToken']),
   },
   mounted() {
+    this.getXsrfToken();
     this.loadUser();
   },
 };

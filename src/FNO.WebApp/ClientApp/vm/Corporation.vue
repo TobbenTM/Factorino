@@ -43,7 +43,7 @@ export default {
       'corporation',
       'loadedCorporation',
       'loadingCorporation',
-    ])
+    ]),
   },
   methods: {
     ...mapActions('corporation', ['loadCorporation']),
@@ -62,23 +62,21 @@ export default {
   justify-content: center;
 }
 .new-corp-selection {
-  display: flex;
-  align-items: stretch;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
   margin-top: 3em;
 }
 .corporation-create, .corporation-invitations {
-  flex-grow: 1;
 }
 .vertical-rule {
   position: relative;
-  flex-grow: 0;
 }
 .vertical-rule::after {
   content: '';
   width: 1px;
   height: 80%;
   transform: translateY(10%);
-  background: rgba(255, 255, 255, .5);
+  background: rgba(255, 255, 255, .3);
   position: absolute;
 }
 </style>
