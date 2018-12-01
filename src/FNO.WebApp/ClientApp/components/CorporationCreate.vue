@@ -19,6 +19,7 @@
       <vue-ladda
         type="submit"
         :loading="creatingCorporation"
+        class="button button--large"
       >
         Create
       </vue-ladda>
@@ -79,7 +80,6 @@ export default {
 }
 .corporation-form button {
   grid-column-end: span 2;
-  background: #1c2540;
 }
 .corporation-form label {
   text-align: right;

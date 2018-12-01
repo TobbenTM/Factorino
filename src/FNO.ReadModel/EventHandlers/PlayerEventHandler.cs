@@ -12,6 +12,7 @@ namespace FNO.ReadModel.EventHandlers
         IEventHandler<PlayerCreatedEvent>,
         IEventHandler<PlayerInvitedToCorporationEvent>,
         IEventHandler<PlayerJoinedCorporationEvent>,
+        IEventHandler<PlayerLeftCorporationEvent>,
         IEventHandler<PlayerRejectedInvitationEvent>
     {
         private readonly ReadModelDbContext _dbContext;
@@ -58,6 +59,16 @@ namespace FNO.ReadModel.EventHandlers
                         invitation.Completed = true;
                     }
                 }
+            }
+            return Task.CompletedTask;
+        }
+
+        public Task Handle(PlayerLeftCorporationEvent evnt)
+        {
+            var player = _dbContext.Players.FirstOrDefault(p => p.PlayerId == evnt.EntityId);
+            if (player != null && player.CorporationId == evnt.CorporationId)
+            {
+                player.CorporationId = null;
             }
             return Task.CompletedTask;
         }

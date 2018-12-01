@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System;
+using System.Linq;
 
 namespace FNO.Domain
 {
@@ -11,12 +12,13 @@ namespace FNO.Domain
         public DbSet<Factory> Factories { get; set; }
         // FactoryTrainstops
         // Warehouses
-        public DbSet<Warehouse> Warehouses { get; set; }
+        //public DbSet<Warehouse> Warehouses { get; set; }
         // WarehouseRules
         // WarehouseInventory
         public DbSet<WarehouseInventory> WarehouseInventories { get; set; }
         // WarehouseTransactions
         // MarketOrders
+        public DbSet<MarketOrder> MarketOrders { get; set; }
         // MarketTransactions
         // Players
         public DbSet<Player> Players { get; set; }
@@ -24,7 +26,7 @@ namespace FNO.Domain
         public DbSet<Corporation> Corporations { get; set; }
         // CorporationResearch
         // Invitations
-        public DbSet<CorporationInvitation> CorporationInvitations {get;set;}
+        public DbSet<CorporationInvitation> CorporationInvitations { get; set; }
         // EntityLibrary
         public DbSet<FactorioEntity> EntityLibrary { get; set; }
         // ReseachLibrary
@@ -65,7 +67,7 @@ namespace FNO.Domain
             base.OnModelCreating(modelBuilder);
 
             var systemId = Guid.Parse("00000000-0000-0000-0000-000000000001");
-            var testCorpId = Guid.NewGuid();
+            var bankCorpId = Guid.Parse("00000000-0000-0000-0000-000000000002");
 
             modelBuilder.Entity<Player>()
                 .HasData(new Player
@@ -78,29 +80,49 @@ namespace FNO.Domain
             modelBuilder.Entity<Corporation>()
                 .HasData(new Corporation
                 {
-                    Name = "TEST Corporation",
-                    Description = "Please Ignore",
-                    CorporationId = testCorpId,
+                    Name = "Bank of Nauvis",
+                    Description = "We make living life easy!™",
+                    CorporationId = bankCorpId,
                     CreatedByPlayerId = systemId,
+                    Credits = -1,
                 });
 
-            modelBuilder.Entity<Warehouse>()
-                .HasData(new Warehouse
-                {
-                    WarehouseId = Guid.NewGuid(),
-                    CorporationId = testCorpId,
-                });
+            //modelBuilder.Entity<Warehouse>()
+            //    .HasData(new Warehouse
+            //    {
+            //        WarehouseId = Guid.NewGuid(),
+            //        CorporationId = bankCorpId,
+            //    });
 
             modelBuilder.Entity<Factory>()
                 .HasData(new Factory
                 {
-                    Name = "TEST Factory",
+                    Name = "Bank of Nauvis - HQ",
                     FactoryId = systemId,
-                    CorporationId = testCorpId,
+                    OwnerId = systemId,
                 });
 
+            // Seeding the market with infinite (bad) buy orders
+            var entities = Seed.EntityLibrary.Data();
+            var orderIds = Enumerable.Range(0, entities.Length)
+                .Select(n => Guid.Parse($"00000000-0000-0000-1111-{n.ToString().PadLeft(12, '0')}"))
+                .ToArray();
+            var orders = Enumerable.Range(0, entities.Length)
+                .Select(i => new MarketOrder
+                {
+                    OrderId = orderIds[i],
+                    ItemId = entities[i].Name,
+                    CorporationId = bankCorpId,
+                    OrderType = OrderType.Buy,
+                    Price = 1,
+                    Quantity = -1,
+                }).ToArray();
+
+            modelBuilder.Entity<MarketOrder>()
+                .HasData(orders);
+
             modelBuilder.Entity<FactorioEntity>()
-                .HasData(Seed.EntityLibrary.Data());
+                .HasData(entities);
 
             modelBuilder.Entity<FactorioTechnology>()
                 .HasData(Seed.TechnologyLibrary.Data());

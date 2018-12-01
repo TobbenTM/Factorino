@@ -31,7 +31,6 @@ namespace FNO.ReadModel.Tests.EventHandlers
             using (var dbContext = GetInMemoryDatabase())
             {
                 Assert.NotEmpty(dbContext.Corporations);
-                Assert.NotEmpty(dbContext.Warehouses);
                 var corporation = dbContext.Corporations.First();
                 Assert.Equal(expectedCorporation.CorporationId, corporation.CorporationId);
                 Assert.Equal(expectedCorporation.Name, corporation.Name);

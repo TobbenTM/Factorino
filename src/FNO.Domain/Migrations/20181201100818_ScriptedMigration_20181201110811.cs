@@ -3,10 +3,24 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace FNO.Domain.Migrations
 {
-    public partial class ScriptedMigration : Migration
+    public partial class ScriptedMigration_20181201110811 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.CreateTable(
+                name: "ConsumerStates",
+                columns: table => new
+                {
+                    GroupId = table.Column<string>(nullable: false),
+                    Topic = table.Column<string>(nullable: false),
+                    Partition = table.Column<int>(nullable: false),
+                    Offset = table.Column<long>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ConsumerStates", x => new { x.GroupId, x.Topic, x.Partition });
+                });
+
             migrationBuilder.CreateTable(
                 name: "EntityLibrary",
                 columns: table => new
@@ -39,6 +53,28 @@ namespace FNO.Domain.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "MarketOrders",
+                columns: table => new
+                {
+                    OrderId = table.Column<Guid>(nullable: false),
+                    OrderType = table.Column<int>(nullable: false),
+                    CorporationId = table.Column<Guid>(nullable: false),
+                    ItemId = table.Column<string>(nullable: true),
+                    Quantity = table.Column<int>(nullable: false),
+                    Price = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_MarketOrders", x => x.OrderId);
+                    table.ForeignKey(
+                        name: "FK_MarketOrders_EntityLibrary_ItemId",
+                        column: x => x.ItemId,
+                        principalTable: "EntityLibrary",
+                        principalColumn: "Name",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "CorporationInvitations",
                 columns: table => new
                 {
@@ -51,29 +87,6 @@ namespace FNO.Domain.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_CorporationInvitations", x => x.InvitationId);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Factories",
-                columns: table => new
-                {
-                    FactoryId = table.Column<Guid>(nullable: false),
-                    Name = table.Column<string>(nullable: true),
-                    Port = table.Column<int>(nullable: false),
-                    LastSeen = table.Column<long>(nullable: false),
-                    PlayersOnline = table.Column<int>(nullable: false),
-                    CorporationId = table.Column<Guid>(nullable: false),
-                    CurrentlyResearchingId = table.Column<string>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Factories", x => x.FactoryId);
-                    table.ForeignKey(
-                        name: "FK_Factories_TechnologyLibrary_CurrentlyResearchingId",
-                        column: x => x.CurrentlyResearchingId,
-                        principalTable: "TechnologyLibrary",
-                        principalColumn: "Name",
-                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -113,20 +126,31 @@ namespace FNO.Domain.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Warehouses",
+                name: "Factories",
                 columns: table => new
                 {
-                    WarehouseId = table.Column<Guid>(nullable: false),
-                    CorporationId = table.Column<Guid>(nullable: false)
+                    FactoryId = table.Column<Guid>(nullable: false),
+                    Name = table.Column<string>(nullable: true),
+                    Port = table.Column<int>(nullable: false),
+                    LastSeen = table.Column<long>(nullable: false),
+                    PlayersOnline = table.Column<int>(nullable: false),
+                    OwnerId = table.Column<Guid>(nullable: false),
+                    CurrentlyResearchingId = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Warehouses", x => x.WarehouseId);
+                    table.PrimaryKey("PK_Factories", x => x.FactoryId);
                     table.ForeignKey(
-                        name: "FK_Warehouses_Corporations_CorporationId",
-                        column: x => x.CorporationId,
-                        principalTable: "Corporations",
-                        principalColumn: "CorporationId",
+                        name: "FK_Factories_TechnologyLibrary_CurrentlyResearchingId",
+                        column: x => x.CurrentlyResearchingId,
+                        principalTable: "TechnologyLibrary",
+                        principalColumn: "Name",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Factories_Players_OwnerId",
+                        column: x => x.OwnerId,
+                        principalTable: "Players",
+                        principalColumn: "PlayerId",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -137,23 +161,23 @@ namespace FNO.Domain.Migrations
                     WarehouseInventoryId = table.Column<Guid>(nullable: false),
                     Quantity = table.Column<int>(nullable: false),
                     ItemId = table.Column<string>(nullable: true),
-                    WarehouseId = table.Column<Guid>(nullable: false)
+                    CorporationId = table.Column<Guid>(nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_WarehouseInventories", x => x.WarehouseInventoryId);
+                    table.ForeignKey(
+                        name: "FK_WarehouseInventories_Corporations_CorporationId",
+                        column: x => x.CorporationId,
+                        principalTable: "Corporations",
+                        principalColumn: "CorporationId",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_WarehouseInventories_EntityLibrary_ItemId",
                         column: x => x.ItemId,
                         principalTable: "EntityLibrary",
                         principalColumn: "Name",
                         onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_WarehouseInventories_Warehouses_WarehouseId",
-                        column: x => x.WarehouseId,
-                        principalTable: "Warehouses",
-                        principalColumn: "WarehouseId",
-                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.InsertData(
@@ -641,17 +665,242 @@ namespace FNO.Domain.Migrations
             migrationBuilder.InsertData(
                 table: "Corporations",
                 columns: new[] { "CorporationId", "CreatedByPlayerId", "Credits", "Description", "Name" },
-                values: new object[] { new Guid("965da2ac-e660-426a-a847-38a5b9785721"), new Guid("00000000-0000-0000-0000-000000000001"), 0, "Please Ignore", "TEST Corporation" });
+                values: new object[] { new Guid("00000000-0000-0000-0000-000000000002"), new Guid("00000000-0000-0000-0000-000000000001"), -1, "We make living life easy!™", "Bank of Nauvis" });
 
             migrationBuilder.InsertData(
                 table: "Factories",
-                columns: new[] { "FactoryId", "CorporationId", "CurrentlyResearchingId", "LastSeen", "Name", "PlayersOnline", "Port" },
-                values: new object[] { new Guid("00000000-0000-0000-0000-000000000001"), new Guid("965da2ac-e660-426a-a847-38a5b9785721"), null, 0L, "TEST Factory", 0, 0 });
+                columns: new[] { "FactoryId", "CurrentlyResearchingId", "LastSeen", "Name", "OwnerId", "PlayersOnline", "Port" },
+                values: new object[] { new Guid("00000000-0000-0000-0000-000000000001"), null, 0L, "Bank of Nauvis - HQ", new Guid("00000000-0000-0000-0000-000000000001"), 0, 0 });
 
             migrationBuilder.InsertData(
-                table: "Warehouses",
-                columns: new[] { "WarehouseId", "CorporationId" },
-                values: new object[] { new Guid("949bca62-34c6-4d1b-8f37-03bfd140ebfb"), new Guid("965da2ac-e660-426a-a847-38a5b9785721") });
+                table: "MarketOrders",
+                columns: new[] { "OrderId", "CorporationId", "ItemId", "OrderType", "Price", "Quantity" },
+                values: new object[,]
+                {
+                    { new Guid("00000000-0000-0000-1111-000000000221"), new Guid("00000000-0000-0000-0000-000000000002"), "flamethrower-turret", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000142"), new Guid("00000000-0000-0000-0000-000000000002"), "rocket-control-unit", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000143"), new Guid("00000000-0000-0000-0000-000000000002"), "rocket-part", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000144"), new Guid("00000000-0000-0000-0000-000000000002"), "satellite", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000145"), new Guid("00000000-0000-0000-0000-000000000002"), "concrete", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000146"), new Guid("00000000-0000-0000-0000-000000000002"), "refined-concrete", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000147"), new Guid("00000000-0000-0000-0000-000000000002"), "hazard-concrete", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000148"), new Guid("00000000-0000-0000-0000-000000000002"), "refined-hazard-concrete", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000149"), new Guid("00000000-0000-0000-0000-000000000002"), "landfill", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000150"), new Guid("00000000-0000-0000-0000-000000000002"), "electric-energy-interface", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000151"), new Guid("00000000-0000-0000-0000-000000000002"), "uranium-ore", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000152"), new Guid("00000000-0000-0000-0000-000000000002"), "nuclear-reactor", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000153"), new Guid("00000000-0000-0000-0000-000000000002"), "uranium-235", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000154"), new Guid("00000000-0000-0000-0000-000000000002"), "uranium-238", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000155"), new Guid("00000000-0000-0000-0000-000000000002"), "centrifuge", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000156"), new Guid("00000000-0000-0000-0000-000000000002"), "uranium-fuel-cell", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000157"), new Guid("00000000-0000-0000-0000-000000000002"), "used-up-uranium-fuel-cell", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000158"), new Guid("00000000-0000-0000-0000-000000000002"), "heat-exchanger", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000159"), new Guid("00000000-0000-0000-0000-000000000002"), "steam-turbine", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000160"), new Guid("00000000-0000-0000-0000-000000000002"), "heat-pipe", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000161"), new Guid("00000000-0000-0000-0000-000000000002"), "simple-entity-with-force", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000162"), new Guid("00000000-0000-0000-0000-000000000002"), "simple-entity-with-owner", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000163"), new Guid("00000000-0000-0000-0000-000000000002"), "item-with-tags", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000164"), new Guid("00000000-0000-0000-0000-000000000002"), "item-with-label", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000141"), new Guid("00000000-0000-0000-0000-000000000002"), "nuclear-fuel", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000140"), new Guid("00000000-0000-0000-0000-000000000002"), "rocket-fuel", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000139"), new Guid("00000000-0000-0000-0000-000000000002"), "low-density-structure", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000138"), new Guid("00000000-0000-0000-0000-000000000002"), "programmable-speaker", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000114"), new Guid("00000000-0000-0000-0000-000000000002"), "medium-electric-pole", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000115"), new Guid("00000000-0000-0000-0000-000000000002"), "substation", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000116"), new Guid("00000000-0000-0000-0000-000000000002"), "accumulator", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000117"), new Guid("00000000-0000-0000-0000-000000000002"), "steel-furnace", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000118"), new Guid("00000000-0000-0000-0000-000000000002"), "electric-furnace", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000119"), new Guid("00000000-0000-0000-0000-000000000002"), "beacon", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000120"), new Guid("00000000-0000-0000-0000-000000000002"), "storage-tank", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000121"), new Guid("00000000-0000-0000-0000-000000000002"), "pump", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000122"), new Guid("00000000-0000-0000-0000-000000000002"), "pumpjack", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000123"), new Guid("00000000-0000-0000-0000-000000000002"), "oil-refinery", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000124"), new Guid("00000000-0000-0000-0000-000000000002"), "chemical-plant", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000165"), new Guid("00000000-0000-0000-0000-000000000002"), "item-with-inventory", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000125"), new Guid("00000000-0000-0000-0000-000000000002"), "sulfur", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000127"), new Guid("00000000-0000-0000-0000-000000000002"), "solid-fuel", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000128"), new Guid("00000000-0000-0000-0000-000000000002"), "plastic-bar", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000129"), new Guid("00000000-0000-0000-0000-000000000002"), "engine-unit", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000130"), new Guid("00000000-0000-0000-0000-000000000002"), "electric-engine-unit", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000131"), new Guid("00000000-0000-0000-0000-000000000002"), "explosives", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000132"), new Guid("00000000-0000-0000-0000-000000000002"), "battery", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000133"), new Guid("00000000-0000-0000-0000-000000000002"), "flying-robot-frame", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000134"), new Guid("00000000-0000-0000-0000-000000000002"), "arithmetic-combinator", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000135"), new Guid("00000000-0000-0000-0000-000000000002"), "decider-combinator", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000136"), new Guid("00000000-0000-0000-0000-000000000002"), "constant-combinator", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000137"), new Guid("00000000-0000-0000-0000-000000000002"), "power-switch", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000126"), new Guid("00000000-0000-0000-0000-000000000002"), "empty-barrel", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000166"), new Guid("00000000-0000-0000-0000-000000000002"), "infinity-chest", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000167"), new Guid("00000000-0000-0000-0000-000000000002"), "speed-module", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000113"), new Guid("00000000-0000-0000-0000-000000000002"), "big-electric-pole", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000197"), new Guid("00000000-0000-0000-0000-000000000002"), "destroyer-capsule", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000198"), new Guid("00000000-0000-0000-0000-000000000002"), "discharge-defense-remote", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000199"), new Guid("00000000-0000-0000-0000-000000000002"), "cliff-explosives", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000200"), new Guid("00000000-0000-0000-0000-000000000002"), "artillery-targeting-remote", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000201"), new Guid("00000000-0000-0000-0000-000000000002"), "pistol", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000202"), new Guid("00000000-0000-0000-0000-000000000002"), "submachine-gun", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000203"), new Guid("00000000-0000-0000-0000-000000000002"), "flamethrower", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000204"), new Guid("00000000-0000-0000-0000-000000000002"), "vehicle-machine-gun", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000205"), new Guid("00000000-0000-0000-0000-000000000002"), "tank-machine-gun", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000206"), new Guid("00000000-0000-0000-0000-000000000002"), "tank-flamethrower", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000207"), new Guid("00000000-0000-0000-0000-000000000002"), "land-mine", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000196"), new Guid("00000000-0000-0000-0000-000000000002"), "distractor-capsule", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000208"), new Guid("00000000-0000-0000-0000-000000000002"), "rocket-launcher", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000210"), new Guid("00000000-0000-0000-0000-000000000002"), "combat-shotgun", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000211"), new Guid("00000000-0000-0000-0000-000000000002"), "railgun", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000212"), new Guid("00000000-0000-0000-0000-000000000002"), "tank-cannon", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000213"), new Guid("00000000-0000-0000-0000-000000000002"), "artillery-wagon-cannon", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000214"), new Guid("00000000-0000-0000-0000-000000000002"), "light-armor", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000215"), new Guid("00000000-0000-0000-0000-000000000002"), "heavy-armor", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000216"), new Guid("00000000-0000-0000-0000-000000000002"), "modular-armor", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000217"), new Guid("00000000-0000-0000-0000-000000000002"), "power-armor", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000218"), new Guid("00000000-0000-0000-0000-000000000002"), "power-armor-mk2", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000219"), new Guid("00000000-0000-0000-0000-000000000002"), "gun-turret", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000220"), new Guid("00000000-0000-0000-0000-000000000002"), "laser-turret", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000209"), new Guid("00000000-0000-0000-0000-000000000002"), "shotgun", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000222"), new Guid("00000000-0000-0000-0000-000000000002"), "artillery-turret", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000195"), new Guid("00000000-0000-0000-0000-000000000002"), "defender-capsule", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000193"), new Guid("00000000-0000-0000-0000-000000000002"), "poison-capsule", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000169"), new Guid("00000000-0000-0000-0000-000000000002"), "speed-module-3", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000170"), new Guid("00000000-0000-0000-0000-000000000002"), "effectivity-module", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000171"), new Guid("00000000-0000-0000-0000-000000000002"), "effectivity-module-2", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000172"), new Guid("00000000-0000-0000-0000-000000000002"), "effectivity-module-3", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000173"), new Guid("00000000-0000-0000-0000-000000000002"), "productivity-module", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000174"), new Guid("00000000-0000-0000-0000-000000000002"), "productivity-module-2", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000175"), new Guid("00000000-0000-0000-0000-000000000002"), "productivity-module-3", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000176"), new Guid("00000000-0000-0000-0000-000000000002"), "firearm-magazine", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000177"), new Guid("00000000-0000-0000-0000-000000000002"), "piercing-rounds-magazine", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000178"), new Guid("00000000-0000-0000-0000-000000000002"), "uranium-rounds-magazine", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000179"), new Guid("00000000-0000-0000-0000-000000000002"), "flamethrower-ammo", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000194"), new Guid("00000000-0000-0000-0000-000000000002"), "slowdown-capsule", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000180"), new Guid("00000000-0000-0000-0000-000000000002"), "rocket", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000182"), new Guid("00000000-0000-0000-0000-000000000002"), "atomic-bomb", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000183"), new Guid("00000000-0000-0000-0000-000000000002"), "shotgun-shell", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000184"), new Guid("00000000-0000-0000-0000-000000000002"), "piercing-shotgun-shell", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000185"), new Guid("00000000-0000-0000-0000-000000000002"), "railgun-dart", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000186"), new Guid("00000000-0000-0000-0000-000000000002"), "cannon-shell", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000187"), new Guid("00000000-0000-0000-0000-000000000002"), "explosive-cannon-shell", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000188"), new Guid("00000000-0000-0000-0000-000000000002"), "uranium-cannon-shell", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000189"), new Guid("00000000-0000-0000-0000-000000000002"), "explosive-uranium-cannon-shell", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000190"), new Guid("00000000-0000-0000-0000-000000000002"), "artillery-shell", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000191"), new Guid("00000000-0000-0000-0000-000000000002"), "grenade", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000192"), new Guid("00000000-0000-0000-0000-000000000002"), "cluster-grenade", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000181"), new Guid("00000000-0000-0000-0000-000000000002"), "explosive-rocket", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000168"), new Guid("00000000-0000-0000-0000-000000000002"), "speed-module-2", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000112"), new Guid("00000000-0000-0000-0000-000000000002"), "coin", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000110"), new Guid("00000000-0000-0000-0000-000000000002"), "rocket-silo", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000029"), new Guid("00000000-0000-0000-0000-000000000002"), "wood", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000030"), new Guid("00000000-0000-0000-0000-000000000002"), "iron-plate", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000031"), new Guid("00000000-0000-0000-0000-000000000002"), "copper-plate", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000032"), new Guid("00000000-0000-0000-0000-000000000002"), "copper-cable", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000033"), new Guid("00000000-0000-0000-0000-000000000002"), "iron-stick", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000034"), new Guid("00000000-0000-0000-0000-000000000002"), "iron-gear-wheel", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000035"), new Guid("00000000-0000-0000-0000-000000000002"), "electronic-circuit", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000036"), new Guid("00000000-0000-0000-0000-000000000002"), "wooden-chest", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000037"), new Guid("00000000-0000-0000-0000-000000000002"), "stone-furnace", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000038"), new Guid("00000000-0000-0000-0000-000000000002"), "burner-mining-drill", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000039"), new Guid("00000000-0000-0000-0000-000000000002"), "electric-mining-drill", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000028"), new Guid("00000000-0000-0000-0000-000000000002"), "copper-ore", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000040"), new Guid("00000000-0000-0000-0000-000000000002"), "transport-belt", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000042"), new Guid("00000000-0000-0000-0000-000000000002"), "inserter", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000043"), new Guid("00000000-0000-0000-0000-000000000002"), "offshore-pump", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000044"), new Guid("00000000-0000-0000-0000-000000000002"), "pipe", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000045"), new Guid("00000000-0000-0000-0000-000000000002"), "boiler", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000046"), new Guid("00000000-0000-0000-0000-000000000002"), "steam-engine", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000047"), new Guid("00000000-0000-0000-0000-000000000002"), "small-electric-pole", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000048"), new Guid("00000000-0000-0000-0000-000000000002"), "radar", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000049"), new Guid("00000000-0000-0000-0000-000000000002"), "computer", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000050"), new Guid("00000000-0000-0000-0000-000000000002"), "small-plane", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000051"), new Guid("00000000-0000-0000-0000-000000000002"), "small-lamp", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000052"), new Guid("00000000-0000-0000-0000-000000000002"), "pipe-to-ground", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000041"), new Guid("00000000-0000-0000-0000-000000000002"), "burner-inserter", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000053"), new Guid("00000000-0000-0000-0000-000000000002"), "assembling-machine-1", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000027"), new Guid("00000000-0000-0000-0000-000000000002"), "iron-ore", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000025"), new Guid("00000000-0000-0000-0000-000000000002"), "coal", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000001"), new Guid("00000000-0000-0000-0000-000000000002"), "heavy-oil", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000002"), new Guid("00000000-0000-0000-0000-000000000002"), "light-oil", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000003"), new Guid("00000000-0000-0000-0000-000000000002"), "petroleum-gas", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000004"), new Guid("00000000-0000-0000-0000-000000000002"), "lubricant", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000005"), new Guid("00000000-0000-0000-0000-000000000002"), "sulfuric-acid", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000006"), new Guid("00000000-0000-0000-0000-000000000002"), "water", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000007"), new Guid("00000000-0000-0000-0000-000000000002"), "steam", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000008"), new Guid("00000000-0000-0000-0000-000000000002"), "solar-panel-equipment", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000009"), new Guid("00000000-0000-0000-0000-000000000002"), "fusion-reactor-equipment", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000010"), new Guid("00000000-0000-0000-0000-000000000002"), "energy-shield-equipment", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000011"), new Guid("00000000-0000-0000-0000-000000000002"), "energy-shield-mk2-equipment", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000026"), new Guid("00000000-0000-0000-0000-000000000002"), "stone", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000012"), new Guid("00000000-0000-0000-0000-000000000002"), "battery-equipment", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000014"), new Guid("00000000-0000-0000-0000-000000000002"), "personal-laser-defense-equipment", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000015"), new Guid("00000000-0000-0000-0000-000000000002"), "discharge-defense-equipment", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000016"), new Guid("00000000-0000-0000-0000-000000000002"), "exoskeleton-equipment", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000017"), new Guid("00000000-0000-0000-0000-000000000002"), "personal-roboport-equipment", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000018"), new Guid("00000000-0000-0000-0000-000000000002"), "personal-roboport-mk2-equipment", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000019"), new Guid("00000000-0000-0000-0000-000000000002"), "night-vision-equipment", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000020"), new Guid("00000000-0000-0000-0000-000000000002"), "belt-immunity-equipment", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000021"), new Guid("00000000-0000-0000-0000-000000000002"), "iron-axe", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000022"), new Guid("00000000-0000-0000-0000-000000000002"), "steel-axe", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000023"), new Guid("00000000-0000-0000-0000-000000000002"), "stone-brick", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000024"), new Guid("00000000-0000-0000-0000-000000000002"), "raw-wood", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000013"), new Guid("00000000-0000-0000-0000-000000000002"), "battery-mk2-equipment", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000054"), new Guid("00000000-0000-0000-0000-000000000002"), "red-wire", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000055"), new Guid("00000000-0000-0000-0000-000000000002"), "green-wire", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000056"), new Guid("00000000-0000-0000-0000-000000000002"), "raw-fish", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000086"), new Guid("00000000-0000-0000-0000-000000000002"), "space-science-pack", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000087"), new Guid("00000000-0000-0000-0000-000000000002"), "lab", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000088"), new Guid("00000000-0000-0000-0000-000000000002"), "train-stop", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000089"), new Guid("00000000-0000-0000-0000-000000000002"), "rail-signal", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000090"), new Guid("00000000-0000-0000-0000-000000000002"), "rail-chain-signal", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000091"), new Guid("00000000-0000-0000-0000-000000000002"), "steel-plate", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000092"), new Guid("00000000-0000-0000-0000-000000000002"), "underground-belt", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000093"), new Guid("00000000-0000-0000-0000-000000000002"), "fast-underground-belt", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000094"), new Guid("00000000-0000-0000-0000-000000000002"), "express-underground-belt", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000095"), new Guid("00000000-0000-0000-0000-000000000002"), "splitter", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000096"), new Guid("00000000-0000-0000-0000-000000000002"), "fast-splitter", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000085"), new Guid("00000000-0000-0000-0000-000000000002"), "high-tech-science-pack", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000097"), new Guid("00000000-0000-0000-0000-000000000002"), "express-splitter", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000099"), new Guid("00000000-0000-0000-0000-000000000002"), "fast-loader", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000100"), new Guid("00000000-0000-0000-0000-000000000002"), "express-loader", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000101"), new Guid("00000000-0000-0000-0000-000000000002"), "advanced-circuit", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000102"), new Guid("00000000-0000-0000-0000-000000000002"), "processing-unit", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000103"), new Guid("00000000-0000-0000-0000-000000000002"), "logistic-robot", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000104"), new Guid("00000000-0000-0000-0000-000000000002"), "construction-robot", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000105"), new Guid("00000000-0000-0000-0000-000000000002"), "logistic-chest-passive-provider", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000106"), new Guid("00000000-0000-0000-0000-000000000002"), "logistic-chest-active-provider", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000107"), new Guid("00000000-0000-0000-0000-000000000002"), "logistic-chest-storage", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000108"), new Guid("00000000-0000-0000-0000-000000000002"), "logistic-chest-buffer", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000109"), new Guid("00000000-0000-0000-0000-000000000002"), "logistic-chest-requester", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000098"), new Guid("00000000-0000-0000-0000-000000000002"), "loader", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000084"), new Guid("00000000-0000-0000-0000-000000000002"), "production-science-pack", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000083"), new Guid("00000000-0000-0000-0000-000000000002"), "military-science-pack", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000082"), new Guid("00000000-0000-0000-0000-000000000002"), "science-pack-3", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000057"), new Guid("00000000-0000-0000-0000-000000000002"), "repair-pack", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000058"), new Guid("00000000-0000-0000-0000-000000000002"), "stone-wall", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000059"), new Guid("00000000-0000-0000-0000-000000000002"), "iron-chest", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000060"), new Guid("00000000-0000-0000-0000-000000000002"), "steel-chest", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000061"), new Guid("00000000-0000-0000-0000-000000000002"), "fast-transport-belt", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000062"), new Guid("00000000-0000-0000-0000-000000000002"), "express-transport-belt", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000063"), new Guid("00000000-0000-0000-0000-000000000002"), "long-handed-inserter", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000064"), new Guid("00000000-0000-0000-0000-000000000002"), "fast-inserter", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000065"), new Guid("00000000-0000-0000-0000-000000000002"), "filter-inserter", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000066"), new Guid("00000000-0000-0000-0000-000000000002"), "stack-inserter", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000067"), new Guid("00000000-0000-0000-0000-000000000002"), "stack-filter-inserter", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000068"), new Guid("00000000-0000-0000-0000-000000000002"), "assembling-machine-2", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000069"), new Guid("00000000-0000-0000-0000-000000000002"), "assembling-machine-3", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000070"), new Guid("00000000-0000-0000-0000-000000000002"), "solar-panel", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000071"), new Guid("00000000-0000-0000-0000-000000000002"), "locomotive", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000072"), new Guid("00000000-0000-0000-0000-000000000002"), "cargo-wagon", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000073"), new Guid("00000000-0000-0000-0000-000000000002"), "fluid-wagon", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000074"), new Guid("00000000-0000-0000-0000-000000000002"), "artillery-wagon", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000075"), new Guid("00000000-0000-0000-0000-000000000002"), "rail", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000076"), new Guid("00000000-0000-0000-0000-000000000002"), "player-port", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000077"), new Guid("00000000-0000-0000-0000-000000000002"), "gate", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000078"), new Guid("00000000-0000-0000-0000-000000000002"), "car", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000079"), new Guid("00000000-0000-0000-0000-000000000002"), "tank", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000080"), new Guid("00000000-0000-0000-0000-000000000002"), "science-pack-1", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000081"), new Guid("00000000-0000-0000-0000-000000000002"), "science-pack-2", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000111"), new Guid("00000000-0000-0000-0000-000000000002"), "roboport", 0, 1, -1 },
+                    { new Guid("00000000-0000-0000-1111-000000000000"), new Guid("00000000-0000-0000-0000-000000000002"), "crude-oil", 0, 1, -1 }
+                });
 
             migrationBuilder.CreateIndex(
                 name: "IX_CorporationInvitations_CorporationId",
@@ -669,14 +918,19 @@ namespace FNO.Domain.Migrations
                 column: "CreatedByPlayerId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Factories_CorporationId",
-                table: "Factories",
-                column: "CorporationId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Factories_CurrentlyResearchingId",
                 table: "Factories",
                 column: "CurrentlyResearchingId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Factories_OwnerId",
+                table: "Factories",
+                column: "OwnerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_MarketOrders_ItemId",
+                table: "MarketOrders",
+                column: "ItemId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Players_CorporationId",
@@ -690,20 +944,14 @@ namespace FNO.Domain.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_WarehouseInventories_CorporationId",
+                table: "WarehouseInventories",
+                column: "CorporationId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_WarehouseInventories_ItemId",
                 table: "WarehouseInventories",
                 column: "ItemId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_WarehouseInventories_WarehouseId",
-                table: "WarehouseInventories",
-                column: "WarehouseId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Warehouses_CorporationId",
-                table: "Warehouses",
-                column: "CorporationId",
-                unique: true);
 
             migrationBuilder.AddForeignKey(
                 name: "FK_CorporationInvitations_Corporations_CorporationId",
@@ -722,14 +970,6 @@ namespace FNO.Domain.Migrations
                 onDelete: ReferentialAction.Cascade);
 
             migrationBuilder.AddForeignKey(
-                name: "FK_Factories_Corporations_CorporationId",
-                table: "Factories",
-                column: "CorporationId",
-                principalTable: "Corporations",
-                principalColumn: "CorporationId",
-                onDelete: ReferentialAction.Cascade);
-
-            migrationBuilder.AddForeignKey(
                 name: "FK_Players_Corporations_CorporationId",
                 table: "Players",
                 column: "CorporationId",
@@ -745,10 +985,16 @@ namespace FNO.Domain.Migrations
                 table: "Players");
 
             migrationBuilder.DropTable(
+                name: "ConsumerStates");
+
+            migrationBuilder.DropTable(
                 name: "CorporationInvitations");
 
             migrationBuilder.DropTable(
                 name: "Factories");
+
+            migrationBuilder.DropTable(
+                name: "MarketOrders");
 
             migrationBuilder.DropTable(
                 name: "WarehouseInventories");
@@ -758,9 +1004,6 @@ namespace FNO.Domain.Migrations
 
             migrationBuilder.DropTable(
                 name: "EntityLibrary");
-
-            migrationBuilder.DropTable(
-                name: "Warehouses");
 
             migrationBuilder.DropTable(
                 name: "Corporations");

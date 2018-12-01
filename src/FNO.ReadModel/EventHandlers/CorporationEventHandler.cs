@@ -26,7 +26,7 @@ namespace FNO.ReadModel.EventHandlers
                 Name = evnt.Name,
                 Description = evnt.Description,
                 Credits = 0,
-                Warehouse = new Warehouse(),
+                //Warehouse = new Warehouse(),
             });
             return Task.CompletedTask;
         }

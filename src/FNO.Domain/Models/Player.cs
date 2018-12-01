@@ -16,5 +16,8 @@ namespace FNO.Domain.Models
 
         [InverseProperty("Player")]
         public IEnumerable<CorporationInvitation> Invitations { get; set; }
+
+        [InverseProperty("Owner")]
+        public IEnumerable<Factory> Factories { get; set; }
     }
 }

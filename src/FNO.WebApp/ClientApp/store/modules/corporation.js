@@ -7,6 +7,7 @@ export default {
     loadingCorporation: false,
     loadedCorporation: false,
     creatingCorporation: false,
+    leavingCorporation: false,
   },
   mutations: {
     loadingCorporation(state) {
@@ -25,6 +26,13 @@ export default {
     createdCorporation(state, result) {
       state.creatingCorporation = false;
       console.log('Created corporation, result: ', result);
+    },
+    leavingCorporation(state) {
+      state.leavingCorporation = true;
+    },
+    leftCorporation(state) {
+      state.leavingCorporation = false;
+      state.corporation = null;
     },
   },
   actions: {
@@ -54,10 +62,15 @@ export default {
         throw err;
       }
     },
-    async leaveCorporation({ commit, rootGetters }) {
+    async leaveCorporation({ commit, rootGetters }, corporation) {
       commit('leavingCorporation');
       try {
-        const response = await rootGetters.api.patch('/api/corporation/leave');
+        const response = await rootGetters.api.delete(
+          '/api/player/corporation',
+          {
+            params: { corporationId: corporation.corporationId },
+          },
+        );
         commit('leftCorporation', response.data);
       } catch (err) {
         commit('error', err, { root: true });

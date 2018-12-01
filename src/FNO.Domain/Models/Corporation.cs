@@ -13,12 +13,14 @@ namespace FNO.Domain.Models
 
         public int Credits { get; set; }
 
-        public Warehouse Warehouse { get; set; }
+        public Guid CreatedByPlayerId { get; set; }
+        public Player CreatedByPlayer { get; set; }
+
+        //public Warehouse Warehouse { get; set; }
 
         [InverseProperty("Corporation")]
         public IEnumerable<Player> Members { get; set; }
 
-        public Guid CreatedByPlayerId { get; set; }
-        public Player CreatedByPlayer { get; set; }
+        public IEnumerable<WarehouseInventory> WarehouseInventory { get; set; }
     }
 }

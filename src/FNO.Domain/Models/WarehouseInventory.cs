@@ -11,7 +11,10 @@ namespace FNO.Domain.Models
         public string ItemId { get; set; }
         public FactorioEntity Item { get; set; }
 
-        public Guid WarehouseId { get; set; }
-        public Warehouse Warehouse { get; set; }
+        //public Guid WarehouseId { get; set; }
+        //public Warehouse Warehouse { get; set; }
+
+        public Guid CorporationId { get; set; }
+        public Corporation Corporation { get; set; }
     }
 }

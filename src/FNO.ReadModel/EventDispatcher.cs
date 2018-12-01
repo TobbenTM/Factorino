@@ -33,6 +33,7 @@ namespace FNO.ReadModel
                 typeof(PlayerCreatedEvent),
                 typeof(PlayerInvitedToCorporationEvent),
                 typeof(PlayerJoinedCorporationEvent),
+                typeof(PlayerLeftCorporationEvent),
                 typeof(PlayerRejectedInvitationEvent));
 
             _resolver.Register(() => new CorporationEventHandler(_dbContext, _logger),

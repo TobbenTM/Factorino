@@ -32,7 +32,7 @@ namespace FNO.WebApp.Filters
                 var response = await next();
                 if (response.Result is ObjectResult obj)
                 {
-                    if (obj.Value is CreatedEntityResult result)
+                    if (obj.Value is IEventResult result)
                     {
                         var desiredState = result.Results
                             .GroupBy(r => new { r.Topic, r.Partition })

@@ -13,8 +13,8 @@ namespace FNO.Domain.Models
         public long LastSeen { get; set; }
         public int PlayersOnline { get; set; }
 
-        public Guid CorporationId { get; set; }
-        public Corporation Corporation { get; set; }
+        public Guid OwnerId { get; set; }
+        public Player Owner { get; set; }
 
         public string CurrentlyResearchingId { get; set; }
         public FactorioTechnology CurrentlyResearching { get; set; }

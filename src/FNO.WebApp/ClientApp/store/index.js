@@ -4,6 +4,7 @@ import axios from 'axios';
 
 import UserModule from './modules/user';
 import CorporationModule from './modules/corporation';
+import FactoryModule from './modules/factory';
 
 Vue.use(Vuex);
 
@@ -52,5 +53,6 @@ export default new Vuex.Store({
   modules: {
     user: UserModule,
     corporation: CorporationModule,
+    factory: FactoryModule,
   },
 });

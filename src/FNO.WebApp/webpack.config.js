@@ -48,6 +48,14 @@ module.exports = (env, argv) => {
               ? ['style-loader', 'css-loader']
               : [MiniCSSExtractPlugin.loader, 'css-loader'],
           },
+          {
+            test: /\.scss$/,
+            use: [
+              'vue-style-loader',
+              'css-loader',
+              'sass-loader',
+            ],
+          },
           { test: /\.(png|jpg|jpeg|gif|svg)$/, use: 'url-loader?limit=25000' },
         ],
       },

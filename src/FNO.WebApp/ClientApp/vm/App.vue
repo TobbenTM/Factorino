@@ -12,9 +12,9 @@
       <router-link tag="div" class="nav-link" :class="{ disabled: !user }" :to="{ name: 'corporation' }" :event="user ? 'click' : ''">
         <icon :icon="user ? 'building' : 'lock'" class="nav-icon"/> Corporation
       </router-link>
-      <router-link tag="div" class="nav-link" :class="{ disabled: !user }" :to="{ name: 'warehouse' }" :event="user ? 'click' : ''">
+      <!-- <router-link tag="div" class="nav-link" :class="{ disabled: !user }" :to="{ name: 'warehouse' }" :event="user ? 'click' : ''">
         <icon :icon="user ? 'warehouse' : 'lock'" class="nav-icon"/> Warehouse
-      </router-link>
+      </router-link> -->
       <router-link tag="div" class="nav-link" :class="{ disabled: !user }" :to="{ name: 'factory' }" :event="user ? 'click' : ''">
         <icon :icon="user ? 'industry' : 'lock'" class="nav-icon"/> Factory
       </router-link>
@@ -32,9 +32,9 @@
         <icon icon="user" class="nav-icon"/> {{ user.name }}
       </router-link>
     </div>
-    <!--<div class="chat container sticky">
+    <!-- <div class="chat container sticky">
       <h3>Chat</h3>
-    </div>-->
+    </div> -->
     <div class="content container">
       <router-view class="current-view"></router-view>
     </div>
@@ -139,3 +139,39 @@ h1 {
   height: 100%;
 }
 </style>
+
+<style lang="scss">
+.button {
+  color: white;
+  cursor: pointer;
+  padding: .3rem .6rem;
+  display: inline-block;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: middle;
+  user-select: none;
+  border: 1px solid white;
+  border-radius: .3em;
+  background: transparent;
+  outline: none;
+  font-size: .75rem;
+  box-shadow: none;
+  transition: background 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+
+  &:hover {
+    background: rgba(255, 255, 255, .25);
+    box-shadow: 0 0.1rem 1rem 0 rgba(255, 255, 255, 0.25);
+    border: 1px solid white;
+  }
+
+  &--right {
+    float: right;
+  }
+
+  &--large {
+    font-size: 1rem;
+    padding: .5rem .9rem;
+  }
+}
+</style>
+

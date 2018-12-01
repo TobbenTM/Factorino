@@ -54,7 +54,7 @@ namespace FNO.Domain.Migrations
                     b.ToTable("Corporations");
 
                     b.HasData(
-                        new { CorporationId = new Guid("ae609789-3f01-4dd6-a118-e8935a9072a1"), CreatedByPlayerId = new Guid("00000000-0000-0000-0000-000000000001"), Credits = 0, Description = "Please Ignore", Name = "TEST Corporation" }
+                        new { CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), CreatedByPlayerId = new Guid("00000000-0000-0000-0000-000000000001"), Credits = -1, Description = "We make living life easy!™", Name = "Bank of Nauvis" }
                     );
                 });
 
@@ -592,13 +592,13 @@ namespace FNO.Domain.Migrations
                     b.Property<Guid>("FactoryId")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<Guid>("CorporationId");
-
                     b.Property<string>("CurrentlyResearchingId");
 
                     b.Property<long>("LastSeen");
 
                     b.Property<string>("Name");
+
+                    b.Property<Guid>("OwnerId");
 
                     b.Property<int>("PlayersOnline");
 
@@ -606,14 +606,262 @@ namespace FNO.Domain.Migrations
 
                     b.HasKey("FactoryId");
 
-                    b.HasIndex("CorporationId");
-
                     b.HasIndex("CurrentlyResearchingId");
+
+                    b.HasIndex("OwnerId");
 
                     b.ToTable("Factories");
 
                     b.HasData(
-                        new { FactoryId = new Guid("00000000-0000-0000-0000-000000000001"), CorporationId = new Guid("ae609789-3f01-4dd6-a118-e8935a9072a1"), LastSeen = 0L, Name = "TEST Factory", PlayersOnline = 0, Port = 0 }
+                        new { FactoryId = new Guid("00000000-0000-0000-0000-000000000001"), LastSeen = 0L, Name = "Bank of Nauvis - HQ", OwnerId = new Guid("00000000-0000-0000-0000-000000000001"), PlayersOnline = 0, Port = 0 }
+                    );
+                });
+
+            modelBuilder.Entity("FNO.Domain.Models.MarketOrder", b =>
+                {
+                    b.Property<Guid>("OrderId")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<Guid>("CorporationId");
+
+                    b.Property<string>("ItemId");
+
+                    b.Property<int>("OrderType");
+
+                    b.Property<int>("Price");
+
+                    b.Property<int>("Quantity");
+
+                    b.HasKey("OrderId");
+
+                    b.HasIndex("ItemId");
+
+                    b.ToTable("MarketOrders");
+
+                    b.HasData(
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000000"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "crude-oil", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000001"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "heavy-oil", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000002"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "light-oil", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000003"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "petroleum-gas", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000004"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "lubricant", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000005"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "sulfuric-acid", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000006"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "water", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000007"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "steam", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000008"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "solar-panel-equipment", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000009"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "fusion-reactor-equipment", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000010"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "energy-shield-equipment", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000011"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "energy-shield-mk2-equipment", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000012"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "battery-equipment", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000013"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "battery-mk2-equipment", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000014"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "personal-laser-defense-equipment", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000015"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "discharge-defense-equipment", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000016"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "exoskeleton-equipment", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000017"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "personal-roboport-equipment", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000018"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "personal-roboport-mk2-equipment", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000019"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "night-vision-equipment", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000020"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "belt-immunity-equipment", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000021"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "iron-axe", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000022"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "steel-axe", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000023"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "stone-brick", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000024"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "raw-wood", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000025"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "coal", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000026"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "stone", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000027"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "iron-ore", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000028"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "copper-ore", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000029"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "wood", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000030"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "iron-plate", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000031"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "copper-plate", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000032"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "copper-cable", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000033"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "iron-stick", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000034"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "iron-gear-wheel", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000035"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "electronic-circuit", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000036"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "wooden-chest", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000037"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "stone-furnace", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000038"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "burner-mining-drill", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000039"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "electric-mining-drill", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000040"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "transport-belt", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000041"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "burner-inserter", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000042"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "inserter", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000043"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "offshore-pump", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000044"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "pipe", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000045"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "boiler", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000046"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "steam-engine", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000047"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "small-electric-pole", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000048"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "radar", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000049"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "computer", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000050"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "small-plane", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000051"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "small-lamp", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000052"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "pipe-to-ground", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000053"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "assembling-machine-1", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000054"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "red-wire", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000055"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "green-wire", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000056"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "raw-fish", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000057"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "repair-pack", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000058"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "stone-wall", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000059"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "iron-chest", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000060"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "steel-chest", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000061"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "fast-transport-belt", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000062"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "express-transport-belt", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000063"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "long-handed-inserter", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000064"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "fast-inserter", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000065"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "filter-inserter", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000066"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "stack-inserter", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000067"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "stack-filter-inserter", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000068"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "assembling-machine-2", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000069"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "assembling-machine-3", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000070"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "solar-panel", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000071"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "locomotive", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000072"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "cargo-wagon", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000073"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "fluid-wagon", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000074"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "artillery-wagon", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000075"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "rail", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000076"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "player-port", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000077"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "gate", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000078"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "car", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000079"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "tank", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000080"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "science-pack-1", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000081"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "science-pack-2", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000082"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "science-pack-3", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000083"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "military-science-pack", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000084"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "production-science-pack", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000085"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "high-tech-science-pack", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000086"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "space-science-pack", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000087"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "lab", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000088"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "train-stop", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000089"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "rail-signal", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000090"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "rail-chain-signal", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000091"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "steel-plate", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000092"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "underground-belt", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000093"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "fast-underground-belt", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000094"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "express-underground-belt", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000095"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "splitter", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000096"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "fast-splitter", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000097"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "express-splitter", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000098"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "loader", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000099"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "fast-loader", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000100"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "express-loader", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000101"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "advanced-circuit", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000102"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "processing-unit", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000103"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "logistic-robot", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000104"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "construction-robot", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000105"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "logistic-chest-passive-provider", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000106"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "logistic-chest-active-provider", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000107"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "logistic-chest-storage", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000108"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "logistic-chest-buffer", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000109"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "logistic-chest-requester", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000110"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "rocket-silo", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000111"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "roboport", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000112"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "coin", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000113"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "big-electric-pole", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000114"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "medium-electric-pole", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000115"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "substation", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000116"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "accumulator", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000117"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "steel-furnace", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000118"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "electric-furnace", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000119"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "beacon", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000120"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "storage-tank", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000121"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "pump", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000122"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "pumpjack", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000123"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "oil-refinery", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000124"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "chemical-plant", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000125"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "sulfur", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000126"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "empty-barrel", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000127"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "solid-fuel", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000128"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "plastic-bar", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000129"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "engine-unit", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000130"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "electric-engine-unit", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000131"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "explosives", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000132"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "battery", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000133"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "flying-robot-frame", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000134"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "arithmetic-combinator", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000135"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "decider-combinator", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000136"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "constant-combinator", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000137"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "power-switch", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000138"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "programmable-speaker", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000139"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "low-density-structure", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000140"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "rocket-fuel", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000141"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "nuclear-fuel", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000142"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "rocket-control-unit", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000143"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "rocket-part", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000144"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "satellite", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000145"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "concrete", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000146"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "refined-concrete", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000147"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "hazard-concrete", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000148"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "refined-hazard-concrete", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000149"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "landfill", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000150"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "electric-energy-interface", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000151"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "uranium-ore", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000152"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "nuclear-reactor", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000153"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "uranium-235", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000154"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "uranium-238", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000155"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "centrifuge", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000156"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "uranium-fuel-cell", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000157"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "used-up-uranium-fuel-cell", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000158"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "heat-exchanger", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000159"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "steam-turbine", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000160"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "heat-pipe", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000161"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "simple-entity-with-force", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000162"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "simple-entity-with-owner", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000163"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "item-with-tags", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000164"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "item-with-label", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000165"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "item-with-inventory", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000166"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "infinity-chest", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000167"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "speed-module", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000168"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "speed-module-2", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000169"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "speed-module-3", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000170"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "effectivity-module", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000171"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "effectivity-module-2", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000172"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "effectivity-module-3", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000173"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "productivity-module", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000174"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "productivity-module-2", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000175"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "productivity-module-3", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000176"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "firearm-magazine", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000177"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "piercing-rounds-magazine", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000178"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "uranium-rounds-magazine", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000179"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "flamethrower-ammo", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000180"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "rocket", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000181"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "explosive-rocket", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000182"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "atomic-bomb", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000183"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "shotgun-shell", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000184"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "piercing-shotgun-shell", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000185"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "railgun-dart", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000186"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "cannon-shell", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000187"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "explosive-cannon-shell", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000188"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "uranium-cannon-shell", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000189"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "explosive-uranium-cannon-shell", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000190"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "artillery-shell", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000191"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "grenade", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000192"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "cluster-grenade", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000193"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "poison-capsule", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000194"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "slowdown-capsule", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000195"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "defender-capsule", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000196"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "distractor-capsule", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000197"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "destroyer-capsule", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000198"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "discharge-defense-remote", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000199"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "cliff-explosives", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000200"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "artillery-targeting-remote", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000201"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "pistol", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000202"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "submachine-gun", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000203"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "flamethrower", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000204"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "vehicle-machine-gun", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000205"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "tank-machine-gun", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000206"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "tank-flamethrower", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000207"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "land-mine", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000208"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "rocket-launcher", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000209"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "shotgun", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000210"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "combat-shotgun", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000211"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "railgun", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000212"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "tank-cannon", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000213"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "artillery-wagon-cannon", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000214"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "light-armor", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000215"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "heavy-armor", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000216"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "modular-armor", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000217"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "power-armor", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000218"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "power-armor-mk2", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000219"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "gun-turret", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000220"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "laser-turret", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000221"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "flamethrower-turret", OrderType = 0, Price = 1, Quantity = -1 },
+                        new { OrderId = new Guid("00000000-0000-0000-1111-000000000222"), CorporationId = new Guid("00000000-0000-0000-0000-000000000002"), ItemId = "artillery-turret", OrderType = 0, Price = 1, Quantity = -1 }
                     );
                 });
 
@@ -644,41 +892,22 @@ namespace FNO.Domain.Migrations
                     );
                 });
 
-            modelBuilder.Entity("FNO.Domain.Models.Warehouse", b =>
-                {
-                    b.Property<Guid>("WarehouseId")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<Guid>("CorporationId");
-
-                    b.HasKey("WarehouseId");
-
-                    b.HasIndex("CorporationId")
-                        .IsUnique();
-
-                    b.ToTable("Warehouses");
-
-                    b.HasData(
-                        new { WarehouseId = new Guid("fa6c45cd-4179-4e89-8696-b3b66264814d"), CorporationId = new Guid("ae609789-3f01-4dd6-a118-e8935a9072a1") }
-                    );
-                });
-
             modelBuilder.Entity("FNO.Domain.Models.WarehouseInventory", b =>
                 {
                     b.Property<Guid>("WarehouseInventoryId")
                         .ValueGeneratedOnAdd();
 
+                    b.Property<Guid>("CorporationId");
+
                     b.Property<string>("ItemId");
 
                     b.Property<int>("Quantity");
 
-                    b.Property<Guid>("WarehouseId");
-
                     b.HasKey("WarehouseInventoryId");
 
-                    b.HasIndex("ItemId");
+                    b.HasIndex("CorporationId");
 
-                    b.HasIndex("WarehouseId");
+                    b.HasIndex("ItemId");
 
                     b.ToTable("WarehouseInventories");
                 });
@@ -706,14 +935,21 @@ namespace FNO.Domain.Migrations
 
             modelBuilder.Entity("FNO.Domain.Models.Factory", b =>
                 {
-                    b.HasOne("FNO.Domain.Models.Corporation", "Corporation")
-                        .WithMany()
-                        .HasForeignKey("CorporationId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
                     b.HasOne("FNO.Domain.Models.FactorioTechnology", "CurrentlyResearching")
                         .WithMany()
                         .HasForeignKey("CurrentlyResearchingId");
+
+                    b.HasOne("FNO.Domain.Models.Player", "Owner")
+                        .WithMany("Factories")
+                        .HasForeignKey("OwnerId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("FNO.Domain.Models.MarketOrder", b =>
+                {
+                    b.HasOne("FNO.Domain.Models.FactorioEntity", "Item")
+                        .WithMany()
+                        .HasForeignKey("ItemId");
                 });
 
             modelBuilder.Entity("FNO.Domain.Models.Player", b =>
@@ -723,24 +959,16 @@ namespace FNO.Domain.Migrations
                         .HasForeignKey("CorporationId");
                 });
 
-            modelBuilder.Entity("FNO.Domain.Models.Warehouse", b =>
-                {
-                    b.HasOne("FNO.Domain.Models.Corporation", "Corporation")
-                        .WithOne("Warehouse")
-                        .HasForeignKey("FNO.Domain.Models.Warehouse", "CorporationId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
             modelBuilder.Entity("FNO.Domain.Models.WarehouseInventory", b =>
                 {
+                    b.HasOne("FNO.Domain.Models.Corporation", "Corporation")
+                        .WithMany("WarehouseInventory")
+                        .HasForeignKey("CorporationId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
                     b.HasOne("FNO.Domain.Models.FactorioEntity", "Item")
                         .WithMany()
                         .HasForeignKey("ItemId");
-
-                    b.HasOne("FNO.Domain.Models.Warehouse", "Warehouse")
-                        .WithMany("Inventory")
-                        .HasForeignKey("WarehouseId")
-                        .OnDelete(DeleteBehavior.Cascade);
                 });
 #pragma warning restore 612, 618
         }
