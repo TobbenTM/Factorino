@@ -37,7 +37,13 @@ module.exports = (env, argv) => {
         ],
       },
       entry: {
-        vendor: ['event-source-polyfill', 'vue', 'vuex', 'axios', 'vue-router'],
+        vendor: [
+          'event-source-polyfill',
+          'vue',
+          'vuex',
+          'axios',
+          'vue-router',
+        ],
       },
       optimization: {
         minimize: !isDevBuild,

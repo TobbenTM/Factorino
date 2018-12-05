@@ -31,6 +31,7 @@ module.exports = (env, argv) => {
           assets: path.resolve(__dirname, './ClientApp/assets'),
           utils: path.resolve(__dirname, './ClientApp/utils'),
           api: path.resolve(__dirname, './ClientApp/store/api'),
+          app: path.resolve(__dirname, './ClientApp'),
         },
       },
       output: {
