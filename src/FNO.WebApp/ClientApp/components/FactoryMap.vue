@@ -2,7 +2,7 @@
   <div class="map">
     <canvas
       :width="width"
-      :height="width"
+      :height="height"
       ref="canvas"
     />
   </div>
@@ -22,6 +22,8 @@ export default {
   components: {
     FactorinoSpinner,
   },
+  computed: {
+  },
   props: {
     locations: {
       type: Array,
@@ -31,63 +33,111 @@ export default {
       type: Object,
       required: true,
     },
-    width: {
-      type: Number,
-      required: false,
-      default: 720,
-    },
   },
   data() {
     return {
+      width: 0,
+      height: 0,
+      projection: null,
+      path: null,
+      ctx: null,
+      mapData: null,
     };
   },
   mounted() {
     this.initialize();
+    this.handleResize();
+  },
+  watch: {
+    selectedLocation() {
+      this.tween();
+    },
   },
   methods: {
-    initialize() {
-      const vm = this;
+    handleResize() {
+      this.width = this.$el.clientWidth - 10;
+      this.height = this.$el.clientHeight - 10;
 
-      // Based on the excellent example here: https://bl.ocks.org/mbostock/4183330
       const canvas = this.$refs.canvas;
-      const ctx = select(canvas).node().getContext('2d');
-      const projection = geoOrthographic()
-            .translate([this.width / 2, this.width / 2])
-            .scale(this.width / 2 - 20)
+      
+      this.ctx = select(canvas).node().getContext('2d');
+
+      this.projection = geoOrthographic()
+            .translate([this.width / 2, this.height / 2])
+            .scale(Math.min(this.height, this.width) / 2 - 20)
             .clipAngle(90)
             .precision(0.6);
-      const path = geoPath()
-            .projection(projection)
-            .context(ctx);
+      this.path = geoPath()
+            .projection(this.projection)
+            .context(this.ctx);
 
-      const globe = {type: "Sphere"};
+      this.tween();
+    },
+    initialize() {
+      // const factories = this.locations.map(f => ({
+      //   id: f.seed,
+      //   type: 'Point',
+      //   coordinates: [f.location.lat, f.location.lon],
+      // }));
+      const factories = this.locations.map(f => ({
+        id: f.seed,
+        type: 'Feature',
+        geometry: {
+          type: 'Point',
+          coordinates: [f.location.lon, f.location.lat],
+        },
+        properties: {
+          name: f.name,
+        },
+      }));
+
       const land = feature(WorldMap, WorldMap.objects.land);
-      const countries = feature(WorldMap, WorldMap.objects.countries).features;
+      // const factories = feature(WorldMap, {
+      //   type: 'GeometryCollection',
+      //   geometries: factoryLocations,
+      // }).features;
       const borders = mesh(WorldMap, WorldMap.objects.countries, function(a, b) { return a !== b; });
-      const i = 0;
 
+      this.mapData = { land, factories, borders };
+    },
+    tween() {
+      const vm = this;
+      const { land, factories, borders } = this.mapData;
       transition()
         .duration(1500)
         .tween("rotate", () => {
-          var p = geoCentroid(countries[i]),
-              r = interpolate(projection.rotate(), [-p[0], -p[1]]);
-          return function(t) {
-            projection.rotate(r(t));
+          const selected = factories.find(f => f.id === vm.selectedLocation.seed);
+          const p = geoCentroid(selected);
+          const r = interpolate(vm.projection.rotate(), [-p[0], -p[1]]);
 
-            ctx.clearRect(0, 0, vm.width, vm.width);
+          return function(t) {
+            vm.projection.rotate(r(t));
+
+            vm.ctx.clearRect(0, 0, vm.width, vm.height);
 
             // Fill normal land
-            ctx.fillStyle = "rgba(230, 230, 255, .2)", ctx.beginPath(), path(land), ctx.fill();
-            // Fill selected land
-            ctx.fillStyle = "rgba(255, 5, 5, .5)", ctx.beginPath(), path(countries[i]), ctx.fill();
+            vm.ctx.fillStyle = "rgba(230, 230, 255, .2)", vm.ctx.beginPath(), vm.path(land), vm.ctx.fill();
+            
+            // Fill factories
+            vm.ctx.fillStyle = "rgba(255, 255, 255, .5)";
+            factories.forEach((f) => {
+              vm.ctx.beginPath();
+              vm.path(f);
+              vm.ctx.fill();
+            });
+            
+            // Fill selected factory
+            vm.ctx.fillStyle = "rgba(255, 5, 5, 1)", vm.ctx.beginPath(), vm.path(selected), vm.ctx.fill();
+
             // Stroke borders
-            ctx.strokeStyle = "rgba(255, 255, 255, .6)", ctx.lineWidth = .5, ctx.beginPath(), path(borders), ctx.stroke();
+            vm.ctx.strokeStyle = "rgba(255, 255, 255, .6)", vm.ctx.lineWidth = .5, vm.ctx.beginPath(), vm.path(borders), vm.ctx.stroke();
+
             // Stroke globe
-            ctx.strokeStyle = "rgba(230, 230, 255, .05)", ctx.lineWidth = 2, ctx.beginPath(), path(globe), ctx.stroke();
+            vm.ctx.strokeStyle = "rgba(230, 230, 255, .05)", vm.ctx.lineWidth = 2, vm.ctx.beginPath(), vm.path({ type: 'Sphere' }), vm.ctx.stroke();
           };
         })
         .transition();
-    },
+    }
   },
 };
 </script>

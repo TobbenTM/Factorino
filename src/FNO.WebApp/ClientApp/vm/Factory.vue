@@ -3,8 +3,6 @@
     <factorino-spinner v-if="loadingFactory" text="Loading Factory.."/>
     <template v-else-if="loadedFactory && !factory">
       <!-- No factory for user -->
-      <h1>Huh, looks like you don't have a factory yet!</h1>
-      <p>Better get to work by starting a new one:</p>
       <factory-create class="factory-create"/>
     </template>
     <template v-else-if="loadedFactory && factory">

@@ -5,5 +5,5 @@ html, body {
   height: 100%;
   color: #ffffff;
   background: #030d27;
-  font-family: 'Segoe UI';
+  font-family: 'Segoe UI', Roboto, Ubuntu, 'Open Sans', 'Helvetica Neue', sans-serif;
 }

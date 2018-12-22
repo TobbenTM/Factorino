@@ -17,6 +17,10 @@ namespace FNO.Common
             // Add local appsettings
             builder.AddJsonFile("appsettings.json");
 
+            // Add local user appsettings
+            builder.AddJsonFile("appsettings.user.json", optional: true);
+
+            // If we're running on windows, try to add any windows specific settings
             if (Environment.OSVersion.Platform == PlatformID.Win32NT)
             {
                 builder.AddJsonFile("appsettings.windows.json", optional: true);
