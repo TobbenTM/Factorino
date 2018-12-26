@@ -32,6 +32,7 @@ namespace FNO.WebApp
         public static IWebHostBuilder CreateWebHostBuilder() =>
             WebHost.CreateDefaultBuilder()
                 .UseSerilog()
+                .UseUrls("http://0.0.0.0:5000")
                 .UseStartup<Startup>();
     }
 }

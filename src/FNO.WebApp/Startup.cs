@@ -56,6 +56,8 @@ namespace FNO.WebApp
             services.AddScoped<IFactoryRepository, FactoryRepository>();
             services.AddScoped<ICorporationRepository, CorporationRepository>();
             services.AddScoped<IEventStore, KafkaProducer>();
+
+            services.AddHostedService<EventStreamMediator>();
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
