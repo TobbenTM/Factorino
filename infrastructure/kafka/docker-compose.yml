@@ -12,6 +12,6 @@ services:
       KAFKA_ADVERTISED_HOST_NAME: 127.0.0.1
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
       KAFKA_CREATE_TOPICS: "factorino_events:1:1:delete,global_chat:1:1:delete,factory_activity:1:1:delete,factory_logs:1:1:delete,job_requests:1:1:delete"
-      KAFKA_LOG_RETENTION_MS: 86400000
+      KAFKA_LOG_RETENTION_MS: -1
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
