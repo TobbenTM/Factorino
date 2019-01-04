@@ -1,3 +1,3 @@
 [submodule "vendor/CoreRCON"]
 	path = vendor/CoreRCON
-	url = git@github.com:TobbenTM/CoreRCON.git
+	url = https://github.com/TobbenTM/CoreRCON.git
