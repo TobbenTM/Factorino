@@ -11,10 +11,13 @@ namespace FNO.Domain.Models
         {
         }
 
-        public EventInitiator(Player player)
+        public EventInitiator(Player initiator)
         {
-            PlayerId = player.PlayerId;
-            PlayerName = player.Name;
+            if (initiator != null)
+            {
+                PlayerId = initiator.PlayerId;
+                PlayerName = initiator.Name;
+            }
         }
     }
 }

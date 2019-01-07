@@ -49,7 +49,7 @@ namespace FNO.ReadModel.Tests.EventHandlers
 
             // Act
             await When(new PlayerCreatedEvent(new Player { PlayerId = playerId }));
-            await When(new PlayerInvitedToCorporationEvent(expectedInvitation.PlayerId, expectedInvitation.CorporationId, expectedInvitation.InvitationId));
+            await When(new PlayerInvitedToCorporationEvent(expectedInvitation.PlayerId, expectedInvitation.CorporationId, expectedInvitation.InvitationId, null));
 
             // Assert
             using (var dbContext = GetInMemoryDatabase())
@@ -76,8 +76,8 @@ namespace FNO.ReadModel.Tests.EventHandlers
 
             // Act
             await When(new PlayerCreatedEvent(new Player { PlayerId = playerId }));
-            await When(new PlayerInvitedToCorporationEvent(expectedInvitation.PlayerId, expectedInvitation.CorporationId, expectedInvitation.InvitationId));
-            await When(new PlayerRejectedInvitationEvent(expectedInvitation.PlayerId, expectedInvitation.InvitationId));
+            await When(new PlayerInvitedToCorporationEvent(expectedInvitation.PlayerId, expectedInvitation.CorporationId, expectedInvitation.InvitationId, null));
+            await When(new PlayerRejectedInvitationEvent(expectedInvitation.PlayerId, expectedInvitation.InvitationId, null));
 
             // Assert
             using (var dbContext = GetInMemoryDatabase())
@@ -104,9 +104,9 @@ namespace FNO.ReadModel.Tests.EventHandlers
 
             // Act
             await When(new PlayerCreatedEvent(new Player { PlayerId = playerId }));
-            await When(new CorporationCreatedEvent(new Corporation { CorporationId = corporationId, CreatedByPlayerId = playerId }));
-            await When(new PlayerInvitedToCorporationEvent(expectedInvitation.PlayerId, expectedInvitation.CorporationId, expectedInvitation.InvitationId));
-            await When(new PlayerJoinedCorporationEvent(expectedInvitation.PlayerId, expectedInvitation.CorporationId, expectedInvitation.InvitationId));
+            await When(new CorporationCreatedEvent(new Corporation { CorporationId = corporationId, CreatedByPlayerId = playerId }, null));
+            await When(new PlayerInvitedToCorporationEvent(expectedInvitation.PlayerId, expectedInvitation.CorporationId, expectedInvitation.InvitationId, null));
+            await When(new PlayerJoinedCorporationEvent(expectedInvitation.PlayerId, expectedInvitation.CorporationId, null, expectedInvitation.InvitationId));
 
             // Assert
             using (var dbContext = GetInMemoryDatabase())

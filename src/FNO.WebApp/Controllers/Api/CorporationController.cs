@@ -54,8 +54,8 @@ namespace FNO.WebApp.Controllers.Api
 
             var evnts = new IEvent[]
             {
-                new CorporationCreatedEvent(corporation),
-                new PlayerJoinedCorporationEvent(player.PlayerId, corporation.CorporationId),
+                new CorporationCreatedEvent(corporation, player),
+                new PlayerJoinedCorporationEvent(player.PlayerId, corporation.CorporationId, player),
             };
             var results = await _eventStore.ProduceAsync(evnts);
 

@@ -6,11 +6,11 @@ namespace FNO.Domain.Events
     {
         public Guid EntityId { get; set; }
 
-        public EntityEvent()
+        protected EntityEvent()
         {
         }
 
-        public EntityEvent(Guid entityId)
+        protected EntityEvent(Guid entityId, Models.Player initiator) : base(initiator)
         {
             EntityId = entityId;
         }

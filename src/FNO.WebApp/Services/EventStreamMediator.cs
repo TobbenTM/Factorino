@@ -1,18 +1,17 @@
-using System;
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
 using Confluent.Kafka;
 using FNO.Common;
 using FNO.Domain.Events;
 using FNO.Domain.Events.Factory;
-using FNO.EventSourcing;
 using FNO.EventStream;
 using FNO.WebApp.Hubs;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Serilog;
+using System;
+using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace FNO.WebApp.Services
 {
@@ -24,7 +23,7 @@ namespace FNO.WebApp.Services
         private readonly ILogger _logger;
         private readonly KafkaConsumer _consumer;
 
-        private readonly Dictionary<Type, List<IHubContext<EventHandlerHub, IEventHandlerClient>>> _contexts;
+        private readonly Dictionary<Type, List<IHubClients<IEventHandlerClient>>> _contexts;
 
         public EventStreamMediator(
             IConfiguration configuration,
@@ -37,25 +36,27 @@ namespace FNO.WebApp.Services
             _configurationModel = configuration.Bind<ConfigurationBase>();
             _consumer = new KafkaConsumer(_configurationModel, this, _logger);
 
-            RegisterHubContext(factoryCreateHubContext as IHubContext<EventHandlerHub, IEventHandlerClient>,
+            _contexts = new Dictionary<Type, List<IHubClients<IEventHandlerClient>>>();
+
+            RegisterHubContext(factoryCreateHubContext.Clients,
                 typeof(FactoryCreatedEvent),
                 typeof(FactoryOnlineEvent));
         }
 
-        private void RegisterHubContext(IHubContext<EventHandlerHub, IEventHandlerClient> context, params Type[] eventTypes)
+        private void RegisterHubContext(IHubClients<IEventHandlerClient> clients, params Type[] eventTypes)
         {
             foreach (var eventType in eventTypes)
             {
                 if (!_contexts.ContainsKey(eventType))
                 {
-                    _contexts[eventType] = new List<IHubContext<EventHandlerHub, IEventHandlerClient>>
+                    _contexts[eventType] = new List<IHubClients<IEventHandlerClient>>
                     {
-                        context,
+                        clients,
                     };
                 }
                 else
                 {
-                    _contexts[eventType].Add(context);
+                    _contexts[eventType].Add(clients);
                 }
             }
         }
@@ -69,7 +70,7 @@ namespace FNO.WebApp.Services
                 _logger.Debug($"Found {handlers.Count} handlers for event with type {eventType}, forwarding to hub..");
                 foreach (var handler in handlers)
                 {
-                    await handler.Clients.All.ReceiveEvent(evnt);
+                    await handler.All.ReceiveEvent(evnt);
                 }
             }
         }

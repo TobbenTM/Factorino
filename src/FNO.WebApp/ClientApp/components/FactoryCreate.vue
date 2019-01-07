@@ -82,7 +82,10 @@
               backgroundPosition: location.resources.uranium * -10 + '%',
             }"
           />
-          <button class="button location-resources__button">
+          <button
+            class="button location-resources__button"
+            v-on:click="create"
+          >
             Select
           </button>
         </div>
@@ -93,44 +96,45 @@
       :locations="locations"
       :selectedLocation="selectedLocation"
     />
+    <factory-create-status-modal
+      :show="creatingFactory"
+      :location="selectedLocation"
+      v-on:close="created"
+    />
   </div>
 </template>
 
 <script>
-import { mapActions, mapState } from 'vuex';
+import { mapActions } from 'vuex';
 import FactoryMap from 'components/FactoryMap.vue';
 import FactorioIcon from 'components/FactorioIcon.vue';
+import FactoryCreateStatusModal from 'components/FactoryCreateStatusModal.vue';
 import locations from 'app/factory-locations';
 
 export default {
   components: {
     FactoryMap,
     FactorioIcon,
+    FactoryCreateStatusModal,
   },
   data() {
     return {
-      factory: {
-        name: '',
-        description: '',
-      },
       locations,
       selectedLocation: locations[0],
+      creatingFactory: false,
     };
-  },
-  computed: {
-    ...mapState('factory', [
-      'creatingFactory',
-    ]),
   },
   methods: {
     ...mapActions('factory', [
-      'createFactory',
       'loadFactory',
     ]),
-    async create() {
-      const result = await this.createFactory(this.factory);
-      this.loadFactory();
+    create() {
+      this.creatingFactory = true;
     },
+    created() {
+      this.loadFactory();
+      this.creatingFactory = false;
+    }
   },
 }
 </script>

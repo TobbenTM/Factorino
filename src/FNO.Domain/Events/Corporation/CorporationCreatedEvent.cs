@@ -13,14 +13,14 @@ namespace FNO.Domain.Events.Corporation
         {
         }
 
-        public CorporationCreatedEvent(Models.Corporation corporation) : base(corporation.CorporationId)
+        public CorporationCreatedEvent(Models.Corporation corporation, Models.Player initiator) : base(corporation.CorporationId, initiator)
         {
             OwnerId = corporation.CreatedByPlayerId;
             Name = corporation.Name;
             Description = corporation.Description;
         }
 
-        public CorporationCreatedEvent(Guid corporationId, Guid ownerId, string name, string description) : base(corporationId)
+        public CorporationCreatedEvent(Guid corporationId, Guid ownerId, string name, string description, Models.Player initiator) : base(corporationId, initiator)
         {
             OwnerId = ownerId;
             Name = name;

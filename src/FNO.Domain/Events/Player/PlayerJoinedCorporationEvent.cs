@@ -11,7 +11,7 @@ namespace FNO.Domain.Events.Player
         {
         }
 
-        public PlayerJoinedCorporationEvent(Guid playerId, Guid corporationId, Guid? invitationId = null) : base(playerId)
+        public PlayerJoinedCorporationEvent(Guid playerId, Guid corporationId, Models.Player initiator, Guid? invitationId = null) : base(playerId, initiator)
         {
             CorporationId = corporationId;
             InvitationId = invitationId;

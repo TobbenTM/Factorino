@@ -25,7 +25,7 @@ namespace FNO.ReadModel.Tests.EventHandlers
 
             // Act
             await When(new PlayerCreatedEvent(new Player { PlayerId = playerId }));
-            await When(new CorporationCreatedEvent(expectedCorporation));
+            await When(new CorporationCreatedEvent(expectedCorporation, null));
 
             // Assert
             using (var dbContext = GetInMemoryDatabase())

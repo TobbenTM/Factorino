@@ -4,7 +4,7 @@ namespace FNO.Domain.Events.Factory
 {
     public class FactoryLogEvent : EntityEvent
     {
-        public FactoryLogEvent(Guid factoryId) : base(factoryId)
+        public FactoryLogEvent(Guid factoryId) : base(factoryId, null)
         {
         }
 

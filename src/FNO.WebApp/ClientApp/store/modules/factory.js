@@ -19,13 +19,6 @@ export default {
       state.loadedFactory = true;
       state.loadingFactory = false;
     },
-    creatingFactory(state) {
-      state.creatingFactory = true;
-    },
-    createdFactory(state, result) {
-      state.creatingFactory = false;
-      console.log('Created factory, result: ', result);
-    },
   },
   actions: {
     async loadFactory({ commit }) {
@@ -38,20 +31,6 @@ export default {
         );
       } catch (err) {
         commit('loadedFactory', null);
-      }
-    },
-    async createFactory({ commit, rootGetters }, factory) {
-      commit('creatingFactory');
-      try {
-        const response = await rootGetters.api.put(
-          '/api/factory',
-          factory,
-        );
-        commit('createdFactory', response.data);
-        return response.data.entityId;
-      } catch (err) {
-        commit('error', err, { root: true });
-        throw err;
       }
     },
   },

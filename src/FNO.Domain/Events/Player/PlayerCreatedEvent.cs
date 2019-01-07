@@ -9,7 +9,7 @@
         {
         }
 
-        public PlayerCreatedEvent(Models.Player player) : base(player.PlayerId)
+        public PlayerCreatedEvent(Models.Player player) : base(player.PlayerId, player)
         {
             Name = player.Name;
             SteamId = player.SteamId;

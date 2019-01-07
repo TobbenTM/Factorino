@@ -1,5 +1,7 @@
 <template>
-
+  <modal :show="show" @close="close">
+    <p>Creating factory...</p>
+  </modal>
 </template>
 
 <script>
@@ -18,6 +20,29 @@ export default {
   },
   components: {
     Modal,
+  },
+  data() {
+    return {
+      hub: null,
+    };
+  },
+  mounted() {
+    this.hub = new this.$signalR.HubConnectionBuilder()
+      .withUrl("/factorycreate")
+      .configureLogging(this.$signalR.LogLevel.Information)
+      .build();
+
+    this.hub.on('ReceiveEvent', this.receiveEvent);
+
+    this.hub.start();
+  },
+  methods: {
+    close: function () {
+      this.$emit('close');
+    },
+    receiveEvent(evnt) {
+      console.log('Received event: ', evnt);
+    },
   },
 };
 </script>

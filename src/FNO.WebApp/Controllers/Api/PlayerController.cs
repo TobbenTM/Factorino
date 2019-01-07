@@ -51,7 +51,7 @@ namespace FNO.WebApp.Controllers.Api
 
             var evnts = new IEvent[]
             {
-                new PlayerLeftCorporationEvent(player.PlayerId, corporationId),
+                new PlayerLeftCorporationEvent(player.PlayerId, corporationId, player),
             };
             var results = await _eventStore.ProduceAsync(evnts);
 

@@ -4,7 +4,7 @@ namespace FNO.Domain.Events.Global
 {
     public class GlobalChatEvent : EntityEvent
     {
-        public GlobalChatEvent(Guid originId) : base(originId)
+        public GlobalChatEvent(Guid originId) : base(originId, null)
         {
         }
 

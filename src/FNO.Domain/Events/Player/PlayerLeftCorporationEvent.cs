@@ -10,7 +10,7 @@ namespace FNO.Domain.Events.Player
         {
         }
 
-        public PlayerLeftCorporationEvent(Guid playerId, Guid corporationId) : base(playerId)
+        public PlayerLeftCorporationEvent(Guid playerId, Guid corporationId, Models.Player initiator) : base(playerId, initiator)
         {
             CorporationId = corporationId;
         }

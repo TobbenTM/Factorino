@@ -10,7 +10,7 @@ namespace FNO.Domain.Events.Player
         {
         }
 
-        public PlayerRejectedInvitationEvent(Guid playerId, Guid invitationId) : base(playerId)
+        public PlayerRejectedInvitationEvent(Guid playerId, Guid invitationId, Models.Player initiator) : base(playerId, initiator)
         {
             InvitationId = invitationId;
         }

@@ -4,7 +4,7 @@ namespace FNO.Domain.Events.Factory
 {
     public abstract class FactoryActivityBaseEvent : EntityEvent
     {
-        public FactoryActivityBaseEvent(Guid factoryId, string type, long tick) : base(factoryId)
+        protected FactoryActivityBaseEvent(Guid factoryId, string type, long tick) : base(factoryId, null)
         {
             Type = type;
             Tick = tick;
