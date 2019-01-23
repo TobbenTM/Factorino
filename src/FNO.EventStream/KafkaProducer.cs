@@ -38,7 +38,6 @@ namespace FNO.EventStream
         /// <summary>
         /// Will produce to the Kafka default persistent topic and wait for delivery reports
         /// </summary>
-        /// <param name="topic">The topic to produce to</param>
         /// <param name="events">The events to produce</param>
         /// <returns>Delivery reports for the produced events</returns>
         public Task<EventMetadata[]> ProduceAsync(params IEvent[] events)

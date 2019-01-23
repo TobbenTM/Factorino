@@ -12,7 +12,7 @@ namespace FNO.Domain
         public DbSet<Factory> Factories { get; set; }
         // FactoryTrainstops
         // Warehouses
-        //public DbSet<Warehouse> Warehouses { get; set; }
+        public DbSet<Warehouse> Warehouses { get; set; }
         // WarehouseRules
         // WarehouseInventory
         public DbSet<WarehouseInventory> WarehouseInventories { get; set; }
@@ -68,6 +68,13 @@ namespace FNO.Domain
 
             var systemId = Guid.Parse("00000000-0000-0000-0000-000000000001");
             var bankCorpId = Guid.Parse("00000000-0000-0000-0000-000000000002");
+
+            modelBuilder.Entity<Warehouse>()
+                .HasData(new Warehouse
+                {
+                    OwnerId = systemId,
+                    WarehouseId = systemId,
+                });
 
             modelBuilder.Entity<Player>()
                 .HasData(new Player

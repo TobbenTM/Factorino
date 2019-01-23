@@ -11,7 +11,6 @@ namespace FNO.WebApp.Hubs
     [Authorize]
     public class FactoryCreateHub : EventHandlerHub
     {
-
         private readonly IPlayerRepository _playerRepo;
         private readonly IEventStore _eventStore;
 
@@ -29,6 +28,9 @@ namespace FNO.WebApp.Hubs
 
             var factoryId = Guid.NewGuid();
 
+            // We need to receive all events for this factory from now on
+            await Subscribe(factoryId);
+            
             var evnt = new FactoryCreatedEvent(factoryId, player);
             var results = await _eventStore.ProduceAsync(evnt);
 

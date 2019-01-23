@@ -1,4 +1,6 @@
-﻿using FNO.Domain;
+﻿using System;
+using System.Collections.Generic;
+using FNO.Domain;
 using FNO.Domain.Events.Player;
 using FNO.Domain.Models;
 using FNO.EventSourcing;
@@ -8,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace FNO.ReadModel.EventHandlers
 {
-    public class PlayerEventHandler : EventHandlerBase,
+    public sealed class PlayerEventHandler : EventHandlerBase,
         IEventHandler<PlayerCreatedEvent>,
         IEventHandler<PlayerInvitedToCorporationEvent>,
         IEventHandler<PlayerJoinedCorporationEvent>,
@@ -29,6 +31,11 @@ namespace FNO.ReadModel.EventHandlers
                 PlayerId = evnt.EntityId,
                 Name = evnt.Name,
                 SteamId = evnt.SteamId,
+                Warehouse = new Warehouse
+                {
+                    WarehouseId = Guid.NewGuid(),
+                    Inventory = new List<WarehouseInventory>(),
+                },
             });
             return Task.CompletedTask;
         }

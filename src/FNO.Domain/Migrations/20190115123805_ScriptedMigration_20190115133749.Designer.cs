@@ -10,8 +10,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace FNO.Domain.Migrations
 {
     [DbContext(typeof(ReadModelDbContext))]
-    [Migration("20181201100818_ScriptedMigration_20181201110811")]
-    partial class ScriptedMigration_20181201110811
+    [Migration("20190115123805_ScriptedMigration_20190115133749")]
+    partial class ScriptedMigration_20190115133749
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -894,6 +894,25 @@ namespace FNO.Domain.Migrations
                     );
                 });
 
+            modelBuilder.Entity("FNO.Domain.Models.Warehouse", b =>
+                {
+                    b.Property<Guid>("WarehouseId")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<Guid>("OwnerId");
+
+                    b.HasKey("WarehouseId");
+
+                    b.HasIndex("OwnerId")
+                        .IsUnique();
+
+                    b.ToTable("Warehouses");
+
+                    b.HasData(
+                        new { WarehouseId = new Guid("00000000-0000-0000-0000-000000000001"), OwnerId = new Guid("00000000-0000-0000-0000-000000000001") }
+                    );
+                });
+
             modelBuilder.Entity("FNO.Domain.Models.WarehouseInventory", b =>
                 {
                     b.Property<Guid>("WarehouseInventoryId")
@@ -905,11 +924,15 @@ namespace FNO.Domain.Migrations
 
                     b.Property<int>("Quantity");
 
+                    b.Property<Guid?>("WarehouseId");
+
                     b.HasKey("WarehouseInventoryId");
 
                     b.HasIndex("CorporationId");
 
                     b.HasIndex("ItemId");
+
+                    b.HasIndex("WarehouseId");
 
                     b.ToTable("WarehouseInventories");
                 });
@@ -961,6 +984,14 @@ namespace FNO.Domain.Migrations
                         .HasForeignKey("CorporationId");
                 });
 
+            modelBuilder.Entity("FNO.Domain.Models.Warehouse", b =>
+                {
+                    b.HasOne("FNO.Domain.Models.Player", "Owner")
+                        .WithOne("Warehouse")
+                        .HasForeignKey("FNO.Domain.Models.Warehouse", "OwnerId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
             modelBuilder.Entity("FNO.Domain.Models.WarehouseInventory", b =>
                 {
                     b.HasOne("FNO.Domain.Models.Corporation", "Corporation")
@@ -971,6 +1002,10 @@ namespace FNO.Domain.Migrations
                     b.HasOne("FNO.Domain.Models.FactorioEntity", "Item")
                         .WithMany()
                         .HasForeignKey("ItemId");
+
+                    b.HasOne("FNO.Domain.Models.Warehouse")
+                        .WithMany("Inventory")
+                        .HasForeignKey("WarehouseId");
                 });
 #pragma warning restore 612, 618
         }

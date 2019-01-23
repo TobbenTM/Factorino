@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace FNO.ReadModel.EventHandlers
 {
-    public class CorporationEventHandler : EventHandlerBase,
+    public sealed class CorporationEventHandler : EventHandlerBase,
         IEventHandler<CorporationCreatedEvent>
     {
         private readonly ReadModelDbContext _dbContext;

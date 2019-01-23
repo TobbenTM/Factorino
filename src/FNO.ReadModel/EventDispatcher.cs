@@ -1,13 +1,13 @@
-﻿using System;
-using System.Linq;
-using System.Threading.Tasks;
-using FNO.Domain;
+﻿using FNO.Domain;
 using FNO.Domain.Events;
 using FNO.Domain.Events.Corporation;
+using FNO.Domain.Events.Factory;
 using FNO.Domain.Events.Player;
 using FNO.EventSourcing;
 using FNO.ReadModel.EventHandlers;
 using Serilog;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace FNO.ReadModel
 {
@@ -38,6 +38,10 @@ namespace FNO.ReadModel
 
             _resolver.Register(() => new CorporationEventHandler(_dbContext, _logger),
                 typeof(CorporationCreatedEvent));
+
+            _resolver.Register(() => new FactoryEventHandler(_dbContext, _logger),
+                typeof(FactoryCreatedEvent),
+                typeof(FactoryOnlineEvent));
         }
 
         public async Task Handle<TEvent>(TEvent evnt) where TEvent : IEvent
@@ -50,14 +54,7 @@ namespace FNO.ReadModel
             }
             foreach (var handler in handlers)
             {
-                try
-                {
-                    await handler.Handle(evnt);
-                }
-                catch (Exception e)
-                {
-                    _logger.Error(e, $"Handler {handler.GetType().Name} could not handle event {evnt.GetType().FullName}, error: {e.Message}");
-                }
+                await handler.Handle(evnt);
             }
         }
     }

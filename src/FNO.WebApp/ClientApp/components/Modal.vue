@@ -51,7 +51,7 @@ export default {
   }
 
   &__container {
-    width: 300px;
+    width: 400px;
     margin: 40px auto 0;
     padding: 20px 30px;
     background-color: #fff;

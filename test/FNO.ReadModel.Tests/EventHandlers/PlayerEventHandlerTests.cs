@@ -36,6 +36,32 @@ namespace FNO.ReadModel.Tests.EventHandlers
         }
 
         [Fact]
+        public async Task ShouldAlsoCreateWarehouse()
+        {
+            // Arrange
+            var expectedPlayer = new Player
+            {
+                PlayerId = Guid.NewGuid(),
+                Name = Guid.NewGuid().ToString(),
+                SteamId = Guid.NewGuid().ToString(),
+            };
+
+            // Act
+            await When(new PlayerCreatedEvent(expectedPlayer));
+
+            // Assert
+            using (var dbContext = GetInMemoryDatabase())
+            {
+                Assert.NotEmpty(dbContext.Players);
+                var player = dbContext.Players.First();
+                Assert.Equal(expectedPlayer.PlayerId, player.PlayerId);
+
+                Assert.NotEmpty(dbContext.Warehouses);
+                Assert.Equal(1, dbContext.Warehouses.Count());
+            }
+        }
+
+        [Fact]
         public async Task ShouldAddCorporationInvitation()
         {
             // Arrange

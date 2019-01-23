@@ -9,6 +9,7 @@ namespace FNO.Domain.Models
         public Guid FactoryId { get; set; }
         public string Name { get; set; }
 
+        public FactoryState State { get; set; }
         public int Port { get; set; }
         public long LastSeen { get; set; }
         public int PlayersOnline { get; set; }

@@ -9,9 +9,9 @@
       <router-link tag="div" class="nav-link" :to="{ name: 'world' }">
         <icon icon="globe" class="nav-icon"/> World
       </router-link>
-      <router-link tag="div" class="nav-link" :class="{ disabled: !user }" :to="{ name: 'corporation' }" :event="user ? 'click' : ''">
+      <!-- <router-link tag="div" class="nav-link" :class="{ disabled: !user }" :to="{ name: 'corporation' }" :event="user ? 'click' : ''">
         <icon :icon="user ? 'building' : 'lock'" class="nav-icon"/> Corporation
-      </router-link>
+      </router-link> -->
       <!-- <router-link tag="div" class="nav-link" :class="{ disabled: !user }" :to="{ name: 'warehouse' }" :event="user ? 'click' : ''">
         <icon :icon="user ? 'warehouse' : 'lock'" class="nav-icon"/> Warehouse
       </router-link> -->
@@ -21,9 +21,9 @@
       <router-link tag="div" class="nav-link" :class="{ disabled: !user }" :to="{ name: 'market' }" :event="user ? 'click' : ''">
         <icon :icon="user ? 'coins' : 'lock'" class="nav-icon"/> Marketplace
       </router-link>
-      <router-link tag="div" class="nav-link" :to="{ name: 'servers' }">
+      <!-- <router-link tag="div" class="nav-link" :to="{ name: 'servers' }">
         <icon icon="server" class="nav-icon"/> Servers
-      </router-link>
+      </router-link> -->
 
       <a class="nav-link bottom" href="/auth/login" v-if="loadedUser && !user">
         <icon :icon="['fab', 'steam']" class="nav-icon"/> Log in

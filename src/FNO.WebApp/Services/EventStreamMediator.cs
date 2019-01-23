@@ -70,7 +70,16 @@ namespace FNO.WebApp.Services
                 _logger.Debug($"Found {handlers.Count} handlers for event with type {eventType}, forwarding to hub..");
                 foreach (var handler in handlers)
                 {
-                    await handler.All.ReceiveEvent(evnt);
+                    // If the event is attached to an entity, we'll forward it
+                    // to the specific groups that has subscribed to the entity
+                    if (evnt is EntityEvent entityEvent)
+                    {
+                        await handler.Group(entityEvent.EntityId.ToString()).ReceiveEvent(evnt);
+                    }
+                    else
+                    {
+                        await handler.All.ReceiveEvent(evnt);
+                    }
                 }
             }
         }

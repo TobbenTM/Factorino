@@ -7,8 +7,8 @@ namespace FNO.Domain.Models
     {
         public Guid WarehouseId { get; set; }
 
-        public Guid CorporationId { get; set; }
-        public Corporation Corporation { get; set; }
+        public Guid OwnerId { get; set; }
+        public Player Owner { get; set; }
 
         public IList<WarehouseInventory> Inventory { get; set; }
     }

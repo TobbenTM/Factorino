@@ -1,4 +1,4 @@
-﻿using System.Diagnostics;
+﻿using System;
 using FNO.Domain.Models;
 
 namespace FNO.Domain.Events
@@ -15,11 +15,22 @@ namespace FNO.Domain.Events
         protected Event(Models.Player initiator)
         {
             Initiator = new EventInitiator(initiator);
+            Metadata = new EventMetadata
+            {
+                CreatedAt = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
+            };
         }
 
         public void Enrich(EventMetadata metadata)
         {
-            Metadata = metadata;
+            if (Metadata != null)
+            {
+                Metadata.Enrich(metadata);
+            }
+            else
+            {
+                Metadata = metadata;
+            }
         }
 
         public EventMetadata GetMetadata() => Metadata;
