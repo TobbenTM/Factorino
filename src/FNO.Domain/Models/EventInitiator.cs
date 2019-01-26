@@ -19,5 +19,14 @@ namespace FNO.Domain.Models
                 PlayerName = initiator.Name;
             }
         }
+
+        public Player ToPlayer()
+        {
+            return new Player
+            {
+                PlayerId = PlayerId,
+                Name = PlayerName,
+            };
+        }
     }
 }
