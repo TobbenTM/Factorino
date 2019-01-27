@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
@@ -6,9 +6,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\FNO.Common\FNO.Common.csproj" />
-    <ProjectReference Include="..\FNO.Domain\FNO.Domain.csproj" />
-    <ProjectReference Include="..\FNO.EventStream\FNO.EventStream.csproj" />
+    <ProjectReference Include="..\..\src\FNO.EventSourcing\FNO.EventSourcing.csproj" />
+    <ProjectReference Include="..\..\src\FNO.EventStream\FNO.EventStream.csproj" />
   </ItemGroup>
 
   <ItemGroup>

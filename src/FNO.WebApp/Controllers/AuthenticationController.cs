@@ -1,14 +1,22 @@
 using AspNet.Security.OpenId.Steam;
+using FNO.Domain.Events;
 using FNO.Domain.Events.Player;
 using FNO.Domain.Models;
 using FNO.Domain.Repositories;
 using FNO.EventSourcing;
+using FNO.WebApp.Filters;
+using FNO.WebApp.Models.Steam;
 using FNO.WebApp.Security;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json;
+using Serilog;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Net.Http;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
@@ -19,11 +27,19 @@ namespace FNO.WebApp.Controllers
     {
         private readonly IPlayerRepository _repo;
         private readonly IEventStore _eventStore;
+        private readonly IConfiguration _configuration;
+        private readonly ILogger _logger;
 
-        public AuthenticationController(IPlayerRepository repo, IEventStore eventStore)
+        public AuthenticationController(
+            IPlayerRepository repo,
+            IEventStore eventStore,
+            IConfiguration configuration,
+            ILogger logger)
         {
             _repo = repo;
             _eventStore = eventStore;
+            _configuration = configuration;
+            _logger = logger;
         }
 
         [HttpGet, Route("login")]
@@ -36,6 +52,7 @@ namespace FNO.WebApp.Controllers
         }
 
         [HttpGet, Route("register")]
+        [EnsureConsumerConsistency]
         public async Task<IActionResult> RegisterSteamUser()
         {
             var authResult = await HttpContext.AuthenticateAsync(AuthenticationConfiguration.SteamCookieScheme);
@@ -52,14 +69,40 @@ namespace FNO.WebApp.Controllers
             {
                 return await SignInSteamUser(player);
             }
-            
+
             player = new Player
             {
                 SteamId = steamId,
                 PlayerId = Guid.NewGuid(),
                 Name = authResult.Principal.FindFirstValue(ClaimTypes.Name),
             };
+
+            // TODO: Refactor this into a dedicated client for easier testing
+            using (var client = new HttpClient())
+            {
+                try
+                {
+                    var key = _configuration["Authentication:Steam:AppKey"];
+                    var url = $"api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key={key}&steamids={steamId.Replace("https://steamcommunity.com/openid/id/", "")}";
+                    var response = await client.GetAsync("https://" + url);
+                    var body = await response.Content.ReadAsStringAsync();
+                    var payload = JsonConvert.DeserializeObject<SteamApiResponseWrapper<GetPlayerSummariesResponse>>(body);
+                    var steamplayer = payload.Response.Players.FirstOrDefault();
+                    player.ProfileURL = steamplayer.ProfileURL;
+                    player.Avatar = steamplayer.Avatar;
+                    player.AvatarFull = steamplayer.AvatarFull;
+                    player.AvatarMedium = steamplayer.AvatarMedium;
+                }
+                catch (Exception e)
+                {
+                    _logger.Error(e, $"Could not fetch player summary for player {steamId}! Error: {e.Message}");
+                    // TODO: Should probably add an error response here
+                    return RedirectToAction("Index", "Home");
+                }
+            }
+
             var evnt = new PlayerCreatedEvent(player);
+            HttpContext.Items[nameof(IEvent)] = evnt;
             var result = await _eventStore.ProduceAsync(evnt);
             return await SignInSteamUser(player);
         }

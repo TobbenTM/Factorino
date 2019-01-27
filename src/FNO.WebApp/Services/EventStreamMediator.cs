@@ -84,6 +84,11 @@ namespace FNO.WebApp.Services
             }
         }
 
+        public void OnEndReached(string topic, int partition, long offset)
+        {
+            // noop
+        }
+
         public Task StartAsync(CancellationToken cancellationToken)
         {
             _consumer.Subscribe(

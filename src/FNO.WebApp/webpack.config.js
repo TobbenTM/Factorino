@@ -57,7 +57,7 @@ module.exports = (env, argv) => {
               'sass-loader',
             ],
           },
-          { test: /\.(png|jpg|jpeg|gif|svg)$/, use: 'url-loader?limit=25000' },
+          { test: /\.(png|jpg|jpeg|gif|eot|ttf|woff|woff2|svg|svgz)(\?.+)?$/, use: 'url-loader?limit=25000' },
         ],
       },
       optimization: {

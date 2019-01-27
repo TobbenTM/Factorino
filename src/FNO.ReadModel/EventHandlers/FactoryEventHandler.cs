@@ -10,6 +10,7 @@ namespace FNO.ReadModel.EventHandlers
 {
     public sealed class FactoryEventHandler : EventHandlerBase,
         IEventHandler<FactoryCreatedEvent>,
+        IEventHandler<FactoryProvisionedEvent>,
         IEventHandler<FactoryOnlineEvent>
     {
         private readonly ReadModelDbContext _dbContext;
@@ -26,6 +27,16 @@ namespace FNO.ReadModel.EventHandlers
             {
                 factory.State = FactoryState.Online;
                 factory.LastSeen = evnt.Metadata.CreatedAt ?? factory.LastSeen;
+            }
+            return Task.CompletedTask;
+        }
+
+        public Task Handle(FactoryProvisionedEvent evnt)
+        {
+            var factory = _dbContext.Factories.FirstOrDefault(f => f.FactoryId == evnt.EntityId);
+            if (factory != null)
+            {
+                factory.State = FactoryState.Starting;
             }
             return Task.CompletedTask;
         }

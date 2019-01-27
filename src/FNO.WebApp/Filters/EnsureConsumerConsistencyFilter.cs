@@ -1,4 +1,5 @@
 using FNO.Domain;
+using FNO.Domain.Events;
 using FNO.Domain.Models;
 using FNO.EventSourcing.Exceptions;
 using FNO.WebApp.Models;
@@ -30,34 +31,26 @@ namespace FNO.WebApp.Filters
             public async Task OnResultExecutionAsync(ResultExecutingContext context, ResultExecutionDelegate next)
             {
                 var response = await next();
-                if (response.Result is ObjectResult obj)
+                if (context.HttpContext.Items.ContainsKey(nameof(IEvent)))
+                {
+                    if (context.HttpContext.Items[nameof(IEvent)] is IEvent evnt)
+                    {
+                        await BusyWait(new EventResult
+                        {
+                            Events = new[] { evnt },
+                            Results = new[] { evnt.GetMetadata() },
+                        });
+                    }
+                    else
+                    {
+                        _logger.Warning($"Consumer consistency filter used on a context that does not store IEvent in items! {{{response.ActionDescriptor.DisplayName}}}");
+                    }
+                }
+                else if (response.Result is ObjectResult obj)
                 {
                     if (obj.Value is IEventResult result)
                     {
-                        var desiredState = result.Results
-                            .GroupBy(r => new { r.Topic, r.Partition })
-                            .Select(g => new EventMetadata{
-                                Topic= g.Key.Topic,
-                                Partition= g.Key.Partition,
-                                Offset = g.Max(r => r.Offset),
-                            })
-                            .ToList();
-                        _logger.Debug($"Ensuring consumer consistency, need state {string.Join(", ", desiredState)}");
-
-                        var tries = 0;
-
-                        // We need to wait for consumer to catch up
-                        while (desiredState.Any(s => s.Offset > GetState(s).Offset))
-                        {
-                            if (tries >= 20)
-                            {
-                                throw new ConsumerOutOfSyncException($"Could not reach desired state: {string.Join(", ", desiredState)}!");
-                            }
-
-                            _logger.Debug($"Consumer lagging, waiting {tries} tries so far..");
-                            await Task.Delay(200);
-                            tries += 1;
-                        }
+                        await BusyWait(result);
                     }
                     else
                     {
@@ -67,6 +60,35 @@ namespace FNO.WebApp.Filters
                 else
                 {
                     _logger.Warning($"Consumer consistency filter used on an action that doesn't return CreatedEntityResult! {{{response.ActionDescriptor.DisplayName}}}");
+                }
+            }
+
+            private async Task BusyWait(IEventResult result)
+            {
+                var desiredState = result.Results
+                    .GroupBy(r => new { r.Topic, r.Partition })
+                    .Select(g => new EventMetadata
+                    {
+                        Topic = g.Key.Topic,
+                        Partition = g.Key.Partition,
+                        Offset = g.Max(r => r.Offset),
+                    })
+                    .ToList();
+                _logger.Debug($"Ensuring consumer consistency, need state {string.Join(", ", desiredState)}");
+
+                var tries = 0;
+
+                // We need to wait for consumer to catch up
+                while (desiredState.Any(s => s.Offset > GetState(s).Offset))
+                {
+                    if (tries >= 20)
+                    {
+                        throw new ConsumerOutOfSyncException($"Could not reach desired state: {string.Join(", ", desiredState)}!");
+                    }
+
+                    _logger.Debug($"Consumer lagging, waiting {tries} tries so far..");
+                    await Task.Delay(200);
+                    tries += 1;
                 }
             }
 

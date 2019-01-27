@@ -11,6 +11,13 @@ namespace FNO.Domain.Models
         public string SteamId { get; set; }
         public string FactorioId { get; set; }
 
+        #region Steam props
+        public string ProfileURL { get; set; }
+        public string Avatar { get; set; }
+        public string AvatarMedium { get; set; }
+        public string AvatarFull { get; set; }
+        #endregion
+
         public Guid? CorporationId { get; set; }
         public Corporation Corporation { get; set; }
 

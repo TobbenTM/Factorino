@@ -145,5 +145,10 @@ namespace FNO.FactoryPod
             _logger.Information($"Got event of type {evnt.GetType().FullName}!");
             return Task.CompletedTask;
         }
+
+        public void OnEndReached(string topic, int partition, long offset)
+        {
+            // noop
+        }
     }
 }

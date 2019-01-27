@@ -9,4 +9,10 @@
     <ProjectReference Include="..\..\src\FNO.FactoryPod\FNO.FactoryPod.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="appsettings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

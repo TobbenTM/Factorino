@@ -1,6 +1,6 @@
 ﻿using FNO.EventSourcing;
 
-namespace FNO.ReadModel
+namespace FNO.Orchestrator.Mock
 {
     internal class Program : ConsumerBase<Daemon>
     {

@@ -41,6 +41,7 @@ namespace FNO.ReadModel
 
             _resolver.Register(() => new FactoryEventHandler(_dbContext, _logger),
                 typeof(FactoryCreatedEvent),
+                typeof(FactoryProvisionedEvent),
                 typeof(FactoryOnlineEvent));
         }
 

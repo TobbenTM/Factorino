@@ -44,6 +44,7 @@ namespace FNO.EventStream
             _consumer.OnConsumeError += OnConsumeError;
             _consumer.OnPartitionsAssigned += OnPartitionsAssigned;
             _consumer.OnPartitionsRevoked += OnPartitionsRevoked;
+            _consumer.OnPartitionEOF += OnEndReached;
         }
 
         private void OnError(object sender, Error e)
@@ -72,6 +73,11 @@ namespace FNO.EventStream
         {
             var partitions = e.Select(i => $"Partition: {i.Partition}, Topic: {i.Topic}");
             _logger.Warning($"[KafkaConsumer] Partitions revoked: {string.Join(", ", partitions)}");
+        }
+
+        private void OnEndReached(object sender, TopicPartitionOffset offset)
+        {
+            _handler.OnEndReached();
         }
 
         public void Subscribe(params TopicPartitionOffset[] subscriptions)

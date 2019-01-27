@@ -3,6 +3,7 @@ using FNO.Common;
 using FNO.Domain;
 using FNO.Domain.Events;
 using FNO.Domain.Models;
+using FNO.EventSourcing;
 using FNO.EventStream;
 using Microsoft.Extensions.Configuration;
 using Serilog;
@@ -12,15 +13,25 @@ using System.Threading.Tasks;
 
 namespace FNO.ReadModel
 {
-    internal class Daemon : IEventConsumer, IDisposable
+    /// <summary>
+    /// The readmodel daemon will only consume events not already consumer
+    /// for the current readmodel database. This means we need to check
+    /// the last consumer offset, and continue from that.
+    /// </summary>
+    internal class Daemon : IConsumerDaemon, IEventConsumer
     {
-        private readonly IConfiguration _configuration;
-        private readonly ConfigurationBase _configurationModel;
+        // TODO: Refactor these so they're readonly again
+        private IConfiguration _configuration;
+        private ConfigurationBase _configurationModel;
 
-        private readonly ILogger _logger;
-        private readonly KafkaConsumer _consumer;
+        private ILogger _logger;
+        private KafkaConsumer _consumer;
 
-        internal Daemon(IConfiguration configuration, ILogger logger)
+        public Daemon()
+        {
+        }
+
+        public void Init(IConfiguration configuration, ILogger logger)
         {
             _configuration = configuration;
             _logger = logger;
@@ -45,6 +56,11 @@ namespace FNO.ReadModel
                     _logger.Error(e, $"Could not commit changes from dispatcher!");
                 }
             }
+        }
+
+        public void OnEndReached(string topic, int partition, long offset)
+        {
+            // noop
         }
 
         public void Run()

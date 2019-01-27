@@ -36,6 +36,10 @@ namespace FNO.ReadModel.EventHandlers
                     WarehouseId = Guid.NewGuid(),
                     Inventory = new List<WarehouseInventory>(),
                 },
+                ProfileURL = evnt.ProfileURL,
+                Avatar = evnt.Avatar,
+                AvatarMedium = evnt.AvatarMedium,
+                AvatarFull = evnt.AvatarFull,
             });
             return Task.CompletedTask;
         }

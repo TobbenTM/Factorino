@@ -1,12 +1,15 @@
-﻿using System;
+﻿using FNO.EventSourcing;
 
 namespace FNO.Orchestrator
 {
-    class Program
+    internal class Program : ConsumerBase<Daemon>
     {
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            using (var program = new Program())
+            {
+                program.Run();
+            }
         }
     }
 }
