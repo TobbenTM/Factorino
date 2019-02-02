@@ -77,7 +77,7 @@ namespace FNO.EventStream
 
         private void OnEndReached(object sender, TopicPartitionOffset offset)
         {
-            _handler.OnEndReached();
+            _handler.OnEndReached(offset.Topic, offset.Partition, offset.Offset);
         }
 
         public void Subscribe(params TopicPartitionOffset[] subscriptions)
