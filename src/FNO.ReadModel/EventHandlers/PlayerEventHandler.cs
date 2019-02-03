@@ -31,11 +31,6 @@ namespace FNO.ReadModel.EventHandlers
                 PlayerId = evnt.EntityId,
                 Name = evnt.Name,
                 SteamId = evnt.SteamId,
-                Warehouse = new Warehouse
-                {
-                    WarehouseId = Guid.NewGuid(),
-                    Inventory = new List<WarehouseInventory>(),
-                },
                 ProfileURL = evnt.ProfileURL,
                 Avatar = evnt.Avatar,
                 AvatarMedium = evnt.AvatarMedium,

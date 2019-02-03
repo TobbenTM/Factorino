@@ -15,13 +15,9 @@ import { interpolate } from 'd3-interpolate';
 import { geoOrthographic, geoCentroid, geoPath } from 'd3-geo';
 import { feature, mesh } from 'topojson-client';
 import WorldMap from 'assets/world.json';
-import FactorinoSpinner from 'components/FactorinoSpinner.vue';
 
 export default {
   name: 'factory-map',
-  components: {
-    FactorinoSpinner,
-  },
   computed: {
   },
   props: {
@@ -59,7 +55,7 @@ export default {
       this.height = this.$el.clientHeight - 10;
 
       const canvas = this.$refs.canvas;
-      
+
       this.ctx = select(canvas).node().getContext('2d');
 
       this.projection = geoOrthographic()
@@ -117,7 +113,7 @@ export default {
 
             // Fill normal land
             vm.ctx.fillStyle = "rgba(230, 230, 255, .2)", vm.ctx.beginPath(), vm.path(land), vm.ctx.fill();
-            
+
             // Fill factories
             vm.ctx.fillStyle = "rgba(255, 255, 255, .5)";
             factories.forEach((f) => {
@@ -125,7 +121,7 @@ export default {
               vm.path(f);
               vm.ctx.fill();
             });
-            
+
             // Fill selected factory
             vm.ctx.fillStyle = "rgba(255, 5, 5, 1)", vm.ctx.beginPath(), vm.path(selected), vm.ctx.fill();
 

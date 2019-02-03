@@ -43,6 +43,7 @@ module.exports = (env, argv) => {
           'vuex',
           'axios',
           'vue-router',
+          'element-ui/lib/theme-chalk/index.css',
         ],
       },
       optimization: {
@@ -56,7 +57,7 @@ module.exports = (env, argv) => {
       },
       plugins: [
         new MiniCSSExtractPlugin({
-          filename: 'site.css',
+          filename: 'vendor.css',
         }),
         // Compress extracted CSS.
         new OptimizeCSSPlugin({

@@ -3,7 +3,16 @@ html, body {
   margin: 0;
   padding: 0;
   height: 100%;
-  color: #ffffff;
-  background: #030d27;
+  color: #FFFFFF;
+  background: #232B40;
   font-family: 'Segoe UI', Roboto, Ubuntu, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+
+a {
+  color: #FFFFFF;
+  text-decoration: none;
+
+  &:visited {
+    color: #FFFFFF;
+  }
 }

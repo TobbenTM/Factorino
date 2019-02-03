@@ -26,12 +26,7 @@ module.exports = (env, argv) => {
       resolve: {
         extensions: ['.js', '.vue'],
         alias: {
-          components: path.resolve(__dirname, './ClientApp/components'),
-          vm: path.resolve(__dirname, './ClientApp/vm'),
-          assets: path.resolve(__dirname, './ClientApp/assets'),
-          utils: path.resolve(__dirname, './ClientApp/utils'),
-          api: path.resolve(__dirname, './ClientApp/store/api'),
-          app: path.resolve(__dirname, './ClientApp'),
+          '@': path.resolve(__dirname, './ClientApp'),
         },
       },
       output: {

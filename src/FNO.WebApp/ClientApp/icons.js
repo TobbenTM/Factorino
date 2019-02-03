@@ -20,7 +20,7 @@ fontawesome.library.add(
   require('@fortawesome/fontawesome-free-solid/faSignOutAlt'),
 
   // Brands
-  require('@fortawesome/fontawesome-free-brands/faSteam')
+  require('@fortawesome/fontawesome-free-brands/faSteam'),
 );
 
 export default FontAwesomeIcon;

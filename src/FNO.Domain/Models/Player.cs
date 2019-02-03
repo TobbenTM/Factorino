@@ -11,6 +11,8 @@ namespace FNO.Domain.Models
         public string SteamId { get; set; }
         public string FactorioId { get; set; }
 
+        public int Credits { get; set; }
+
         #region Steam props
         public string ProfileURL { get; set; }
         public string Avatar { get; set; }
@@ -18,14 +20,17 @@ namespace FNO.Domain.Models
         public string AvatarFull { get; set; }
         #endregion
 
+        [InverseProperty("Owner")]
+        public IList<WarehouseInventory> WarehouseInventory { get; set; }
+
         public Guid? CorporationId { get; set; }
         public Corporation Corporation { get; set; }
 
         [InverseProperty("Player")]
         public IEnumerable<CorporationInvitation> Invitations { get; set; }
         
-        [InverseProperty("Owner")]
-        public Warehouse Warehouse { get; set; }
+        // [InverseProperty("Owner")]
+        // public Warehouse Warehouse { get; set; }
 
         [InverseProperty("Owner")]
         public IEnumerable<Factory> Factories { get; set; }
