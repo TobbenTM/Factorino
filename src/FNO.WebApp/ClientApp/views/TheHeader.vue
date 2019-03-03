@@ -4,6 +4,10 @@
     <factorio-panel
       class="header__actions"
     >
+      <div class="header__brand">
+        <img src="../assets/logo-inverse-layered.png" />
+        Factorino
+      </div>
       <factorio-button
         v-on:click="toggleNavMenu"
         :active="navMenuActive"
@@ -68,6 +72,22 @@ export default{
 
   &__actions {
     grid-area: actions;
+
+    a {
+      vertical-align: text-bottom;
+    }
+  }
+
+  &__brand {
+    display: inline-flex;
+    height: 100%;
+    align-items: center;
+    margin: 0 8px 0 0;
+
+    img {
+      max-height: 32px;
+      margin-right: 8px;
+    }
   }
 
   &__user {

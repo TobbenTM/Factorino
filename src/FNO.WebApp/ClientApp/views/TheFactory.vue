@@ -1,20 +1,18 @@
 <template>
   <div class="factory">
-    <zoom-center-transition mode="out-in" :duration="200">
-      <div v-if="loadingFactory" class="factory__loader">
-        <factorio-panel title="Factory">
-          <app-spinner text="Loading Factory.."/>
-        </factorio-panel>
-      </div>
-      <factory-create v-else-if="!factory" class="factory__create"/>
-      <factory-details v-else class="factory__details"/>
-    </zoom-center-transition>
+    <factorio-panel v-if="loadingFactories" title="Factory">
+      <app-spinner
+        text="Loading Factory.."
+        class="factory__loader"
+      />
+    </factorio-panel>
+    <factory-create v-else-if="!factories || factories.length === 0" class="factory__create"/>
+    <factory-details v-else class="factory__details"/>
   </div>
 </template>
 
 <script>
 import { mapActions, mapState } from 'vuex';
-import { ZoomCenterTransition } from 'vue2-transitions';
 import FactoryCreate from '@/components/FactoryCreate';
 import FactoryDetails from '@/components/FactoryDetails';
 
@@ -23,20 +21,19 @@ export default{
   components: {
     FactoryCreate,
     FactoryDetails,
-    ZoomCenterTransition,
   },
   computed: {
     ...mapState('factory', [
-      'factory',
-      'loadingFactory',
+      'factories',
+      'loadingFactories',
     ]),
   },
   async created() {
-    await this.loadFactory();
+    await this.loadFactories();
   },
   methods: {
     ...mapActions('factory', [
-      'loadFactory',
+      'loadFactories',
     ]),
   },
 }
@@ -44,17 +41,13 @@ export default{
 
 <style lang="scss" scoped>
 .factory {
-  margin: 15px;
+  display: flex;
+  height: 100%;
+  justify-content: center;
+  align-items: center;
 
   &__loader {
-    display: flex;
-    height: 100%;
-    justify-content: center;
-    align-items: center;
-
-    .spinner {
-      margin: 2em;
-    }
+    margin: 2em;
   }
 }
 </style>

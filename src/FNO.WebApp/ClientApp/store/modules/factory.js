@@ -3,34 +3,34 @@ import axios from 'axios';
 export default {
   namespaced: true,
   state: {
-    factory: null,
-    loadingFactory: false,
-    loadedFactory: false,
+    factories: null,
+    loadingFactories: false,
+    loadedFactories: false,
   },
   mutations: {
-    loadingFactory(state) {
-      state.loadedFactory = false;
-      state.loadingFactory = true;
-      state.factory = null;
+    loadingFactories(state) {
+      state.loadedFactories = false;
+      state.loadingFactories = true;
+      state.factories = null;
     },
-    loadedFactory(state, factory) {
-      state.factory = factory;
-      state.loadedFactory = true;
-      state.loadingFactory = false;
+    loadedFactories(state, factories) {
+      state.factories = factories;
+      state.loadedFactories = true;
+      state.loadingFactories = false;
     },
   },
   actions: {
-    async loadFactory({ commit }) {
-      commit('loadingFactory');
+    async loadFactories({ commit }) {
+      commit('loadingFactories');
       try {
         const response = await axios.get('/api/factory');
         commit(
-          'loadedFactory',
+          'loadedFactories',
           response.status === 204 ? null : response.data,
         );
       } catch (err) {
         if (err.response.status === 404) {
-          commit('loadedFactory', null);
+          commit('loadedFactories', null);
         } else {
           commit('error', err, { root: true });
         }

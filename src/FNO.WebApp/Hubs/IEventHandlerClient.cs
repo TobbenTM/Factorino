@@ -5,6 +5,6 @@ namespace FNO.WebApp.Hubs
 {
     public interface IEventHandlerClient
     {
-        Task ReceiveEvent(IEvent evnt);
+        Task ReceiveEvent(IEvent evnt, string eventType);
     }
 }

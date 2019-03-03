@@ -23,4 +23,3 @@ img {
   background: rgba(255, 255, 255, .3);
 }
 </style>
-

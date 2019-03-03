@@ -35,5 +35,6 @@ module.exports = {
   webpackConfig,
   require: [
     path.join(__dirname, 'ClientApp/css/site.scss'),
+    path.join(__dirname, 'styleguide.requires.js'),
   ],
 };

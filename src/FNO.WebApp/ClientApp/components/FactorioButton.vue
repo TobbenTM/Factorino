@@ -107,13 +107,9 @@ export default {
   @include emboss();
   transition: border .1s ease;
 
-  &:hover {
-    background: #ff9f1b;
+  &--success {
+    background: #59b664;
     color: black;
-  }
-
-  &:active {
-    @include inlay();
   }
 
   &--active {
@@ -122,6 +118,15 @@ export default {
 
   &--small {
     padding: 8px 15px;
+  }
+
+  &:hover {
+    background: #ff9f1b;
+    color: black;
+  }
+
+  &:active {
+    @include inlay();
   }
 }
 </style>

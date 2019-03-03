@@ -1,5 +1,5 @@
 <template>
-  <div class="panel">
+  <div class="panel" v-on:click.stop>
     <div class="panel__header" v-if="$slots['action'] || title">
       <span class="title">{{ title }}</span>
       <div class="actions">
@@ -36,6 +36,8 @@ export default {
   @include emboss();
 
   &__header {
+    display: flex;
+    justify-content: space-between;
     margin-bottom: 20px;
 
     .title {

@@ -12,7 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
- 
+
 namespace FNO.WebApp.Services
 {
     public class EventStreamMediator : IHostedService, IEventConsumer
@@ -40,6 +40,7 @@ namespace FNO.WebApp.Services
 
             RegisterHubContext(factoryCreateHubContext.Clients,
                 typeof(FactoryCreatedEvent),
+                typeof(FactoryProvisionedEvent),
                 typeof(FactoryOnlineEvent));
         }
 
@@ -74,11 +75,11 @@ namespace FNO.WebApp.Services
                     // to the specific groups that has subscribed to the entity
                     if (evnt is EntityEvent entityEvent)
                     {
-                        await handler.Group(entityEvent.EntityId.ToString()).ReceiveEvent(evnt);
+                        await handler.Group(entityEvent.EntityId.ToString()).ReceiveEvent(evnt, evnt.GetType().Name);
                     }
                     else
                     {
-                        await handler.All.ReceiveEvent(evnt);
+                        await handler.All.ReceiveEvent(evnt, evnt.GetType().Name);
                     }
                 }
             }
