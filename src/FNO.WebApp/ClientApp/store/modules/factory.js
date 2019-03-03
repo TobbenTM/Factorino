@@ -6,7 +6,6 @@ export default {
     factory: null,
     loadingFactory: false,
     loadedFactory: false,
-    creatingFactory: false,
   },
   mutations: {
     loadingFactory(state) {
@@ -30,7 +29,11 @@ export default {
           response.status === 204 ? null : response.data,
         );
       } catch (err) {
-        commit('loadedFactory', null);
+        if (err.response.status === 404) {
+          commit('loadedFactory', null);
+        } else {
+          commit('error', err, { root: true });
+        }
       }
     },
   },

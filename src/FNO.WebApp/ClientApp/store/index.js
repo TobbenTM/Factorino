@@ -12,6 +12,7 @@ Vue.use(Vuex);
 const rootState = {
   xsrf: null,
   error: null,
+  navMenuActive: false,
 };
 
 // Mutations
@@ -21,6 +22,9 @@ const mutations = {
   },
   error(state, err) {
     state.error = err;
+  },
+  navMenuToggled(state) {
+    state.navMenuActive = !state.navMenuActive;
   },
 };
 
@@ -34,6 +38,9 @@ const actions = {
       commit('error', err);
     }
   },
+  toggleNavMenu({ commit }) {
+    commit('navMenuToggled');
+  },
 };
 
 // Getters
@@ -46,7 +53,7 @@ const getters = {
 };
 
 export default new Vuex.Store({
-  rootState,
+  state: rootState,
   mutations,
   actions,
   getters,

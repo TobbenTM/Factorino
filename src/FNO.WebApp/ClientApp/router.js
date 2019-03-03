@@ -20,6 +20,11 @@ const router = new VueRouter({
       name: 'factory',
       component: () => import('@/views/TheFactory'),
     },
+    {
+      path: 'market',
+      name: 'market',
+      component: () => import('@/views/TheMarket'),
+    },
   ],
 });
 

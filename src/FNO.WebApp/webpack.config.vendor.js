@@ -43,7 +43,6 @@ module.exports = (env, argv) => {
           'vuex',
           'axios',
           'vue-router',
-          'element-ui/lib/theme-chalk/index.css',
         ],
       },
       optimization: {

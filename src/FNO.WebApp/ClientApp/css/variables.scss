@@ -1,0 +1,12 @@
+$emboss_light: rgba(255, 255, 255, .4);
+$emboss_dark: rgba(0, 0, 0, .6);
+
+$inlay_light: #403f40;
+$inlay_dark: #242324;
+
+:export {
+  embossLightColor: $emboss_light;
+  embossDarkColor: $emboss_dark;
+  inlayLightColor: $inlay_light;
+  inlayDarkColor: $inlay_dark;
+}

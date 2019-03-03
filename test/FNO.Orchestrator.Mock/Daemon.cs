@@ -6,6 +6,8 @@ using FNO.EventSourcing;
 using FNO.EventStream;
 using Microsoft.Extensions.Configuration;
 using Serilog;
+using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace FNO.Orchestrator.Mock
@@ -20,8 +22,11 @@ namespace FNO.Orchestrator.Mock
         private KafkaConsumer _consumer;
         private KafkaProducer _producer;
 
+        private readonly Dictionary<Guid, FactoryCreatedEvent> _fakeFactories;
+
         public Daemon()
         {
+            _fakeFactories = new Dictionary<Guid, FactoryCreatedEvent>();
         }
 
         public void Init(IConfiguration configuration, ILogger logger)
@@ -34,20 +39,32 @@ namespace FNO.Orchestrator.Mock
             _producer = new KafkaProducer(_configurationModel, _logger);
         }
 
-        public async Task HandleEvent<TEvent>(TEvent evnt) where TEvent : IEvent
+        public Task HandleEvent<TEvent>(TEvent evnt) where TEvent : IEvent
         {
             if (typeof(TEvent) == typeof(FactoryCreatedEvent))
             {
                 var factoryCreated = evnt as FactoryCreatedEvent;
-                _logger.Information($"Factory created: {factoryCreated.EntityId}, provisioning fake resource in 3 seconds..");
-                var response = new FactoryProvisionedEvent(factoryCreated.EntityId, factoryCreated.Initiator.ToPlayer());
-                await Task.Delay(3000).ContinueWith((_) => _producer.Produce(KafkaTopics.EVENTS, response));
+                _fakeFactories.Add(factoryCreated.EntityId, factoryCreated);
             }
+            if (typeof(TEvent) == typeof(FactoryProvisionedEvent))
+            {
+                var factoryProvisioned = evnt as FactoryProvisionedEvent;
+                if (_fakeFactories.ContainsKey(factoryProvisioned.EntityId))
+                {
+                    _fakeFactories.Remove(factoryProvisioned.EntityId);
+                }
+            }
+            return Task.CompletedTask;
         }
 
-        public void OnEndReached(string topic, int partition, long offset)
+        public async Task OnEndReached(string topic, int partition, long offset)
         {
-            // noop
+            foreach (var factory in _fakeFactories)
+            {
+                _logger.Information($"Factory created: {factory.Key} but not provisioned, provisioning fake resource in 3 seconds..");
+                var response = new FactoryProvisionedEvent(factory.Key, factory.Value.Initiator.ToPlayer());
+                await Task.Delay(3000).ContinueWith((_) => _producer.Produce(KafkaTopics.EVENTS, response));
+            }
         }
 
         public void Run()

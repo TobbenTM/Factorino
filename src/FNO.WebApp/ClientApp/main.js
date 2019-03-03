@@ -1,19 +1,20 @@
 import Vue from 'vue';
 import axios from 'axios';
 import { sync } from 'vuex-router-sync';
-// import VueLadda from 'vue-ladda';
-import ElementUI from 'element-ui';
-import locale from 'element-ui/lib/locale/lang/en';
 import * as signalR from '@aspnet/signalr';
 import App from './App.vue';
 import router from './router';
 import store from './store';
 import FontAwesomeIcon from './icons';
+import AppSpinner from './components/AppSpinner';
+import FactorioButton from './components/FactorioButton';
+import FactorioPanel from './components/FactorioPanel';
 
 // Registration of global components
-Vue.use(ElementUI, { locale });
 Vue.component('icon', FontAwesomeIcon);
-// Vue.component('vue-ladda', VueLadda);
+Vue.component('app-spinner', AppSpinner);
+Vue.component('factorio-button', FactorioButton);
+Vue.component('factorio-panel', FactorioPanel);
 
 Vue.prototype.$http = axios;
 Vue.prototype.$signalR = signalR;

@@ -1,7 +1,7 @@
 <template>
-  <el-container>
+  <div class="preloader">
     <app-spinner/>
-  </el-container>
+  </div>
 </template>
 
 <script>
@@ -12,3 +12,17 @@ export default{
   components: { AppSpinner },
 }
 </script>
+
+<style lang="scss" scoped>
+.preloader {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  top: 0;
+  left: 0;
+  display: flex;
+  justify-items: center;
+  align-items: center;
+}
+</style>
+

@@ -1,37 +1,52 @@
 <template>
-  <el-container>
-    <el-aside v-if="user">
-      <the-navbar/>
-    </el-aside>
-    <el-container>
-      <el-header>
-        <the-header/>
-      </el-header>
-      <el-main>
-        <router-view :key="key"/>
-      </el-main>
-    </el-container>
-  </el-container>
+  <div class="layout">
+    <the-header class="layout__header"/>
+    <the-nav-menu class="layout__nav-menu" v-if="navMenuActive" />
+    <router-view class="layout__content" :key="key"/>
+  </div>
 </template>
 
 <script>
-import { mapActions, mapState } from 'vuex';
+import { mapState } from 'vuex';
 import TheHeader from './TheHeader';
-import TheNavbar from './TheNavbar';
+import TheNavMenu from './TheNavMenu';
 
 export default{
   name: 'the-layout',
   components: {
     TheHeader,
-    TheNavbar,
+    TheNavMenu,
   },
   computed: {
-    ...mapState('user', [
-      'user',
-    ]),
+    ...mapState(['navMenuActive']),
     key() {
       return this.$route.fullPath;
     },
   },
 }
 </script>
+
+<style lang="scss" scoped>
+.layout {
+  height: 100%;
+  display: grid;
+  grid-template-areas:
+    "header header"
+    "nav content"
+    "toolbar toolbar";
+  grid-template-columns: auto 1fr;
+  grid-template-rows: auto 1fr auto;
+
+  &__header {
+    grid-area: header;
+  }
+
+  &__nav-menu {
+    grid-area: nav;
+  }
+
+  &__content {
+    grid-area: content;
+  }
+}
+</style>

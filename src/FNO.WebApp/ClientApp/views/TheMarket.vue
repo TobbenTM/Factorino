@@ -1,32 +1,32 @@
 <template>
-  <factorio-panel title="World" class="world">
-    <div v-if="loadingWorld" class="world__loader">
-      <app-spinner text="Loading World.."/>
+  <factorio-panel title="Market" class="market">
+    <div v-if="loadingMarket" class="market__loader">
+      <app-spinner text="Loading Market.."/>
     </div>
   </factorio-panel>
 </template>
 
 <script>
 export default{
-  name: 'the-world',
+  name: 'the-market',
   data() {
     return {
-      loadingWorld: true,
+      loadingMarket: true,
     };
   },
   mounted() {
-    this.loadWorld();
+    this.loadMarket();
   },
   methods: {
-    async loadWorld() {
-      this.loadingWorld = true;
+    async loadMarket() {
+      this.loadingMarket = true;
     },
   },
 }
 </script>
 
 <style lang="scss" scoped>
-.world {
+.market {
   margin: 15px;
 
   &__loader {

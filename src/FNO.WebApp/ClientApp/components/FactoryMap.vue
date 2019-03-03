@@ -1,8 +1,8 @@
 <template>
   <div class="map">
     <canvas
-      :width="width"
-      :height="height"
+      :width="width || calculatedWidth"
+      :height="height || calculatedHeight"
       ref="canvas"
     />
   </div>
@@ -14,26 +14,55 @@ import { transition } from 'd3-transition';
 import { interpolate } from 'd3-interpolate';
 import { geoOrthographic, geoCentroid, geoPath } from 'd3-geo';
 import { feature, mesh } from 'topojson-client';
-import WorldMap from 'assets/world.json';
+import WorldMap from '@/assets/world.json';
 
 export default {
-  name: 'factory-map',
   computed: {
   },
   props: {
+    /**
+     * List of locations to place on the globe
+     */
     locations: {
       type: Array,
       required: true,
     },
+    /**
+     * Currently selected location of the available locations
+     */
     selectedLocation: {
       type: Object,
       required: true,
     },
+    /**
+     * Set the color everything most elements will be based on <'r, g, b'>
+     */
+    color: {
+      type: String,
+      required: false,
+      default: '255, 255, 255',
+    },
+    /**
+     * If you need to set a static width, you can use this
+     */
+    width: {
+      type: Number,
+      required: false,
+      default: 0,
+    },
+    /**
+     * If you need to set a static height, you can use this
+     */
+    height: {
+      type: Number,
+      required: false,
+      default: 0,
+    },
   },
   data() {
     return {
-      width: 0,
-      height: 0,
+      calculatedWidth: 0,
+      calculatedHeight: 0,
       projection: null,
       path: null,
       ctx: null,
@@ -51,16 +80,16 @@ export default {
   },
   methods: {
     handleResize() {
-      this.width = this.$el.clientWidth - 10;
-      this.height = this.$el.clientHeight - 10;
+      this.calculatedWidth = this.width || this.$el.clientWidth - 10;
+      this.calculatedHeight = this.height || this.$el.clientHeight - 10;
 
       const canvas = this.$refs.canvas;
 
       this.ctx = select(canvas).node().getContext('2d');
 
       this.projection = geoOrthographic()
-            .translate([this.width / 2, this.height / 2])
-            .scale(Math.min(this.height, this.width) / 2 - 20)
+            .translate([this.calculatedWidth / 2, this.calculatedHeight / 2])
+            .scale(Math.min(this.calculatedHeight, this.calculatedWidth) / 2 - 20)
             .clipAngle(90)
             .precision(0.6);
       this.path = geoPath()
@@ -70,11 +99,6 @@ export default {
       this.tween();
     },
     initialize() {
-      // const factories = this.locations.map(f => ({
-      //   id: f.seed,
-      //   type: 'Point',
-      //   coordinates: [f.location.lat, f.location.lon],
-      // }));
       const factories = this.locations.map(f => ({
         id: f.seed,
         type: 'Feature',
@@ -88,10 +112,6 @@ export default {
       }));
 
       const land = feature(WorldMap, WorldMap.objects.land);
-      // const factories = feature(WorldMap, {
-      //   type: 'GeometryCollection',
-      //   geometries: factoryLocations,
-      // }).features;
       const borders = mesh(WorldMap, WorldMap.objects.countries, function(a, b) { return a !== b; });
 
       this.mapData = { land, factories, borders };
@@ -109,13 +129,13 @@ export default {
           return function(t) {
             vm.projection.rotate(r(t));
 
-            vm.ctx.clearRect(0, 0, vm.width, vm.height);
+            vm.ctx.clearRect(0, 0, vm.calculatedWidth, vm.calculatedHeight);
 
             // Fill normal land
-            vm.ctx.fillStyle = "rgba(230, 230, 255, .2)", vm.ctx.beginPath(), vm.path(land), vm.ctx.fill();
+            vm.ctx.fillStyle = `rgba(${vm.color}, .2)`, vm.ctx.beginPath(), vm.path(land), vm.ctx.fill();
 
             // Fill factories
-            vm.ctx.fillStyle = "rgba(255, 255, 255, .5)";
+            vm.ctx.fillStyle = `rgba(${vm.color}, .5)`;
             factories.forEach((f) => {
               vm.ctx.beginPath();
               vm.path(f);
@@ -123,13 +143,13 @@ export default {
             });
 
             // Fill selected factory
-            vm.ctx.fillStyle = "rgba(255, 5, 5, 1)", vm.ctx.beginPath(), vm.path(selected), vm.ctx.fill();
+            vm.ctx.fillStyle = 'rgba(255, 5, 5, 1)', vm.ctx.beginPath(), vm.path(selected), vm.ctx.fill();
 
             // Stroke borders
-            vm.ctx.strokeStyle = "rgba(255, 255, 255, .6)", vm.ctx.lineWidth = .5, vm.ctx.beginPath(), vm.path(borders), vm.ctx.stroke();
+            vm.ctx.strokeStyle = `rgba(${vm.color}, .6)`, vm.ctx.lineWidth = .5, vm.ctx.beginPath(), vm.path(borders), vm.ctx.stroke();
 
             // Stroke globe
-            vm.ctx.strokeStyle = "rgba(230, 230, 255, .05)", vm.ctx.lineWidth = 2, vm.ctx.beginPath(), vm.path({ type: 'Sphere' }), vm.ctx.stroke();
+            vm.ctx.strokeStyle = `rgba(${vm.color}, .05)`, vm.ctx.lineWidth = 2, vm.ctx.beginPath(), vm.path({ type: 'Sphere' }), vm.ctx.stroke();
           };
         })
         .transition();

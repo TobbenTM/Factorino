@@ -15,12 +15,14 @@ fontawesome.library.add(
   require('@fortawesome/fontawesome-free-solid/faUser'),
   require('@fortawesome/fontawesome-free-solid/faSync'),
   require('@fortawesome/fontawesome-free-solid/faPlus'),
+  require('@fortawesome/fontawesome-free-solid/faBars'),
   require('@fortawesome/fontawesome-free-solid/faQuestionCircle'),
   require('@fortawesome/fontawesome-free-solid/faExclamationTriangle'),
   require('@fortawesome/fontawesome-free-solid/faSignOutAlt'),
 
   // Brands
   require('@fortawesome/fontawesome-free-brands/faSteam'),
+  require('@fortawesome/fontawesome-free-brands/faGithub'),
 );
 
 export default FontAwesomeIcon;

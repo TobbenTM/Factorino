@@ -1,18 +1,10 @@
+@import url('https://fonts.googleapis.com/css?family=Roboto:300,400,700');
 
 html, body {
   margin: 0;
   padding: 0;
   height: 100%;
-  color: #FFFFFF;
-  background: #232B40;
-  font-family: 'Segoe UI', Roboto, Ubuntu, 'Open Sans', 'Helvetica Neue', sans-serif;
-}
-
-a {
-  color: #FFFFFF;
-  text-decoration: none;
-
-  &:visited {
-    color: #FFFFFF;
-  }
+  font-family: 'Roboto', sans-serif;
+  background: #424242;
+  color: #ffffff;
 }

@@ -58,9 +58,10 @@ namespace FNO.ReadModel
             }
         }
 
-        public void OnEndReached(string topic, int partition, long offset)
+        public Task OnEndReached(string topic, int partition, long offset)
         {
             // noop
+            return Task.CompletedTask;
         }
 
         public void Run()

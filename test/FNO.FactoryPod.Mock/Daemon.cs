@@ -6,6 +6,8 @@ using FNO.EventSourcing;
 using FNO.EventStream;
 using Microsoft.Extensions.Configuration;
 using Serilog;
+using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace FNO.FactoryPod.Mock
@@ -20,8 +22,11 @@ namespace FNO.FactoryPod.Mock
         private KafkaConsumer _consumer;
         private KafkaProducer _producer;
 
+        private readonly List<Guid> _fakeFactories;
+
         public Daemon()
         {
+            _fakeFactories = new List<Guid>();
         }
 
         public void Init(IConfiguration configuration, ILogger logger)
@@ -34,20 +39,29 @@ namespace FNO.FactoryPod.Mock
             _producer = new KafkaProducer(_configurationModel, _logger);
         }
 
-        public async Task HandleEvent<TEvent>(TEvent evnt) where TEvent : IEvent
+        public Task HandleEvent<TEvent>(TEvent evnt) where TEvent : IEvent
         {
             if (typeof(TEvent) == typeof(FactoryProvisionedEvent))
             {
                 var factoryCreated = evnt as FactoryProvisionedEvent;
-                _logger.Information($"Factory provisioned: {factoryCreated.EntityId}, starting fake factory..");
-                var response = new FactoryOnlineEvent(factoryCreated.EntityId);
-                await Task.Delay(3000).ContinueWith((_) => _producer.Produce(KafkaTopics.EVENTS, response));
+                if (!_fakeFactories.Contains(factoryCreated.EntityId))
+                {
+                    _fakeFactories.Add(factoryCreated.EntityId);
+                }
             }
+            return Task.CompletedTask;
         }
 
-        public void OnEndReached(string topic, int partition, long offset)
+        public async Task OnEndReached(string topic, int partition, long offset)
         {
-            // noop
+            while(_fakeFactories.Count > 0)
+            {
+                var factory = _fakeFactories[0];
+                _fakeFactories.RemoveAt(0);
+                _logger.Information($"Factory provisioned: {factory}, starting fake factory..");
+                var response = new FactoryOnlineEvent(factory);
+                await Task.Delay(3000).ContinueWith((_) => _producer.Produce(KafkaTopics.EVENTS, response));
+            }
         }
 
         public void Run()

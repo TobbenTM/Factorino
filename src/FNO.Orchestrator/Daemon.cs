@@ -38,6 +38,7 @@ namespace FNO.Orchestrator
         public void OnEndReached(string topic, int partition, long offset)
         {
             // noop
+            return Task.CompletedTask;
         }
 
         public void Run()

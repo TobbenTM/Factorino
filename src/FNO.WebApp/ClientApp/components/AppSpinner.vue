@@ -1,18 +1,22 @@
 <template>
   <div class="spinner">
     <img src="@/assets/logo-outer.png" class="spin"/>
-    <img src="@/assets/logo-inner.png"/>
+    <img src="@/assets/logo-inner.png" class="static"/>
     <h3 v-if="text">{{ text }}</h3>
   </div>
 </template>
 
 <script>
 export default {
-  props: ['text'],
-  data() {
-    return {
-
-    };
+  props: {
+    /**
+     * Optional loading text
+     */
+    text: {
+      type: String,
+      required: false,
+      default: null,
+    }
   },
 };
 </script>
@@ -28,20 +32,24 @@ export default {
     height: auto;
     width: auto;
     max-width: 100%;
-    position: absolute;
     left: 0;
     top: 0;
+
+    &.spin {
+      animation-name: spin;
+      animation-duration: 7500ms;
+      animation-iteration-count: infinite;
+      animation-timing-function: linear;
+    }
+
+    &.static {
+      position: absolute;
+    }
   }
-  > img.spin {
-    animation-name: spin;
-    animation-duration: 7500ms;
-    animation-iteration-count: infinite;
-    animation-timing-function: linear;
-  }
+
   > h3 {
     position: relative;
     margin: 0;
-    padding-top: 256px;
     font-weight: 100;
     font-size: 2em;
     user-select: none;
