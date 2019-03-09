@@ -11,7 +11,7 @@
         v-for="(resource, index) in location.resources"
         :key="index"
       >
-        <factorio-icon :path="mapResource(resource)" />
+        <factorio-icon :path="resource.entity.icon" />
       </li>
     </ul>
   </div>
@@ -27,28 +27,6 @@ export default {
     selected: {
       type: Boolean,
       required: true,
-    },
-  },
-  methods: {
-    mapResource(resource) {
-      switch (resource) {
-        case 'coal':
-          return 'icons/coal';
-        case 'stone':
-          return 'icons/stone';
-        case 'iron':
-          return 'icons/iron-ore';
-        case 'copper':
-          return 'icons/copper-ore';
-        case 'uranium':
-          return 'icons/uranium-ore';
-        case 'water':
-          return 'icons/fluid/water';
-        case 'oil':
-          return 'icons/fluid/crude-oil';
-        default:
-          return null;
-      }
     },
   },
 };

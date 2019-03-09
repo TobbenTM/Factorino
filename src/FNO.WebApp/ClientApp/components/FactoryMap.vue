@@ -104,7 +104,7 @@ export default {
         type: 'Feature',
         geometry: {
           type: 'Point',
-          coordinates: [f.location.lon, f.location.lat],
+          coordinates: [f.longitude, f.latitude],
         },
         properties: {
           name: f.name,

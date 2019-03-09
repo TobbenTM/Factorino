@@ -94,7 +94,7 @@ export default {
   data() {
     return {
       State,
-      selectedLocation: locations[0],
+      selectedLocation: null,
       creating: false,
       pipeline: {
         stream: State.WAITING,
@@ -103,6 +103,9 @@ export default {
         online: State.WAITING,
       },
     };
+  },
+  created() {
+    this.selectedLocation = this.locations[0];
   },
   methods: {
     ...mapActions('factory', [ 'loadFactories' ]),

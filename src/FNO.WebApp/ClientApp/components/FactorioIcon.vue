@@ -1,5 +1,5 @@
 <template>
-  <img :src="`graphics/${path}.png`" />
+  <img :src="path" />
 </template>
 
 <script>
