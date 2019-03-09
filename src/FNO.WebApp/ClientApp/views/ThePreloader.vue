@@ -16,6 +16,7 @@ export default{
 <style lang="scss" scoped>
 .preloader {
   position: absolute;
+  background: #424242;
   height: 100%;
   width: 100%;
   top: 0;

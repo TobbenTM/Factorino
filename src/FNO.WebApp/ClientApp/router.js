@@ -13,17 +13,17 @@ const router = new VueRouter({
     {
       path: 'world',
       name: 'world',
-      component: () => import('@/views/TheWorld'),
+      component: () => import(/* webpackChunkName: "world" */ '@/views/TheWorld'),
     },
     {
       path: 'factory',
       name: 'factory',
-      component: () => import('@/views/TheFactory'),
+      component: () => import(/* webpackChunkName: "factory" */ '@/views/TheFactory'),
     },
     {
       path: 'market',
       name: 'market',
-      component: () => import('@/views/TheMarket'),
+      component: () => import(/* webpackChunkName: "market" */ '@/views/TheMarket'),
     },
   ],
 });

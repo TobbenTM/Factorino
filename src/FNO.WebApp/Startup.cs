@@ -54,6 +54,7 @@ namespace FNO.WebApp
 
             services.AddScoped<IPlayerRepository, PlayerRepository>();
             services.AddScoped<IFactoryRepository, FactoryRepository>();
+            services.AddScoped<IFactoryLocationRepository, FactoryLocationRepository>();
             services.AddScoped<ICorporationRepository, CorporationRepository>();
             services.AddScoped<IEventStore, KafkaProducer>();
 

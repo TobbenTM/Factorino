@@ -66,11 +66,10 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex';
+import { mapState, mapActions } from 'vuex';
 import FactoryMap from '../FactoryMap';
 import LocationList from './LocationList';
 import StepItem from './StepItem';
-import Locations from '@/factory-locations';
 import Inlay from '@/directives/inlay';
 
 const State = {
@@ -89,11 +88,13 @@ export default {
   directives: {
     Inlay,
   },
+  computed: {
+    ...mapState([ 'locations' ]),
+  },
   data() {
     return {
       State,
-      locations: Locations,
-      selectedLocation: Locations[0],
+      selectedLocation: locations[0],
       creating: false,
       pipeline: {
         stream: State.WAITING,

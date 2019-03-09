@@ -1,9 +1,9 @@
 <template>
   <div id="app">
     <transition name="el-fade-in">
-      <the-layout v-if="loadedUser"/>
-      <the-preloader v-else-if="started"/>
+      <the-preloader v-if="!loaded"/>
     </transition>
+    <the-layout/>
   </div>
 </template>
 
@@ -21,21 +21,27 @@ export default{
   computed: {
     ...mapState('user', [
       'loadedUser',
-    ])
+    ]),
+    ...mapState([
+      'loadedXsrf',
+      'loadedLocations',
+    ]),
+    loaded() {
+      return this.loadedUser && this.loadedXsrf && this.loadedLocations;
+    },
   },
   data() {
     return {
-      started: false,
     };
   },
   methods: {
     ...mapActions('user', ['loadUser']),
-    ...mapActions(['getXsrfToken']),
+    ...mapActions(['getXsrfToken', 'loadLocations']),
   },
   mounted() {
     this.getXsrfToken();
     this.loadUser();
-    this.started = true;
+    this.loadLocations();
   },
 }
 </script>

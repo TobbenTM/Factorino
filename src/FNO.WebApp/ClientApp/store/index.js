@@ -11,7 +11,10 @@ Vue.use(Vuex);
 // State
 const rootState = {
   xsrf: null,
+  loadedXsrf: false,
   error: null,
+  locations: [],
+  loadedLocations: false,
   navMenuActive: false,
 };
 
@@ -19,9 +22,14 @@ const rootState = {
 const mutations = {
   xsrfTokenFetched(state, token) {
     state.xsrf = token;
+    state.loadedXsrf = true;
   },
   error(state, err) {
     state.error = err;
+  },
+  locationsLoaded(state, locations) {
+    state.locations = locations;
+    state.loadedLocations = true;
   },
   navMenuToggled(state) {
     state.navMenuActive = !state.navMenuActive;
@@ -34,6 +42,14 @@ const actions = {
     try {
       const response = await axios.get('/api/xsrf');
       commit('xsrfTokenFetched', response.data);
+    } catch (err) {
+      commit('error', err);
+    }
+  },
+  async loadLocations({ commit }) {
+    try {
+      const response = await axios.get('/api/factory/locations');
+      commit('locationsLoaded', response.data);
     } catch (err) {
       commit('error', err);
     }

@@ -14,6 +14,9 @@ namespace FNO.Domain.Models
         public long LastSeen { get; set; }
         public int PlayersOnline { get; set; }
 
+        public Guid LocationId { get; set; }
+        public FactoryLocation Location { get; set; }
+
         public Guid OwnerId { get; set; }
         public Player Owner { get; set; }
 

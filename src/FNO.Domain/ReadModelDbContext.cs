@@ -10,6 +10,8 @@ namespace FNO.Domain
     {
         // Factories
         public DbSet<Factory> Factories { get; set; }
+        // FactoryLocations
+        public DbSet<FactoryLocation> FactoryLocations { get; set; }
         // FactoryTrainstops
         // Warehouses
         // public DbSet<Warehouse> Warehouses { get; set; }
@@ -108,6 +110,7 @@ namespace FNO.Domain
                     Name = "Bank of Nauvis - HQ",
                     FactoryId = systemId,
                     OwnerId = systemId,
+                    LocationId = Guid.Parse("00000000-0000-10CA-7104-000000000002"),
                 });
 
             // Seeding the market with infinite (bad) buy orders
@@ -134,6 +137,34 @@ namespace FNO.Domain
 
             modelBuilder.Entity<FactorioTechnology>()
                 .HasData(Seed.TechnologyLibrary.Data());
+
+            // FactorioLocationResource is the many-to-many from location to entities
+            modelBuilder.Entity<FactoryLocationResource>()
+                .HasKey(x => new { x.EntityId, x.LocationId });
+
+            modelBuilder.Entity<FactoryLocationResource>()
+                .HasOne(r => r.Location)
+                .WithMany(l => l.Resources);
+
+            // Don't really want a navigation property on the FactorioEntity
+            modelBuilder.Entity<FactoryLocationResource>()
+                .HasOne(r => r.Entity)
+                .WithMany();
+
+            var locationData = Seed.FactoryLocations.Data();
+
+            modelBuilder.Entity<FactoryLocation>()
+                .HasData(locationData.Select(d => d.location).ToArray());
+
+            var locationResources = locationData.SelectMany(d => d.resources.Select(r =>
+            {
+                var intermediate = r;
+                intermediate.LocationId = d.location.LocationId;
+                return intermediate;
+            })).ToArray();
+
+            modelBuilder.Entity<FactoryLocationResource>()
+                .HasData(locationResources);
 
             modelBuilder.Entity<Player>()
                 .HasIndex(p => p.SteamId)

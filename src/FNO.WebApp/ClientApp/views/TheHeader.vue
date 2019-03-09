@@ -93,6 +93,10 @@ export default{
   &__user {
     grid-area: user;
 
+    a {
+      vertical-align: text-bottom;
+    }
+
     .user-info {
       display: flex;
       height: 100%;
