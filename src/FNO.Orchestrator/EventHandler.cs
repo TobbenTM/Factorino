@@ -23,6 +23,8 @@ namespace FNO.Orchestrator
             {
                 FactoryId = evnt.EntityId,
                 State = FactoryState.Creating,
+                Seed = evnt.LocationSeed,
+                LocationId = evnt.LocationId,
             });
             return Task.CompletedTask;
         }

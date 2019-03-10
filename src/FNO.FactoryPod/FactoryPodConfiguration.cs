@@ -16,12 +16,10 @@ namespace FNO.FactoryPod
     {
         public Guid FactoryId{ get; set; }
         public string Seed { get; set; }
-        public string SeedPath { get; set; }
         public string SavePath { get; set; }
         public string DataPath { get; set; }
         public string SaveFile { get; set; }
 
-        public string SeedFilePath => Path.GetFullPath(Path.Combine(SeedPath, Seed + ".zip"));
         public string FactoryDirectoryPath => Path.GetFullPath(Path.Combine(SavePath, FactoryId.ToString()));
         public string FactorySavePath => Path.GetFullPath(Path.Combine(FactoryDirectoryPath, SaveFile));
     }

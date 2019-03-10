@@ -1,14 +1,74 @@
-﻿using FNO.Domain.Models;
+﻿using Docker.DotNet;
+using Docker.DotNet.Models;
+using FNO.Domain.Models;
+using Serilog;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace FNO.Orchestrator.Docker
 {
     internal class DockerProvisioner : IProvisioner
     {
-        public Task<ProvisioningResult> ProvisionFactory(Factory factory)
+        private static string FACTORIO_PORT = "34197/udp";
+
+        private readonly DockerConfiguration _configuration;
+        private readonly ILogger _logger;
+        private readonly DockerClient _client;
+
+        public DockerProvisioner(DockerConfiguration configuration, ILogger logger)
         {
-            throw new NotImplementedException();
+            _configuration = configuration;
+            _logger = logger;
+
+            if (configuration.Native)
+            {
+                var socket = Environment.OSVersion.Platform == PlatformID.Win32NT ?
+                    "npipe://./pipe/docker_engine" : "unix:///var/run/docker.sock";
+                _logger.Information($"Using the native Docker provisioner with socket/pipe '{socket}'");
+                _client = new DockerClientConfiguration(new Uri(socket))
+                    .CreateClient();
+            }
+            else
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        public async Task<ProvisioningResult> ProvisionFactory(Factory factory)
+        {
+            _logger.Information($"Provisioning factory {factory.FactoryId}...");
+
+            var options = new CreateContainerParameters
+            {
+                Image = "factorino/factory-pod",
+                Name = $"factory-pod-{factory.FactoryId}",
+                ExposedPorts = new Dictionary<string, EmptyStruct>
+                {
+                    { FACTORIO_PORT, new EmptyStruct() },
+                },
+                Env = new List<string>
+                {
+                    $"factorino__factoryId={factory.FactoryId}",
+                    $"factorino__seed={factory.Seed}",
+                },
+                HostConfig = new HostConfig
+                {
+                    PublishAllPorts = true,
+                },
+            };
+            var response = await _client.Containers.CreateContainerAsync(options);
+
+            var started = await _client.Containers.StartContainerAsync(response.ID, new ContainerStartParameters());
+            var instance = await _client.Containers.InspectContainerAsync(response.ID);
+            
+            return new ProvisioningResult
+            {
+                ResourceId = response.ID,
+                Port = int.Parse(instance.NetworkSettings.Ports[FACTORIO_PORT].Single().HostPort),
+                Host = instance.NetworkSettings.IPAddress,
+            };
         }
     }
 }

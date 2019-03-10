@@ -14,6 +14,9 @@ namespace FNO.Domain.Models
         public long LastSeen { get; set; }
         public int PlayersOnline { get; set; }
 
+        // The location seed is kept on entity as well (location might change, seed will not)
+        public string Seed { get; set; }
+
         public Guid LocationId { get; set; }
         public FactoryLocation Location { get; set; }
 

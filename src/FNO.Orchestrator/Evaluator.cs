@@ -2,6 +2,7 @@
 using FNO.Domain.Events.Factory;
 using FNO.Domain.Models;
 using Serilog;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -24,11 +25,28 @@ namespace FNO.Orchestrator
             var changeSet = new List<IEvent>();
 
             // For all factories in a creation state, we need to provision resources
-            foreach (var factory in state.Factories.Where(f => f.State == FactoryState.Creating))
+            var factoriesToProvision = state.Factories
+                .Where(f => f.State == FactoryState.Creating)
+                .ToList();
+            _logger.Information($"Provisioning {factoriesToProvision.Count()} factories..");
+            foreach (var factory in factoriesToProvision)
             {
-                var result = await _provisioner.ProvisionFactory(factory);
-                var evnt = new FactoryProvisionedEvent(factory.FactoryId, null);
-                changeSet.Add(evnt);
+                try
+                {
+                    var result = await _provisioner.ProvisionFactory(factory);
+                    var evnt = new FactoryProvisionedEvent(factory.FactoryId, null)
+                    {
+                        ResourceId = result.ResourceId,
+                        Port = result.Port,
+                        Host = result.Host,
+                    };
+                    _logger.Information($"Successfully provisioned resources for factory {factory.FactoryId}, producing event..");
+                    changeSet.Add(evnt);
+                }
+                catch (Exception e)
+                {
+                    _logger.Error(e, $"Could not provision resources for factory {factory.FactoryId}!");
+                }
             }
 
             return changeSet;

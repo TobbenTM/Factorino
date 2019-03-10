@@ -1,4 +1,7 @@
 
+.git/
+.vs/
+.vscode/
 charts/
 infrastructure/
-seed/
+media/

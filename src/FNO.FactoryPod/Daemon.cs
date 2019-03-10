@@ -46,6 +46,8 @@ namespace FNO.FactoryPod
                 EnableRaisingEvents = true,
             };
 
+            _logger.Information($"Starting factorio using executable '{_factorioProc.StartInfo.FileName}', arguments: '{_factorioProc.StartInfo.Arguments}'");
+
             _factorioProc.OutputDataReceived += new DataReceivedEventHandler(FactorioOutputHandler);
             _factorioProc.ErrorDataReceived += new DataReceivedEventHandler(FactorioErrorHandler);
             _factorioProc.Exited += new EventHandler(FactorioProcessHandler);
@@ -112,6 +114,8 @@ namespace FNO.FactoryPod
 
                 using (var sw = File.CreateText(Path.GetFullPath(configPath)))
                 {
+                    sw.WriteLine("[path]");
+                    sw.WriteLine("read-data=__PATH__executable__/../../data");
                     sw.WriteLine($"write-data={_configuration.Factorino.DataPath}");
                 }
 
@@ -135,9 +139,15 @@ namespace FNO.FactoryPod
             var destFile = _configuration.Factorino.FactorySavePath;
             if (!File.Exists(destFile))
             {
-                _logger.Information($"Factorio seed file not found, importing to {destFile} from {_configuration.Factorino.SeedFilePath}...");
+                var seedPath = $"{GetType().Namespace}.Seed.{_configuration.Factorino.Seed}.zip";
+                _logger.Information($"Factorio seed file not found, importing to {destFile} from embedded resource {seedPath}...");
 
-                File.Copy(_configuration.Factorino.SeedFilePath, destFile);
+                var seed = GetType().Assembly.GetManifestResourceStream(seedPath);
+                using (var save = File.Create(destFile))
+                {
+                    seed.Seek(0, SeekOrigin.Begin);
+                    seed.CopyTo(save);
+                }
 
                 _logger.Information($"Successfully imported seed {_configuration.Factorino.Seed} into {destFile}!");
             }
