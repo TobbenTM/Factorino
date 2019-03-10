@@ -5,6 +5,6 @@ namespace FNO.Orchestrator
 {
     public interface IProvisioner
     {
-        Task ProvisionFactory(Factory factory);
+        Task<ProvisioningResult> ProvisionFactory(Factory factory);
     }
 }

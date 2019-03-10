@@ -94,7 +94,8 @@ namespace FNO.WebApp.Services
         public Task StartAsync(CancellationToken cancellationToken)
         {
             _consumer.Subscribe(
-                new TopicPartitionOffset(KafkaTopics.EVENTS, 0, Offset.End)
+                new TopicPartitionOffset(KafkaTopics.EVENTS, 0, Offset.End),
+                new TopicPartitionOffset(KafkaTopics.FACTORY_ACTIVITY, 0, Offset.End)
             );
             return Task.CompletedTask;
         }

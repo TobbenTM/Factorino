@@ -19,6 +19,7 @@ fontawesome.library.add(
   require('@fortawesome/fontawesome-free-solid/faTimes'),
   require('@fortawesome/fontawesome-free-solid/faCheck'),
   require('@fortawesome/fontawesome-free-solid/faQuestionCircle'),
+  require('@fortawesome/fontawesome-free-solid/faCheckCircle'),
   require('@fortawesome/fontawesome-free-solid/faExclamationTriangle'),
   require('@fortawesome/fontawesome-free-solid/faSignOutAlt'),
 

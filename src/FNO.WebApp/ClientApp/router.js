@@ -11,19 +11,28 @@ const router = new VueRouter({
       redirect: 'world',
     },
     {
-      path: 'world',
+      path: '/world',
       name: 'world',
       component: () => import(/* webpackChunkName: "world" */ '@/views/TheWorld'),
     },
     {
-      path: 'factory',
+      path: '/factory',
       name: 'factory',
       component: () => import(/* webpackChunkName: "factory" */ '@/views/TheFactory'),
     },
     {
-      path: 'market',
+      path: '/market',
       name: 'market',
       component: () => import(/* webpackChunkName: "market" */ '@/views/TheMarket'),
+    },
+    {
+      path: '/player',
+      name: 'player',
+      component: () => import(/* webpackChunkName: "player" */ '@/views/ThePlayer'),
+    },
+    {
+      path: '*',
+      component: () => import(/* webpackChunkName: "notfound" */ '@/views/Errors/NotFound'),
     },
   ],
 });

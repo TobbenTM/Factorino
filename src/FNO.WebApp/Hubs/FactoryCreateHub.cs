@@ -22,7 +22,7 @@ namespace FNO.WebApp.Hubs
             _eventStore = eventStore;
         }
 
-        public async Task<CreatedEntityResult> CreateFactory(string seed)
+        public async Task<CreatedEntityResult> CreateFactory(Guid locationId)
         {
             var player = await _playerRepo.GetPlayer(Context.User);
 
@@ -31,7 +31,7 @@ namespace FNO.WebApp.Hubs
             // We need to receive all events for this factory from now on
             await Subscribe(factoryId);
             
-            var evnt = new FactoryCreatedEvent(factoryId, player);
+            var evnt = new FactoryCreatedEvent(factoryId, locationId, player);
             var results = await _eventStore.ProduceAsync(evnt);
 
             return new CreatedEntityResult

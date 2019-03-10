@@ -24,6 +24,7 @@ export default{
   display: flex;
   justify-items: center;
   align-items: center;
+  z-index: 999;
 }
 </style>
 

@@ -67,9 +67,9 @@
 
 <script>
 import { mapState, mapActions } from 'vuex';
-import FactoryMap from '../FactoryMap';
 import LocationList from './LocationList';
 import StepItem from './StepItem';
+import FactoryMap from '@/components/FactoryMap';
 import Inlay from '@/directives/inlay';
 
 const State = {
@@ -154,7 +154,7 @@ export default {
       this.pipeline.create = State.WORKING;
 
       try {
-        const result = await this.hub.invoke('CreateFactory', this.selectLocation.seed);
+        const result = await this.hub.invoke('CreateFactory', this.selectedLocation.locationId);
       } catch(err) {
         this.pipeline.create = State.ERROR;
       }

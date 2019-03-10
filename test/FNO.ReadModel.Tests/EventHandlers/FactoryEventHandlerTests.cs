@@ -17,10 +17,11 @@ namespace FNO.ReadModel.Tests.EventHandlers
             {
                 FactoryId = Guid.NewGuid(),
                 State = FactoryState.Creating,
+                LocationId = Guid.NewGuid(),
             };
 
             // Act
-            await When(new FactoryCreatedEvent(expectedFactory.FactoryId, null));
+            await When(new FactoryCreatedEvent(expectedFactory.FactoryId, expectedFactory.LocationId, null));
 
             // Assert
             using (var dbContext = GetInMemoryDatabase())
@@ -28,6 +29,7 @@ namespace FNO.ReadModel.Tests.EventHandlers
                 Assert.NotEmpty(dbContext.Factories);
                 var factory = dbContext.Factories.First();
                 Assert.Equal(expectedFactory.FactoryId, factory.FactoryId);
+                Assert.Equal(expectedFactory.LocationId, factory.LocationId);
             }
         }
 
@@ -39,10 +41,11 @@ namespace FNO.ReadModel.Tests.EventHandlers
             {
                 FactoryId = Guid.NewGuid(),
                 State = FactoryState.Starting,
+                LocationId = Guid.NewGuid(),
             };
 
             // Act
-            await When(new FactoryCreatedEvent(expectedFactory.FactoryId, null));
+            await When(new FactoryCreatedEvent(expectedFactory.FactoryId, expectedFactory.LocationId, null));
             await When(new FactoryProvisionedEvent(expectedFactory.FactoryId, null));
 
             // Assert
@@ -63,10 +66,11 @@ namespace FNO.ReadModel.Tests.EventHandlers
             {
                 FactoryId = Guid.NewGuid(),
                 State = FactoryState.Online,
+                LocationId = Guid.NewGuid(),
             };
 
             // Act
-            await When(new FactoryCreatedEvent(expectedFactory.FactoryId, null));
+            await When(new FactoryCreatedEvent(expectedFactory.FactoryId, expectedFactory.LocationId, null));
             await When(new FactoryProvisionedEvent(expectedFactory.FactoryId, null));
             await When(new FactoryOnlineEvent(expectedFactory.FactoryId));
 

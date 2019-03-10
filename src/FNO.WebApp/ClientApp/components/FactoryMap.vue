@@ -1,5 +1,5 @@
 <template>
-  <div class="map">
+  <div class="map" v-on:resize="handleResize">
     <canvas
       :width="width || calculatedWidth"
       :height="height || calculatedHeight"
@@ -69,6 +69,12 @@ export default {
       mapData: null,
     };
   },
+  ready: function () {
+    window.addEventListener('resize', this.handleResize)
+  },
+  beforeDestroy: function () {
+    window.removeEventListener('resize', this.handleResize)
+  },
   mounted() {
     this.initialize();
     this.handleResize();
@@ -80,8 +86,8 @@ export default {
   },
   methods: {
     handleResize() {
-      this.calculatedWidth = this.width || this.$el.clientWidth - 10;
-      this.calculatedHeight = this.height || this.$el.clientHeight - 10;
+      this.calculatedWidth = this.width || Math.max(this.$el.clientWidth, this.$el.clientHeight);
+      this.calculatedHeight = this.height || Math.max(this.$el.clientWidth, this.$el.clientHeight);
 
       const canvas = this.$refs.canvas;
 
@@ -96,7 +102,9 @@ export default {
             .projection(this.projection)
             .context(this.ctx);
 
-      this.tween();
+      this.$nextTick(() => {
+        this.tween();
+      });
     },
     initialize() {
       const factories = this.locations.map(f => ({

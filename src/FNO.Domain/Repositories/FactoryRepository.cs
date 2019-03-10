@@ -26,6 +26,7 @@ namespace FNO.Domain.Repositories
         {
             return await _dbContext.Factories
                 .Include(f => f.Location)
+                .Include(f => f.Owner)
                 .Where(f => f.OwnerId == player.PlayerId)
                 .ToListAsync();
         }

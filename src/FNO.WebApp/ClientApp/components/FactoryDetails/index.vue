@@ -1,20 +1,21 @@
 <template>
   <div class="factory-list">
-    <factorio-panel
+    <factory-item
       v-for="factory in factories"
       :key="factory.factoryId"
-      title="Factory"
-      class="factory-list__item"
-    >
-      {{ factory.factoryId }}
-    </factorio-panel>
+      :factory="factory"
+    />
   </div>
 </template>
 
 <script>
 import { mapState } from 'vuex';
+import FactoryItem from './FactoryItem';
 
 export default{
+  components: {
+    FactoryItem,
+  },
   computed: {
     ...mapState('factory', [
       'factories',
@@ -27,10 +28,5 @@ export default{
 .factory-list {
   height: 100%;
   width: 100%;
-
-  &__item {
-    display: block;
-    margin: 15px;
-  }
 }
 </style>

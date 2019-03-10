@@ -48,6 +48,7 @@ namespace FNO.ReadModel.EventHandlers
                 FactoryId = evnt.EntityId,
                 OwnerId = evnt.Initiator.PlayerId,
                 State = FactoryState.Creating,
+                LocationId = evnt.LocationId,
             });
             return Task.CompletedTask;
         }

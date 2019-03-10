@@ -14,6 +14,10 @@
           text="Market"
           :route="{name: 'market'}"
         />
+        <factorio-button
+          text="Player"
+          :route="{name: 'player'}"
+        />
       </div>
     </factorio-panel>
   </div>

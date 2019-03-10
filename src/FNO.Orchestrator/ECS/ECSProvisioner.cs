@@ -6,7 +6,7 @@ namespace FNO.Orchestrator.ECS
 {
     internal class ECSProvisioner : IProvisioner
     {
-        public Task ProvisionFactory(Factory factory)
+        public Task<ProvisioningResult> ProvisionFactory(Factory factory)
         {
             throw new NotImplementedException();
         }

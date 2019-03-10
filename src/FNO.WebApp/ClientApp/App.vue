@@ -1,9 +1,9 @@
 <template>
   <div id="app">
     <transition name="el-fade-in">
-      <the-preloader v-if="!loaded"/>
+      <the-preloader v-if="showLoader"/>
     </transition>
-    <the-layout/>
+    <the-layout v-if="loaded"/>
   </div>
 </template>
 
@@ -32,7 +32,15 @@ export default{
   },
   data() {
     return {
+      showLoader: true,
     };
+  },
+  watch: {
+    loaded(loaded) {
+      if (loaded) {
+        setTimeout(() => this.showLoader = false, 1000);
+      }
+    },
   },
   methods: {
     ...mapActions('user', ['loadUser']),
