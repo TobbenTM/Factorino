@@ -10,7 +10,7 @@ namespace FNO.WebApp.Services
             app.UseSignalR(conf =>
             {
                 conf.MapHub<WorldHub>("/ws/world");
-                conf.MapHub<ActivityHub>("/ws/activity");
+                conf.MapHub<FactoryHub>("/ws/factory");
                 conf.MapHub<FactoryCreateHub>("/ws/factorycreate");
             });
 

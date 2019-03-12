@@ -1,6 +1,7 @@
 ﻿using Docker.DotNet;
 using Docker.DotNet.Models;
 using FNO.Domain.Models;
+using FNO.Orchestrator.Exceptions;
 using Serilog;
 using System;
 using System.Collections.Generic;
@@ -62,13 +63,33 @@ namespace FNO.Orchestrator.Docker
 
             var started = await _client.Containers.StartContainerAsync(response.ID, new ContainerStartParameters());
             var instance = await _client.Containers.InspectContainerAsync(response.ID);
-            
+
             return new ProvisioningResult
             {
                 ResourceId = response.ID,
                 Port = int.Parse(instance.NetworkSettings.Ports[FACTORIO_PORT].Single().HostPort),
                 Host = instance.NetworkSettings.IPAddress,
             };
+        }
+
+        public async Task DecommissionFactory(Factory factory)
+        {
+            _logger.Information($"Decommissioning factory {factory.FactoryId}...");
+            if (string.IsNullOrEmpty(factory.ResourceId))
+            {
+                throw new ArgumentException($"Factory {factory.FactoryId} does not have a resource id attached!");
+            }
+
+            var decommissioned = await _client.Containers.StopContainerAsync(factory.ResourceId, new ContainerStopParameters());
+
+            if (decommissioned)
+            {
+                await _client.Containers.RemoveContainerAsync(factory.ResourceId, new ContainerRemoveParameters());
+            }
+            else
+            {
+                throw new UnableToDecommissionException($"The Docker client was unable to stop factory pod {factory.ResourceId}!");
+            }
         }
     }
 }

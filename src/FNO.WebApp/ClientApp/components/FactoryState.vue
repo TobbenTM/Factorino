@@ -11,6 +11,14 @@
     <icon :icon="['fas', 'check-circle']"/>
     Online
   </span>
+  <span v-else-if="state === Destroying">
+    <icon :icon="['fas', 'spinner']" spin/>
+    Destroying
+  </span>
+  <span v-else-if="state === Destroyed">
+    <icon :icon="['fas', 'times-circle']"/>
+    Destroyed
+  </span>
   <span v-else>
     <icon :icon="['fas', 'question-circle']"/>
     Unknown
@@ -18,13 +26,7 @@
 </template>
 
 <script>
-// Mapped backend enum
-const FactoryState = {
-  Unknown: 0,
-  Creating: 1,
-  Starting: 2,
-  Online: 3,
-};
+import { FactoryState } from '@/enums';
 
 export default {
   computed: {

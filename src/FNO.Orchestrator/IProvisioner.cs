@@ -6,5 +6,6 @@ namespace FNO.Orchestrator
     public interface IProvisioner
     {
         Task<ProvisioningResult> ProvisionFactory(Factory factory);
+        Task DecommissionFactory(Factory factory);
     }
 }

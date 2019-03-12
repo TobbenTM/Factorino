@@ -10,5 +10,10 @@ namespace FNO.Orchestrator.K8
         {
             throw new NotImplementedException();
         }
+
+        public Task DecommissionFactory(Factory factory)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

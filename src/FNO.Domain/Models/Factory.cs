@@ -1,5 +1,7 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FNO.Domain.Models
 {
@@ -25,5 +27,9 @@ namespace FNO.Domain.Models
 
         public string CurrentlyResearchingId { get; set; }
         public FactorioTechnology CurrentlyResearching { get; set; }
+
+        // Other props useful for intermediate processing
+        [NotMapped, JsonIgnore]
+        public string ResourceId { get; set; }
     }
 }

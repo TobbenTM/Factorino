@@ -5,6 +5,7 @@
     :class="{
       'button--active': active,
       'button--small': small,
+      'button--disabled': disabled,
     }"
     :href="href || '#'"
     :target="target"
@@ -18,6 +19,7 @@
     class="button"
     :class="{
       'button--small': small,
+      'button--disabled': disabled,
     }"
     active-class="button--active"
   >
@@ -81,9 +83,18 @@ export default {
       required: false,
       default: false,
     },
+    /**
+     * Disable all interactivity
+     */
+    disabled: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   methods: {
     handleClick(e) {
+      if (this.disabled) return;
       if (!this.href) {
         e.preventDefault();
       }
@@ -112,6 +123,11 @@ export default {
     color: black;
   }
 
+  &--danger {
+    background: #980808;
+    color: white;
+  }
+
   &--active {
     @include inlay();
   }
@@ -127,6 +143,15 @@ export default {
 
   &:active {
     @include inlay();
+  }
+
+  &--disabled {
+    cursor: not-allowed;
+  }
+
+  &--disabled &:hover {
+    background: #46464b;
+    color: white;
   }
 }
 </style>

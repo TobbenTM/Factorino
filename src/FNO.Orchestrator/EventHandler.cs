@@ -6,7 +6,11 @@ using System.Threading.Tasks;
 
 namespace FNO.Orchestrator
 {
-    public class EventHandler : IEventHandler<FactoryCreatedEvent>, IEventHandler<FactoryProvisionedEvent>
+    public class EventHandler :
+        IEventHandler<FactoryCreatedEvent>,
+        IEventHandler<FactoryProvisionedEvent>,
+        IEventHandler<FactoryDestroyedEvent>,
+        IEventHandler<FactoryDecommissionedEvent>
     {
         private readonly State _state;
         private readonly ILogger _logger;
@@ -33,6 +37,21 @@ namespace FNO.Orchestrator
         {
             var factory = _state.GetFactory(evnt.EntityId);
             factory.State = FactoryState.Starting;
+            factory.ResourceId = evnt.ResourceId;
+            return Task.CompletedTask;
+        }
+
+        public Task Handle(FactoryDestroyedEvent evnt)
+        {
+            var factory = _state.GetFactory(evnt.EntityId);
+            factory.State = FactoryState.Destroying;
+            return Task.CompletedTask;
+        }
+
+        public Task Handle(FactoryDecommissionedEvent evnt)
+        {
+            var factory = _state.GetFactory(evnt.EntityId);
+            factory.State = FactoryState.Destroyed;
             return Task.CompletedTask;
         }
     }

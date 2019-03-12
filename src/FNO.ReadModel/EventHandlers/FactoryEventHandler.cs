@@ -13,6 +13,8 @@ namespace FNO.ReadModel.EventHandlers
         IEventHandler<FactoryCreatedEvent>,
         IEventHandler<FactoryProvisionedEvent>,
         IEventHandler<FactoryOnlineEvent>,
+        IEventHandler<FactoryDestroyedEvent>,
+        IEventHandler<FactoryDecommissionedEvent>,
         IEventHandler<FactoryOutgoingTrainEvent>,
         IEventHandler<FactoryResearchStartedEvent>,
         IEventHandler<FactoryResearchFinishedEvent>
@@ -41,6 +43,7 @@ namespace FNO.ReadModel.EventHandlers
             if (factory != null)
             {
                 factory.State = FactoryState.Starting;
+                factory.Port = evnt.Port;
             }
             return Task.CompletedTask;
         }
@@ -55,6 +58,26 @@ namespace FNO.ReadModel.EventHandlers
                 LocationId = evnt.LocationId,
                 Seed = evnt.LocationSeed,
             });
+            return Task.CompletedTask;
+        }
+
+        public Task Handle(FactoryDestroyedEvent evnt)
+        {
+            var factory = _dbContext.Factories.FirstOrDefault(f => f.FactoryId == evnt.EntityId);
+            if (factory != null)
+            {
+                factory.State = FactoryState.Destroying;
+            }
+            return Task.CompletedTask;
+        }
+
+        public Task Handle(FactoryDecommissionedEvent evnt)
+        {
+            var factory = _dbContext.Factories.FirstOrDefault(f => f.FactoryId == evnt.EntityId);
+            if (factory != null)
+            {
+                factory.State = FactoryState.Destroyed;
+            }
             return Task.CompletedTask;
         }
 

@@ -58,6 +58,16 @@ namespace FNO.Orchestrator
                 var handler = new EventHandler(_state, _logger);
                 await handler.Handle(provisionedEvent);
             }
+            else if (evnt is FactoryDestroyedEvent destroyedEvent)
+            {
+                var handler = new EventHandler(_state, _logger);
+                await handler.Handle(destroyedEvent);
+            }
+            else if (evnt is FactoryDecommissionedEvent decommissionedEvent)
+            {
+                var handler = new EventHandler(_state, _logger);
+                await handler.Handle(decommissionedEvent);
+            }
         }
 
         public async Task OnEndReached(string topic, int partition, long offset)

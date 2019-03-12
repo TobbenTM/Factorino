@@ -10,5 +10,10 @@ namespace FNO.Orchestrator.ECS
         {
             throw new NotImplementedException();
         }
+
+        public Task DecommissionFactory(Factory factory)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

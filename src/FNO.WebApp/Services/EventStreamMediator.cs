@@ -10,6 +10,8 @@ using Microsoft.Extensions.Hosting;
 using Serilog;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -28,6 +30,7 @@ namespace FNO.WebApp.Services
         public EventStreamMediator(
             IConfiguration configuration,
             ILogger logger,
+            IHubContext<FactoryHub, IEventHandlerClient> factoryHubContext,
             IHubContext<FactoryCreateHub, IEventHandlerClient> factoryCreateHubContext)
         {
             _configuration = configuration;
@@ -42,6 +45,15 @@ namespace FNO.WebApp.Services
                 typeof(FactoryCreatedEvent),
                 typeof(FactoryProvisionedEvent),
                 typeof(FactoryOnlineEvent));
+
+            RegisterHubContext(factoryHubContext.Clients,
+                typeof(FactoryCreatedEvent),
+                typeof(FactoryProvisionedEvent),
+                typeof(FactoryOnlineEvent),
+                typeof(FactoryDestroyedEvent),
+                typeof(FactoryDecommissionedEvent));
+
+            RegisterHubContext(factoryHubContext.Clients, GetDecendantsOfClass<FactoryActivityBaseEvent>());
         }
 
         private void RegisterHubContext(IHubClients<IEventHandlerClient> clients, params Type[] eventTypes)
@@ -103,6 +115,13 @@ namespace FNO.WebApp.Services
         {
             _consumer.Dispose();
             return Task.CompletedTask;
+        }
+
+        private static Type[] GetDecendantsOfClass<T>() where T : class
+        {
+            return Assembly.GetAssembly(typeof(T)).GetTypes()
+                .Where(myType => myType.IsClass && !myType.IsAbstract && myType.IsSubclassOf(typeof(T)))
+                .ToArray();
         }
     }
 }

@@ -30,6 +30,7 @@ namespace FNO.Domain.Repositories
                 .Include(f => f.Owner)
                 .Include(f => f.CurrentlyResearching)
                 .Where(f => f.OwnerId == player.PlayerId)
+                .Where(f => f.State != FactoryState.Destroyed)
                 .ToListAsync();
         }
     }

@@ -13,13 +13,15 @@ export default {
 };
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+@import '@/css/mixins.scss';
+
 img {
   height: 1.5em;
   padding: .2em;
-  border-radius: .2em;
   overflow: hidden;
   vertical-align: middle;
-  background: rgba(255, 255, 255, .3);
+  background: #706e70;
+  @include emboss();
 }
 </style>

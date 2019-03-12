@@ -42,7 +42,7 @@ namespace FNO.WebApp.Controllers
             _logger = logger;
         }
 
-        [HttpGet, Route("login")]
+        [HttpGet("login")]
         public Task SignIn()
         {
             return HttpContext.ChallengeAsync(SteamAuthenticationDefaults.AuthenticationScheme, new AuthenticationProperties
@@ -51,7 +51,7 @@ namespace FNO.WebApp.Controllers
             });
         }
 
-        [HttpGet, Route("register")]
+        [HttpGet("register")]
         [EnsureConsumerConsistency]
         public async Task<IActionResult> RegisterSteamUser()
         {

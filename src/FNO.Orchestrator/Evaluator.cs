@@ -50,6 +50,27 @@ namespace FNO.Orchestrator
                 }
             }
 
+            // For all factories in a destroying state, we need to decommission resources
+            var factoriesToDecommission = state.Factories
+                .Where(f => f.State == FactoryState.Destroying)
+                .ToList();
+            _logger.Information($"Decommissioning {factoriesToDecommission.Count()} factories..");
+            foreach (var factory in factoriesToDecommission)
+            {
+                try
+                {
+                    await _provisioner.DecommissionFactory(factory);
+                    var evnt = new FactoryDecommissionedEvent(factory.FactoryId, null);
+                    factory.State = FactoryState.Destroyed;
+                    _logger.Information($"Successfully decommissioned resources for factory {factory.FactoryId}, producing event..");
+                    changeSet.Add(evnt);
+                }
+                catch (Exception e)
+                {
+                    _logger.Error(e, $"Could not decommission resources for factory {factory.FactoryId}!");
+                }
+            }
+
             return changeSet;
         }
     }
