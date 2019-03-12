@@ -83,7 +83,7 @@ namespace FNO.FactoryPod
 
                 var sysEvents = FactorioEventFactory.TransformEvents(_configuration, events);
 
-                await _producer.Produce(KafkaTopics.FACTORY_ACTIVITY, sysEvents);
+                await _producer.Produce(KafkaTopics.EVENTS, sysEvents);
             }
         }
 
@@ -125,7 +125,7 @@ namespace FNO.FactoryPod
             var response = await _rcon.SendCommandAsync("/version");
             _logger.Information($"Got version response: {response}");
 
-            await _producer.Produce(KafkaTopics.FACTORY_ACTIVITY, new FactoryOnlineEvent(_configuration.Factorino.FactoryId));
+            await _producer.Produce(KafkaTopics.EVENTS, new FactoryOnlineEvent(_configuration.Factorino.FactoryId));
 
             _logger.Information($"Factory Online! Starting RCON poll..");
 

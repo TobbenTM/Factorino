@@ -12,5 +12,6 @@ namespace FNO.Domain.Repositories
         Task<Player> GetPlayer(Guid playerId);
         Task<Player> GetPlayer(ClaimsPrincipal user);
         Task<IEnumerable<CorporationInvitation>> GetInvitations(ClaimsPrincipal user);
+        Task<IEnumerable<WarehouseInventory>> GetInventory(Player player);
     }
 }

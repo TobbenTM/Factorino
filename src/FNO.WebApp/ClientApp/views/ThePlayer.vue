@@ -1,26 +1,45 @@
 <template>
   <factorio-panel title="Player" class="player">
-    <div v-if="loadingPlayer" class="player__loader">
+    <div v-if="loadingInventory" class="player__loader">
       <app-spinner text="Loading Player.."/>
     </div>
   </factorio-panel>
 </template>
 
 <script>
+import { mapState, mapActions } from 'vuex';
+
 export default{
   name: 'the-player',
+  computed: {
+    ...mapState('user', [
+      'user',
+      'inventory',
+      'loadingInventory'
+    ]),
+    remainingInventory() {
+      if (!this.inventory || this.inventory.length === 0) {
+        return [];
+      }
+      return this.inventory.map(item => {
+        const selectedItem = this.trainInventory.find(i => i.itemId == item.itemId);
+        if (selectedItem) {
+          item.quantity -= selectedItem.quantity;
+        }
+        return item;
+      });
+    },
+  },
   data() {
     return {
-      loadingPlayer: true,
+      trainInventory: [],
     };
   },
   mounted() {
-    this.loadPlayer();
+    this.loadInventory();
   },
   methods: {
-    async loadPlayer() {
-      this.loadingPlayer = true;
-    },
+    ...mapActions('user', ['loadInventory']),
   },
 }
 </script>

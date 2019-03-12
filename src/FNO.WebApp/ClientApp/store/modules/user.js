@@ -8,6 +8,8 @@ export default {
     loadingUser: false,
     invitations: [],
     loadingInvitations: false,
+    inventory: null,
+    loadingInventory: false,
   },
   mutations: {
     loadUser(state) {
@@ -28,6 +30,14 @@ export default {
       state.invitations = invitations;
       state.loadingInvitations = false;
     },
+    loadInventory(state) {
+      state.loadingInventory = true;
+      state.inventory = [];
+    },
+    loadedInventory(state, inventory) {
+      state.inventory = inventory;
+      state.loadingInventory = false;
+    },
   },
   actions: {
     async loadUser({ commit }) {
@@ -46,6 +56,15 @@ export default {
         commit('loadedInvitations', response.status === 204 ? [] : response.data);
       } catch (err) {
         commit('loadedInvitations', null);
+      }
+    },
+    async loadInventory({ commit }) {
+      commit('loadInventory');
+      try {
+        const response = await axios.get('/api/player/inventory');
+        commit('loadedInventory', response.status === 204 ? [] : response.data);
+      } catch (err) {
+        commit('loadedInventory', null);
       }
     },
   },

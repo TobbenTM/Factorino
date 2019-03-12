@@ -40,6 +40,7 @@ namespace FNO.Orchestrator
                         Port = result.Port,
                         Host = result.Host,
                     };
+                    factory.State = FactoryState.Starting;
                     _logger.Information($"Successfully provisioned resources for factory {factory.FactoryId}, producing event..");
                     changeSet.Add(evnt);
                 }

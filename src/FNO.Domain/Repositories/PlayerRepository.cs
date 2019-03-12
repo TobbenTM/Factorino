@@ -40,5 +40,13 @@ namespace FNO.Domain.Repositories
             var player = await GetPlayer(user);
             return player.Invitations;
         }
+
+        // TODO: Refactor this to not await the task, just return it
+        public async Task<IEnumerable<WarehouseInventory>> GetInventory(Player player)
+        {
+            return await _dbContext.WarehouseInventories
+                .Where(i => i.OwnerId == player.PlayerId)
+                .ToListAsync();
+        }
     }
 }
