@@ -9,7 +9,7 @@
         Factorino
       </div>
       <factorio-button
-        v-on:click="toggleNavMenu"
+        v-on:click="navMenuToggled"
         :active="navMenuActive"
         :small="true"
       >
@@ -48,7 +48,7 @@
 </template>
 
 <script>
-import { mapActions, mapState } from 'vuex';
+import { mapState, mapMutations } from 'vuex';
 
 export default{
   name: 'the-header',
@@ -57,7 +57,7 @@ export default{
     ...mapState(['navMenuActive']),
   },
   methods: {
-    ...mapActions(['toggleNavMenu']),
+    ...mapMutations(['navMenuToggled']),
   },
 };
 </script>

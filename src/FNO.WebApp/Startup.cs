@@ -38,7 +38,10 @@ namespace FNO.WebApp
             {
                 opts.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
             });
-            services.AddSignalR();
+            services.AddSignalR().AddJsonProtocol(opts =>
+            {
+                opts.PayloadSerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
+            });
             services.AddAntiforgery();
             services.AddFactorinoAuthentication(_configuration);
             services.AddSwaggerGen(opts =>

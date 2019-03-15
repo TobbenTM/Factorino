@@ -1,4 +1,5 @@
-﻿using FNO.Common;
+﻿using Confluent.Kafka;
+using FNO.Common;
 using FNO.EventStream;
 using Serilog;
 using System;
@@ -59,6 +60,8 @@ namespace FNO.FactoryPod
             _daemon.EnsureInitialSave();
             _daemon.EnsureModsInstalled();
             _daemon.Run();
+
+            _consumer.Subscribe(new TopicPartitionOffset(KafkaTopics.EVENTS, 0, 0));
 
             _resetEvent.WaitOne();
         }

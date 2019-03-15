@@ -29,7 +29,6 @@ namespace FNO.EventStream
 
             var config = new KafkaSettingsFactory()
                 .WithConfiguration(_configuration.Kafka)
-                //.WithDebugLogging()
                 .Build();
 
             _producer = new Producer<Null, string>(config, null, new StringSerializer(Encoding.UTF8));

@@ -28,7 +28,7 @@ export default{
       'loadingFactories',
     ]),
   },
-  async created() {
+  async mounted() {
     await this.loadFactories();
   },
   methods: {

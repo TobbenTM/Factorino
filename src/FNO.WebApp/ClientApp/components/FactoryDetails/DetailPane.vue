@@ -11,9 +11,15 @@
       <factorio-button
         class="button--danger"
         :small="true"
+        v-on:click="destroyFactory(factory)"
         :disabled="factory.state === FactoryStateEnum.Destroying || factory.state === FactoryStateEnum.Destroyed"
       >
-        <icon :icon="['fas', 'trash-alt']"/> Destroy
+        <template v-if="factory.state === FactoryStateEnum.Destroying">
+          <icon :icon="['fas', 'spinner']" spin/> Destroying..
+        </template>
+        <template v-else>
+          <icon :icon="['fas', 'trash-alt']"/> Destroy
+        </template>
       </factorio-button>
     </div>
   </fieldset>
@@ -23,6 +29,7 @@
 import { FactoryState as FactoryStateEnum } from '@/enums';
 import { formatTimestamp } from '@/filters/datetime';
 import FactoryState from '@/components/FactoryState';
+import { mapActions } from 'vuex';
 
 export default {
   props: {
@@ -47,6 +54,9 @@ export default {
       FactoryStateEnum,
     };
   },
+  methods: {
+    ...mapActions('factory', [ 'destroyFactory' ]),
+  }
 };
 </script>
 

@@ -27,6 +27,12 @@ namespace FNO.WebApp.Hubs
         }
 
         [Authorize]
+        public async Task<Factory> GetFactory(Guid factoryId)
+        {
+            return await _repo.GetFactory(factoryId);
+        }
+
+        [Authorize]
         public async Task<IEnumerable<Factory>> GetFactories()
         {
             var player = await _playerRepo.GetPlayer(Context.User);

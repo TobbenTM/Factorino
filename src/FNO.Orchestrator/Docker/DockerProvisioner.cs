@@ -57,6 +57,7 @@ namespace FNO.Orchestrator.Docker
                 HostConfig = new HostConfig
                 {
                     PublishAllPorts = true,
+                    NetworkMode = "factorino",
                 },
             };
             var response = await _client.Containers.CreateContainerAsync(options);

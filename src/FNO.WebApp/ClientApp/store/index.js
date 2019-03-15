@@ -25,7 +25,11 @@ const mutations = {
     state.loadedXsrf = true;
   },
   error(state, err) {
+    console.error('An error occured and was committed!', err);
     state.error = err;
+  },
+  errorCleared(state) {
+    state.error = null;
   },
   locationsLoaded(state, locations) {
     state.locations = locations;
@@ -53,9 +57,6 @@ const actions = {
     } catch (err) {
       commit('error', err);
     }
-  },
-  toggleNavMenu({ commit }) {
-    commit('navMenuToggled');
   },
 };
 

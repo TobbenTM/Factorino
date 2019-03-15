@@ -147,9 +147,11 @@ export default {
 
   &--disabled {
     cursor: not-allowed;
+    background: #46464b;
+    color: white;
   }
 
-  &--disabled &:hover {
+  &--disabled:hover {
     background: #46464b;
     color: white;
   }

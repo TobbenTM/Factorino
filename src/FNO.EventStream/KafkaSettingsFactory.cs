@@ -18,7 +18,10 @@ namespace FNO.EventStream
 
         public KafkaSettingsFactory WithConfiguration(KafkaConfiguration conf)
         {
-            return WithGroupId(conf.GroupId).WithBootstrapServers(conf.BootstrapServers);
+            return this
+                .WithGroupId(conf.GroupId)
+                .WithBootstrapServers(conf.BootstrapServers)
+                .WithDebugLogging(conf.DebugLogging);
         }
 
         public KafkaSettingsFactory WithGroupId(string groupId)
@@ -44,8 +47,9 @@ namespace FNO.EventStream
             return this;
         }
 
-        public KafkaSettingsFactory WithDebugLogging()
+        public KafkaSettingsFactory WithDebugLogging(bool enabled = true)
         {
+            if (!enabled) return this;
             _settings["debug"] = "all";
             _settings["log_level"] = 7;
             return this;

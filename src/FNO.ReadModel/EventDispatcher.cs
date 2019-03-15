@@ -42,7 +42,9 @@ namespace FNO.ReadModel
             _resolver.Register(() => new FactoryEventHandler(_dbContext, _logger),
                 typeof(FactoryCreatedEvent),
                 typeof(FactoryProvisionedEvent),
-                typeof(FactoryOnlineEvent));
+                typeof(FactoryOnlineEvent),
+                typeof(FactoryDestroyedEvent),
+                typeof(FactoryDecommissionedEvent));
         }
 
         public async Task Handle<TEvent>(TEvent evnt) where TEvent : IEvent

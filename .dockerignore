@@ -1,7 +1,10 @@
 
-.git/
-.vs/
-.vscode/
-charts/
-infrastructure/
-media/
+.git
+.vs
+.vscode
+charts
+infrastructure
+media
+bin
+obj
+node_modules

@@ -16,6 +16,7 @@ export default {
   mutations: {
     hubReady(state, hub) {
       state.hub = hub;
+      console.log('Factory hub ready!');
     },
     loadingFactories(state) {
       state.loadedFactories = false;
@@ -31,32 +32,43 @@ export default {
       const factory = findFactory(state, factoryId);
       factory.state = FactoryState.Destroying;
     },
+    $FactoryDecommissionedEvent(state, event) {
+      const factory = findFactory(state, event.entityId);
+      factory.state = FactoryState.Destroyed;
+    },
   },
   actions: {
     async initHub({ commit }) {
+      console.log('Connecting to factory hub..');
       const hub = new signalR.HubConnectionBuilder()
         .withUrl('/ws/factory')
         .configureLogging(signalR.LogLevel.Information)
         .build();
       hub.on('ReceiveEvent', (event, eventType) => commit(`$${eventType}`, event));
-      await hub.start();
-      commit('hubReady', hub);
+      try {
+        await hub.start();
+        commit('hubReady', hub);
+      } catch (err) {
+        commit('error', err, { root: true });
+      }
     },
     async loadFactories({ dispatch, commit, state }) {
       commit('loadingFactories');
       if (!state.hub) await dispatch('initHub');
       try {
+        console.log('Loading factories..');
         const factories = await state.hub.invoke('GetFactories');
+        console.log('Loaded factories:', factories);
         commit('loadedFactories', factories);
       } catch (err) {
         commit('error', err, { root: true });
       }
     },
-    async destroyFactory({ dispatch, commit, state }, factoryId) {
-      commit('destroyingFactory', factoryId);
+    async destroyFactory({ dispatch, commit, state }, factory) {
+      commit('destroyingFactory', factory.factoryId);
       if (!state.hub) await dispatch('initHub');
       try {
-        const result = await state.hub.invoke('DeleteFactory', factoryId);
+        const result = await state.hub.invoke('DeleteFactory', factory.factoryId);
         console.log('Destroyed factory..', result);
       } catch (err) {
         commit('error', err, { root: true });
