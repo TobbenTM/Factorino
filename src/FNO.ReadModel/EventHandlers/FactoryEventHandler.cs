@@ -2,7 +2,6 @@
 using FNO.Domain.Events.Factory;
 using FNO.Domain.Models;
 using FNO.EventSourcing;
-using Microsoft.EntityFrameworkCore;
 using Serilog;
 using System.Linq;
 using System.Threading.Tasks;
@@ -14,10 +13,7 @@ namespace FNO.ReadModel.EventHandlers
         IEventHandler<FactoryProvisionedEvent>,
         IEventHandler<FactoryOnlineEvent>,
         IEventHandler<FactoryDestroyedEvent>,
-        IEventHandler<FactoryDecommissionedEvent>,
-        IEventHandler<FactoryOutgoingTrainEvent>,
-        IEventHandler<FactoryResearchStartedEvent>,
-        IEventHandler<FactoryResearchFinishedEvent>
+        IEventHandler<FactoryDecommissionedEvent>
     {
         private readonly ReadModelDbContext _dbContext;
 
@@ -26,14 +22,16 @@ namespace FNO.ReadModel.EventHandlers
             _dbContext = dbContext;
         }
 
-        public Task Handle(FactoryOnlineEvent evnt)
+        public Task Handle(FactoryCreatedEvent evnt)
         {
-            var factory = _dbContext.Factories.FirstOrDefault(f => f.FactoryId == evnt.EntityId);
-            if (factory != null)
+            _dbContext.Factories.Add(new Factory
             {
-                factory.State = FactoryState.Online;
-                factory.LastSeen = evnt.Metadata.CreatedAt ?? factory.LastSeen;
-            }
+                FactoryId = evnt.EntityId,
+                OwnerId = evnt.Initiator.PlayerId,
+                State = FactoryState.Creating,
+                LocationId = evnt.LocationId,
+                Seed = evnt.LocationSeed,
+            });
             return Task.CompletedTask;
         }
 
@@ -48,16 +46,14 @@ namespace FNO.ReadModel.EventHandlers
             return Task.CompletedTask;
         }
 
-        public Task Handle(FactoryCreatedEvent evnt)
+        public Task Handle(FactoryOnlineEvent evnt)
         {
-            _dbContext.Factories.Add(new Factory
+            var factory = _dbContext.Factories.FirstOrDefault(f => f.FactoryId == evnt.EntityId);
+            if (factory != null)
             {
-                FactoryId = evnt.EntityId,
-                OwnerId = evnt.Initiator.PlayerId,
-                State = FactoryState.Creating,
-                LocationId = evnt.LocationId,
-                Seed = evnt.LocationSeed,
-            });
+                factory.State = FactoryState.Online;
+                factory.LastSeen = evnt.Metadata.CreatedAt ?? factory.LastSeen;
+            }
             return Task.CompletedTask;
         }
 
@@ -77,59 +73,6 @@ namespace FNO.ReadModel.EventHandlers
             if (factory != null)
             {
                 factory.State = FactoryState.Destroyed;
-            }
-            return Task.CompletedTask;
-        }
-
-        public Task Handle(FactoryOutgoingTrainEvent evnt)
-        {
-            var factory = _dbContext.Factories
-                .Include(f => f.Owner)
-                .ThenInclude(p => p.WarehouseInventory)
-                .FirstOrDefault(f => f.FactoryId == evnt.EntityId);
-            if (factory != null && factory.Owner != null)
-            {
-                foreach (var item in evnt.Inventory)
-                {
-                    var existingInventory = factory.Owner.WarehouseInventory
-                        .FirstOrDefault(i => i.ItemId == item.Name);
-
-                    if (existingInventory != null)
-                    {
-                        existingInventory.Quantity += item.Count;
-                    }
-                    else
-                    {
-                        factory.Owner.WarehouseInventory.Add(new WarehouseInventory
-                        {
-                            ItemId = item.Name,
-                            Quantity = item.Count,
-                        });
-                    }
-                }
-                factory.LastSeen = evnt.Metadata.CreatedAt ?? factory.LastSeen;
-            }
-            return Task.CompletedTask;
-        }
-
-        public Task Handle(FactoryResearchStartedEvent evnt)
-        {
-            var factory = _dbContext.Factories.FirstOrDefault(f => f.FactoryId == evnt.EntityId);
-            if (factory != null)
-            {
-                factory.CurrentlyResearchingId = evnt.Technology.Name;
-                factory.LastSeen = evnt.Metadata.CreatedAt ?? factory.LastSeen;
-            }
-            return Task.CompletedTask;
-        }
-
-        public Task Handle(FactoryResearchFinishedEvent evnt)
-        {
-            var factory = _dbContext.Factories.FirstOrDefault(f => f.FactoryId == evnt.EntityId);
-            if (factory != null)
-            {
-                factory.CurrentlyResearchingId = null;
-                factory.LastSeen = evnt.Metadata.CreatedAt ?? factory.LastSeen;
             }
             return Task.CompletedTask;
         }

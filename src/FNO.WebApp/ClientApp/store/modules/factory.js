@@ -5,6 +5,12 @@ function findFactory(state, factoryId) {
   return state.factories.find(f => f.factoryId === factoryId);
 }
 
+const eventHandlers = {
+  FactoryDecommissionedEvent(factory) {
+    factory.state = FactoryState.Destroyed;
+  },
+};
+
 export default {
   namespaced: true,
   state: {
@@ -24,7 +30,10 @@ export default {
       state.factories = null;
     },
     loadedFactories(state, factories) {
-      state.factories = factories;
+      state.factories = factories.map(f => ({
+        ...f,
+        activity: [],
+      }));
       state.loadedFactories = true;
       state.loadingFactories = false;
     },
@@ -32,19 +41,32 @@ export default {
       const factory = findFactory(state, factoryId);
       factory.state = FactoryState.Destroying;
     },
-    $FactoryDecommissionedEvent(state, event) {
+    handleEvent(state, event) {
       const factory = findFactory(state, event.entityId);
-      factory.state = FactoryState.Destroyed;
+      factory.activity.unshift(event);
+      if (factory.activity.length >= 9) {
+        factory.activity.pop();
+      }
+      if (eventHandlers[event.eventType]) {
+        eventHandlers[event.eventType](factory, event);
+      }
     },
   },
   actions: {
     async initHub({ commit }) {
       console.log('Connecting to factory hub..');
+
       const hub = new signalR.HubConnectionBuilder()
         .withUrl('/ws/factory')
         .configureLogging(signalR.LogLevel.Information)
         .build();
-      hub.on('ReceiveEvent', (event, eventType) => commit(`$${eventType}`, event));
+
+      // We'll also be handling all events coming through the subscription
+      hub.on('ReceiveEvent', (event, eventType) => commit('handleEvent', {
+        ...event,
+        eventType,
+      }));
+
       try {
         await hub.start();
         commit('hubReady', hub);
@@ -57,6 +79,7 @@ export default {
       if (!state.hub) await dispatch('initHub');
       try {
         console.log('Loading factories..');
+        // GetFactories will also subscribe to events for the factories
         const factories = await state.hub.invoke('GetFactories');
         console.log('Loaded factories:', factories);
         commit('loadedFactories', factories);

@@ -9,5 +9,7 @@ namespace FNO.Domain.Events.Factory
         }
 
         public string PlayerName { get; set; }
+
+        public override string ReadableEvent => $"{PlayerName} joined the server";
     }
 }

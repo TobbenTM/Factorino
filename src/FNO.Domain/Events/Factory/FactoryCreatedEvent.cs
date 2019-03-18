@@ -16,5 +16,7 @@ namespace FNO.Domain.Events.Factory
             LocationId = locationId;
             LocationSeed = locationSeed;
         }
+
+        public override string ReadableEvent => $"{Initiator?.PlayerName ?? "An unknown entity"} created the factory";
     }
 }

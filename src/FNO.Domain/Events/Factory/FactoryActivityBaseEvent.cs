@@ -19,5 +19,7 @@ namespace FNO.Domain.Events.Factory
         /// Tick of the hosting server when the event happened
         /// </summary>
         public long Tick { get; set; }
+
+        public override string ReadableEvent => $"{Initiator?.PlayerName ?? "An unknown entity"} caused a {Type} event for factory {EntityId}";
     }
 }

@@ -11,5 +11,7 @@ namespace FNO.Domain.Events.Factory
 
         public string PlayerName { get; set; }
         public LuaEntity Entity { get; set; }
+
+        public override string ReadableEvent => $"{PlayerName} destroyed a {Entity.Name}";
     }
 }

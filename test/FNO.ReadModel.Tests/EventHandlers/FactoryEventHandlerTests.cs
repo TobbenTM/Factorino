@@ -21,7 +21,7 @@ namespace FNO.ReadModel.Tests.EventHandlers
             };
 
             // Act
-            await When(new FactoryCreatedEvent(expectedFactory.FactoryId, expectedFactory.LocationId, null));
+            await When(new FactoryCreatedEvent(expectedFactory.FactoryId, expectedFactory.LocationId, "seed", null));
 
             // Assert
             using (var dbContext = GetInMemoryDatabase())
@@ -45,7 +45,7 @@ namespace FNO.ReadModel.Tests.EventHandlers
             };
 
             // Act
-            await When(new FactoryCreatedEvent(expectedFactory.FactoryId, expectedFactory.LocationId, null));
+            await When(new FactoryCreatedEvent(expectedFactory.FactoryId, expectedFactory.LocationId, "seed", null));
             await When(new FactoryProvisionedEvent(expectedFactory.FactoryId, null));
 
             // Assert
@@ -70,9 +70,61 @@ namespace FNO.ReadModel.Tests.EventHandlers
             };
 
             // Act
-            await When(new FactoryCreatedEvent(expectedFactory.FactoryId, expectedFactory.LocationId, null));
+            await When(new FactoryCreatedEvent(expectedFactory.FactoryId, expectedFactory.LocationId, "seed", null));
             await When(new FactoryProvisionedEvent(expectedFactory.FactoryId, null));
             await When(new FactoryOnlineEvent(expectedFactory.FactoryId));
+
+            // Assert
+            using (var dbContext = GetInMemoryDatabase())
+            {
+                Assert.NotEmpty(dbContext.Factories);
+                var factory = dbContext.Factories.First();
+                Assert.Equal(expectedFactory.FactoryId, factory.FactoryId);
+                Assert.Equal(expectedFactory.State, factory.State);
+            }
+        }
+
+        [Fact]
+        public async Task ShouldUpdateFactoryToDestroying()
+        {
+            // Arrange
+            var expectedFactory = new Factory
+            {
+                FactoryId = Guid.NewGuid(),
+                State = FactoryState.Destroying,
+                LocationId = Guid.NewGuid(),
+            };
+
+            // Act
+            await When(new FactoryCreatedEvent(expectedFactory.FactoryId, expectedFactory.LocationId, "seed", null));
+            await When(new FactoryProvisionedEvent(expectedFactory.FactoryId, null));
+            await When(new FactoryDestroyedEvent(expectedFactory.FactoryId, null));
+
+            // Assert
+            using (var dbContext = GetInMemoryDatabase())
+            {
+                Assert.NotEmpty(dbContext.Factories);
+                var factory = dbContext.Factories.First();
+                Assert.Equal(expectedFactory.FactoryId, factory.FactoryId);
+                Assert.Equal(expectedFactory.State, factory.State);
+            }
+        }
+
+        [Fact]
+        public async Task ShouldUpdateFactoryToDestroyed()
+        {
+            // Arrange
+            var expectedFactory = new Factory
+            {
+                FactoryId = Guid.NewGuid(),
+                State = FactoryState.Destroyed,
+                LocationId = Guid.NewGuid(),
+            };
+
+            // Act
+            await When(new FactoryCreatedEvent(expectedFactory.FactoryId, expectedFactory.LocationId, "seed", null));
+            await When(new FactoryProvisionedEvent(expectedFactory.FactoryId, null));
+            await When(new FactoryDecommissionedEvent(expectedFactory.FactoryId, null));
 
             // Assert
             using (var dbContext = GetInMemoryDatabase())

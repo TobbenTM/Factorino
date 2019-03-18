@@ -11,5 +11,7 @@ namespace FNO.Domain.Events.Factory
         public FactoryDestroyedEvent(Guid factoryId, Models.Player initiator) : base(factoryId, initiator)
         {
         }
+
+        public override string ReadableEvent => $"{Initiator?.PlayerName ?? "An unknown entity"} destroyed the factory";
     }
 }

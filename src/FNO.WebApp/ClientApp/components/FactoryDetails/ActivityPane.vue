@@ -1,6 +1,15 @@
 <template>
   <div class="activity-pane">
-    Activity
+    <table>
+      <tbody>
+        <tr
+          v-for="event in factory.activity"
+          :key="event.metadata.offset"
+        >
+          <td>{{ event.readableEvent }}</td>
+        </tr>
+      </tbody>
+    </table>
   </div>
 </template>
 

@@ -34,5 +34,7 @@ namespace FNO.Domain.Events
         }
 
         public EventMetadata GetMetadata() => Metadata;
+
+        public virtual string ReadableEvent => $"{Initiator?.PlayerName ?? "An unknown entity"} caused a {GetType().Name} event";
     }
 }

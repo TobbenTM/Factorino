@@ -10,5 +10,7 @@ namespace FNO.Domain.Events.Factory
         }
 
         public LuaTechnology Technology { get; set; }
+
+        public override string ReadableEvent => $"Factory finished researching {Technology.Name}";
     }
 }

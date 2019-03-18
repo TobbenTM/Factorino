@@ -31,6 +31,9 @@ namespace FNO.FactoryPod
             _configuration = configuration.Bind<FactoryPodConfiguration>();
             _logger = Logging.GetLogger(configuration);
 
+            // Every pod needs a unique group id
+            _configuration.Kafka.GroupId = $"{_configuration.Kafka.GroupId}-{_configuration.Factorino.FactoryId}";
+
             // Handle user exit (CTRL + C) gracefully
             Console.CancelKeyPress += new ConsoleCancelEventHandler((_, e) =>
             {
@@ -61,7 +64,7 @@ namespace FNO.FactoryPod
             _daemon.EnsureModsInstalled();
             _daemon.Run();
 
-            _consumer.Subscribe(new TopicPartitionOffset(KafkaTopics.EVENTS, 0, 0));
+            _consumer.Subscribe(new TopicPartitionOffset(KafkaTopics.EVENTS, 0, Offset.End));
 
             _resetEvent.WaitOne();
         }

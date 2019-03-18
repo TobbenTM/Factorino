@@ -10,5 +10,7 @@ namespace FNO.Domain.Events.Factory
         }
 
         public LuaEntity Rocket { get; set; }
+
+        public override string ReadableEvent => $"Factory launched a rocket 🚀";
     }
 }

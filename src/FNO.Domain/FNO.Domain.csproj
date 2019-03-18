@@ -8,6 +8,7 @@
   <ItemGroup>
     <Folder Include="Commands\" />
     <Folder Include="Events\Market\" />
+    <Folder Include="Events\Shipping\" />
   </ItemGroup>
 
   <ItemGroup>

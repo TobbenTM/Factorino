@@ -15,5 +15,7 @@ namespace FNO.Domain.Events.Factory
         public FactoryProvisionedEvent(Guid factoryId, Models.Player initiator) : base(factoryId, initiator)
         {
         }
+
+        public override string ReadableEvent => $"{Initiator?.PlayerName ?? "An unknown entity"} provisioned resources for the factory";
     }
 }

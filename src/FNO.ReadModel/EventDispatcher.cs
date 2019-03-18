@@ -6,7 +6,9 @@ using FNO.Domain.Events.Player;
 using FNO.EventSourcing;
 using FNO.ReadModel.EventHandlers;
 using Serilog;
+using System;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 
 namespace FNO.ReadModel
@@ -45,6 +47,8 @@ namespace FNO.ReadModel
                 typeof(FactoryOnlineEvent),
                 typeof(FactoryDestroyedEvent),
                 typeof(FactoryDecommissionedEvent));
+
+            _resolver.Register(() => new FactoryActivityEventHandler(_dbContext, _logger), GetDecendantsOfClass<FactoryActivityBaseEvent>());
         }
 
         public async Task Handle<TEvent>(TEvent evnt) where TEvent : IEvent
@@ -59,6 +63,13 @@ namespace FNO.ReadModel
             {
                 await handler.Handle(evnt);
             }
+        }
+
+        private static Type[] GetDecendantsOfClass<T>() where T : class
+        {
+            return Assembly.GetAssembly(typeof(T)).GetTypes()
+                .Where(myType => myType.IsClass && !myType.IsAbstract && myType.IsSubclassOf(typeof(T)))
+                .ToArray();
         }
     }
 }

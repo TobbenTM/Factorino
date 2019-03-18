@@ -8,6 +8,12 @@ namespace FNO.Orchestrator.Tests
     {
         public List<Factory> FactoriesProvisioned { get; } = new List<Factory>();
 
+        public Task DecommissionFactory(Factory factory)
+        {
+            FactoriesProvisioned.RemoveAll(f => f.FactoryId == factory.FactoryId);
+            return Task.CompletedTask;
+        }
+
         public Task<ProvisioningResult> ProvisionFactory(Factory factory)
         {
             FactoriesProvisioned.Add(factory);

@@ -5,6 +5,6 @@
 charts
 infrastructure
 media
-bin
-obj
-node_modules
+**/bin
+**/obj
+**/node_modules

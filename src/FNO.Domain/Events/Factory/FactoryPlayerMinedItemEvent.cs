@@ -11,5 +11,7 @@ namespace FNO.Domain.Events.Factory
 
         public string PlayerName { get; set; }
         public LuaItemStack ItemStack { get; set; }
+
+        public override string ReadableEvent => $"{PlayerName} picked up {ItemStack.Count} {ItemStack.Name}(s)";
     }
 }

@@ -11,5 +11,7 @@ namespace FNO.Domain.Events.Factory
         public string PlayerName { get; set; }
 
         public string Message { get; set; }
+
+        public override string ReadableEvent => $"{PlayerName} said \"{Message}\"";
     }
 }

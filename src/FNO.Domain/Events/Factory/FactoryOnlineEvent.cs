@@ -7,5 +7,7 @@ namespace FNO.Domain.Events.Factory
         public FactoryOnlineEvent(Guid factoryId) : base(factoryId, null)
         {
         }
+
+        public override string ReadableEvent => "The factory came online";
     }
 }

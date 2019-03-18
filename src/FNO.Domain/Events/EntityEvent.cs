@@ -14,5 +14,7 @@ namespace FNO.Domain.Events
         {
             EntityId = entityId;
         }
+
+        public override string ReadableEvent => $"{Initiator?.PlayerName ?? "An unknown entity"} caused a {GetType().Name} event for entity {EntityId}";
     }
 }

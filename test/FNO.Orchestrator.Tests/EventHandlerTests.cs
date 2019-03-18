@@ -32,7 +32,7 @@ namespace FNO.Orchestrator.Tests
             };
 
             // Act
-            await _handler.Handle(new FactoryCreatedEvent(expectedFactory.FactoryId, expectedFactory.LocationId, null));
+            await _handler.Handle(new FactoryCreatedEvent(expectedFactory.FactoryId, expectedFactory.LocationId, "seed", null));
 
             // Assert
             Assert.Single(_state.Factories);
@@ -51,7 +51,7 @@ namespace FNO.Orchestrator.Tests
             };
 
             // Act
-            await _handler.Handle(new FactoryCreatedEvent(expectedFactory.FactoryId, expectedFactory.LocationId, null));
+            await _handler.Handle(new FactoryCreatedEvent(expectedFactory.FactoryId, expectedFactory.LocationId, "seed", null));
             await _handler.Handle(new FactoryProvisionedEvent(expectedFactory.FactoryId, null));
 
             // Assert
