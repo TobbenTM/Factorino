@@ -5,6 +5,10 @@ namespace FNO.Domain.Events.Factory
 {
     public class FactoryRocketLaunchedEvent : FactoryActivityBaseEvent
     {
+        public FactoryRocketLaunchedEvent()
+        {
+        }
+
         public FactoryRocketLaunchedEvent(Guid factoryId, string type, long tick) : base(factoryId, type, tick)
         {
         }

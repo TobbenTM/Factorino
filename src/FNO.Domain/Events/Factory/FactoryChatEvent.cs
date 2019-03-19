@@ -4,6 +4,10 @@ namespace FNO.Domain.Events.Factory
 {
     public class FactoryChatEvent : FactoryActivityBaseEvent
     {
+        public FactoryChatEvent()
+        {
+        }
+
         public FactoryChatEvent(Guid factoryId, string type, long tick) : base(factoryId, type, tick)
         {
         }

@@ -4,6 +4,10 @@ namespace FNO.Domain.Events.Factory
 {
     public class FactoryPlayerDiedEvent : FactoryActivityBaseEvent
     {
+        public FactoryPlayerDiedEvent()
+        {
+        }
+
         public FactoryPlayerDiedEvent(Guid factoryId, string type, long tick) : base(factoryId, type, tick)
         {
         }

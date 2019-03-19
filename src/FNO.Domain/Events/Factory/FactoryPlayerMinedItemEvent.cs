@@ -5,6 +5,10 @@ namespace FNO.Domain.Events.Factory
 {
     public class FactoryPlayerMinedItemEvent : FactoryActivityBaseEvent
     {
+        public FactoryPlayerMinedItemEvent()
+        {
+        }
+
         public FactoryPlayerMinedItemEvent(Guid factoryId, string type, long tick) : base(factoryId, type, tick)
         {
         }

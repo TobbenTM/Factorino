@@ -5,6 +5,10 @@ namespace FNO.Domain.Events.Factory
 {
     public class FactoryEntityDiedEvent : FactoryActivityBaseEvent
     {
+        public FactoryEntityDiedEvent()
+        {
+        }
+
         public FactoryEntityDiedEvent(Guid factoryId, string type, long tick) : base(factoryId, type, tick)
         {
         }

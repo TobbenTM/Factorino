@@ -1,4 +1,5 @@
-﻿using Terminal.Gui;
+﻿using FNO.Toolbox.ProduceEvent;
+using Terminal.Gui;
 
 namespace FNO.Toolbox
 {
@@ -8,7 +9,7 @@ namespace FNO.Toolbox
         {
             Application.Init();
             var top = Application.Top;
-            
+
             var win = new Window("Factorino Toolbox")
             {
                 X = 0,
@@ -21,32 +22,33 @@ namespace FNO.Toolbox
             {
                 X = Pos.Center(),
                 Y = Pos.Center() - 2,
-                Width = 35,
                 Height = 1,
             };
             win.Add(welcome);
 
-            var produceBtn = new Button("_Produce event")
+            var produceBtn = new Button("Produce event")
             {
                 X = Pos.Center(),
                 Y = Pos.Center() + 1,
                 Width = 15,
                 Height = 1,
             };
-            produceBtn.Clicked += delegate () {
-                var producer = new EventProducer();
+            produceBtn.Clicked += delegate ()
+            {
+                var producer = new SelectEventDialog();
                 Application.Run(producer);
             };
             win.Add(produceBtn);
 
-            var quitBtn = new Button("_Quit")
+            var quitBtn = new Button("Quit")
             {
                 X = Pos.Center(),
                 Y = Pos.Center() + 3,
                 Width = 5,
                 Height = 1,
             };
-            quitBtn.Clicked += delegate () {
+            quitBtn.Clicked += delegate ()
+            {
                 top.Running = false;
             };
             win.Add(quitBtn);

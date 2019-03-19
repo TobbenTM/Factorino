@@ -4,6 +4,10 @@ namespace FNO.Domain.Events.Factory
 {
     public class FactoryPlayerLeftEvent : FactoryActivityBaseEvent
     {
+        public FactoryPlayerLeftEvent()
+        {
+        }
+
         public FactoryPlayerLeftEvent(Guid factoryId, string type, long tick) : base(factoryId, type, tick)
         {
         }

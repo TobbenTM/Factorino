@@ -4,6 +4,10 @@ namespace FNO.Domain.Events.Factory
 {
     public class FactoryPlayerJoinedEvent : FactoryActivityBaseEvent
     {
+        public FactoryPlayerJoinedEvent()
+        {
+        }
+
         public FactoryPlayerJoinedEvent(Guid factoryId, string type, long tick) : base(factoryId, type, tick)
         {
         }

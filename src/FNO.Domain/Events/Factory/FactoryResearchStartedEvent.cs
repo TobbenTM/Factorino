@@ -5,6 +5,10 @@ namespace FNO.Domain.Events.Factory
 {
     public class FactoryResearchStartedEvent : FactoryActivityBaseEvent
     {
+        public FactoryResearchStartedEvent()
+        {
+        }
+
         public FactoryResearchStartedEvent(Guid factoryId, string type, long tick) : base(factoryId, type, tick)
         {
         }

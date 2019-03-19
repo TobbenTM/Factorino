@@ -110,6 +110,10 @@ namespace FNO.EventStream
                     {
                         _logger.Error(e, "Could not deserialize event!");
                     }
+                    catch (Exception e)
+                    {
+                        _logger.Error(e, "Could not process event!");
+                    }
                 }
             }
         }

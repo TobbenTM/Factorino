@@ -45,6 +45,7 @@ namespace FNO.Domain.Repositories
         public async Task<IEnumerable<WarehouseInventory>> GetInventory(Player player)
         {
             return await _dbContext.WarehouseInventories
+                .Include(i => i.Item)
                 .Where(i => i.OwnerId == player.PlayerId)
                 .ToListAsync();
         }
