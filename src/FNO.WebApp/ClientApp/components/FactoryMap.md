@@ -1,7 +1,7 @@
 Example map using production locations:
 
 ```js
-const locations = require('@/factory-locations.js').default;
+const locations = require('@/styleguide/factory-locations.js').default;
 const selected = locations[locations.length-1];
 <factory-map
   :locations="locations"
@@ -15,7 +15,7 @@ const selected = locations[locations.length-1];
 Or in a panel:
 
 ```js
-const locations = require('@/factory-locations.js').default;
+const locations = require('@/styleguide/factory-locations.js').default;
 const selected = locations[locations.length-1];
 <factorio-panel>
   <factory-map
