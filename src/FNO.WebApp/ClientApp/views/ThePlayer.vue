@@ -92,8 +92,8 @@ export default{
     width: 100%;
     display: grid;
     grid-template-areas:
-      "details warehouse shipment"
-      "details orders shipments";
+      "details warehouse shipments"
+      "details warehouse orders";
     grid-template-columns: auto 1fr 1fr;
     grid-template-rows: 1fr 1fr;
     grid-gap: 15px;

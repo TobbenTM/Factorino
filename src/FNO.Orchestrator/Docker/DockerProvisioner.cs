@@ -52,6 +52,7 @@ namespace FNO.Orchestrator.Docker
                 Env = new List<string>
                 {
                     $"factorino__factoryId={factory.FactoryId}",
+                    $"factorino__ownerId={factory.OwnerId}",
                     $"factorino__seed={factory.Seed}",
                 },
                 HostConfig = new HostConfig

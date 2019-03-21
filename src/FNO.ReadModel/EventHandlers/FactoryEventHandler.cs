@@ -31,6 +31,7 @@ namespace FNO.ReadModel.EventHandlers
                 State = FactoryState.Creating,
                 LocationId = evnt.LocationId,
                 Seed = evnt.LocationSeed,
+                TrainStations = new[] { "Factorino - Dropoff 1" }
             });
             return Task.CompletedTask;
         }

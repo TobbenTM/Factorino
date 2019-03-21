@@ -26,6 +26,7 @@ namespace FNO.Orchestrator
             _state.AddFactory(new Factory
             {
                 FactoryId = evnt.EntityId,
+                OwnerId = evnt.Initiator.PlayerId,
                 State = FactoryState.Creating,
                 Seed = evnt.LocationSeed,
                 LocationId = evnt.LocationId,

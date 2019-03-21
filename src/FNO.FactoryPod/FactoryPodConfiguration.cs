@@ -15,6 +15,7 @@ namespace FNO.FactoryPod
     internal class FactorinoConfiguration
     {
         public Guid FactoryId{ get; set; }
+        public Guid OwnerId { get; set; }
         public string Seed { get; set; }
         public string SavePath { get; set; }
         public string DataPath { get; set; }

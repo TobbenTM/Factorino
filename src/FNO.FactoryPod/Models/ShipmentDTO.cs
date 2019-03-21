@@ -3,10 +3,10 @@ using Newtonsoft.Json;
 
 namespace FNO.FactoryPod.Models
 {
-    internal class TransactionDTO
+    internal class ShipmentDTO
     {
-        [JsonProperty("transaction_id")]
-        public Guid TransactionId { get; set; }
+        [JsonProperty("shipment_id")]
+        public Guid ShipmentId { get; set; }
 
         [JsonProperty("destination_station")]
         public string DestinationStation { get; set; }

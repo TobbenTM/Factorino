@@ -25,13 +25,13 @@ local orientation_to_direction = {
 }
 
 
--- Events not yet sent through RCON
+-- Events not yet sent through the RCON interface
 local event_buffer = {}
 
--- Transaction state
-local rejected_transactions = {}
-local accepted_transactions = {}
-local incoming_transaction_queue = {}
+-- Shipment state
+local rejected_shipments = {}
+local accepted_shipments = {}
+local incoming_shipment_queue = {}
 
 function on_event(event)
   table.insert(event_buffer, event)
@@ -39,17 +39,19 @@ end
 
 -- Called through RCON by the server to export any events to the global event stream
 function on_export()
-  print('[factorino.lua] Exporting '..#event_buffer..' events!')
+  if #event_buffer > 0 then
+    print('[factorino.lua] Exporting '..#event_buffer..' events!')
+  end
   local copy = event_buffer
   event_buffer = {}
   rcon.print(json.encode(copy))
 end
 
--- Called through RCON by the server to handle a warehouse transaction
+-- Called through RCON by the server to handle a warehouse shipment
 function on_import(payload)
-  local transaction = json.decode(payload.parameter)
-  table.insert(incoming_transaction_queue, transaction)
-  handle_transaction()
+  local shipment = json.decode(payload.parameter)
+  table.insert(incoming_shipment_queue, shipment)
+  handle_shipment()
 end
 
 -- Called through RCON by the server to signal that the player has researched a tech
@@ -87,31 +89,31 @@ function to_simple_research(lua_research)
   return research
 end
 
--- Handle an incoming transaction from the queue
-function handle_transaction()
-  -- Do we actually have transactions to handle?
-  if #incoming_transaction_queue == 0 then return end
+-- Handle an incoming shipment from the queue
+function handle_shipment()
+  -- Do we actually have shipments to handle?
+  if #incoming_shipment_queue == 0 then return end
 
   -- Do we have the room to spawn a train?
   -- Length = 2 locomotives * x carts
   local in_station = find_station('Factorino - Incoming')
-  local train_length = 2 + #incoming_transaction_queue[1].carts
+  local train_length = 2 + #incoming_shipment_queue[1].carts
   local cart_positions = calculate_cart_positions(in_station, train_length)
   -- Hopefully we'll try again once a train has changed state
   if not station_has_room(in_station, cart_positions) then return end
 
-  -- We should be ready to handle the transaction now
-  local transaction = table.remove(incoming_transaction_queue, 1)
-  local result = create_train(transaction, in_station, cart_positions)
+  -- We should be ready to handle the shipment now
+  local shipment = table.remove(incoming_shipment_queue, 1)
+  local result = create_train(shipment, in_station, cart_positions)
   if result then
-    table.insert(accepted_transactions, transaction)
+    table.insert(accepted_shipments, shipment)
   else
-    table.insert(rejected_transactions, transaction)
+    table.insert(rejected_shipments, shipment)
   end
 end
 
-function create_train(transaction, station, cart_positions)
-  local schedule = create_schedule(transaction)
+function create_train(shipment, station, cart_positions)
+  local schedule = create_schedule(shipment)
   local force = game.forces['neutral']
   local rolling_stock = nil
 
@@ -126,11 +128,11 @@ function create_train(transaction, station, cart_positions)
         -- ..and some awesome colors..
         rolling_stock.color = {r = 1, g = 1, b = 1}
         -- ..and a less awesome name
-        rolling_stock.backer_name = transaction.transaction_id
+        rolling_stock.backer_name = shipment.shipment_id
       end
     else
-      -- Transaction carts (cargo or fluids)
-      local content = transaction.carts[k-1]
+      -- Shipment carts (cargo or fluids)
+      local content = shipment.carts[k-1]
       rolling_stock = station.surface.create_entity{name = content.cart_type, position = pos, direction = station.direction, force = force}
       local inventory = rolling_stock.get_inventory(defines.inventory.cargo_wagon)
 
@@ -141,7 +143,7 @@ function create_train(transaction, station, cart_positions)
     end
 
     if rolling_stock == nil then
-      print('[ERR] [factorino.lua] Train creation failed! Transaction id: '..transaction.transaction_id)
+      print('[ERR] [factorino.lua] Train creation failed! Shipment id: '..shipment.shipment_id)
       return false
     end
 
@@ -157,13 +159,13 @@ function create_train(transaction, station, cart_positions)
   train.schedule = schedule
   train.manual_mode = false
 
-  station.surface.print('Train from warehouse incoming, headed to '..transaction.destination_station..'!')
+  station.surface.print('Train from warehouse incoming, headed to '..shipment.destination_station..'!')
   return true
 end
 
-function create_schedule(transaction)
-  local destination = transaction.destination_station
-  local conditions = transaction.wait_conditions
+function create_schedule(shipment)
+  local destination = shipment.destination_station
+  local conditions = shipment.wait_conditions
   local schedule = {
     current = 1,
     records = {
@@ -243,8 +245,8 @@ script.on_event(defines.events.on_train_changed_state, function(event)
         cart.destroy()
       end
     else
-      -- This is a good time to check if we have waiting transactions
-      handle_transaction()
+      -- This is a good time to check if we have waiting shipments
+      handle_shipment()
     end
   end
 end)
