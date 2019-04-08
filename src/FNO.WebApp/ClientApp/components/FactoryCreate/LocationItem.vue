@@ -11,7 +11,7 @@
         v-for="(resource, index) in location.resources"
         :key="index"
       >
-        <factorio-icon :path="resource.entity.icon" />
+        <factorio-icon :path="resource.entity.icon" v-inlay:dark.square />
       </li>
     </ul>
   </div>

@@ -1,5 +1,5 @@
 <template>
-  <img :src="path" />
+  <img :src="path"/>
 </template>
 
 <script>
@@ -21,7 +21,5 @@ img {
   padding: .2em;
   overflow: hidden;
   vertical-align: middle;
-  background: #706e70;
-  @include emboss();
 }
 </style>

@@ -2,12 +2,13 @@
   <factorio-panel class="warehouse">
     <div class="warehouse__grid">
       <factorio-panel-header title="Warehouse"/>
-      <div class="warehouse__items">
+      <div class="warehouse__items" v-inlay:light>
         <!-- A div per inventory item -->
         <div
           v-for="stock in inventory"
           :key="stock.warehouseInventoryId"
           class="warehouse__items__item"
+          v-inlay:dark.square
         >
           <factorio-icon
             v-on:click="$emit('selected', stock)"
@@ -26,7 +27,7 @@
       <div class="warehouse__stats">
         <span>Total items: {{ totalItems | humanizeNumber }}</span>
         <span>Net worth: {{ netWorth }} $</span>
-        <span>Slots used (stacks): {{ totalStacks }} / {{ maxStacks === Infinity ? '∞' : maxStacks | humanizeNumber }}</span>
+        <span>Slots used (stacks): {{ totalStacks }} / <icon v-if="maxStacks === Infinity" :icon="['fas', 'infinity']"/><template v-else>{{ maxStacks }}</template></span>
       </div>
     </div>
   </factorio-panel>
@@ -91,6 +92,8 @@ export default {
     justify-content: space-between;
     align-content: flex-start;
     flex-wrap: wrap;
+    margin-bottom: .5em;
+    padding: .5em;
 
     &__item {
       display: inline;
@@ -110,8 +113,8 @@ export default {
       }
 
       > img {
-        cursor: pointer;
         box-sizing: border-box;
+        cursor: pointer;
 
         &:hover {
           background: #ff9f1b;

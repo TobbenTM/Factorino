@@ -6,10 +6,18 @@ export default {
     user: null,
     loadedUser: false,
     loadingUser: false,
+
     invitations: [],
     loadingInvitations: false,
+
     inventory: null,
     loadingInventory: false,
+
+    orders: [],
+    loadingOrders: false,
+
+    shipments: [],
+    loadingShipments: false,
   },
   mutations: {
     loadUser(state) {
@@ -38,6 +46,22 @@ export default {
       state.inventory = inventory;
       state.loadingInventory = false;
     },
+    loadOrders(state) {
+      state.loadingOrders = true;
+      state.orders = [];
+    },
+    loadedOrders(state, orders) {
+      state.orders = orders;
+      state.loadingOrders = false;
+    },
+    loadShipments(state) {
+      state.loadingShipments = true;
+      state.shipments = [];
+    },
+    loadedShipments(state, shipments) {
+      state.shipments = shipments;
+      state.loadingShipments = false;
+    },
   },
   actions: {
     async loadUser({ commit }) {
@@ -53,7 +77,10 @@ export default {
       commit('loadInvitations');
       try {
         const response = await axios.get('/api/player/invitations');
-        commit('loadedInvitations', response.status === 204 ? [] : response.data);
+        commit(
+          'loadedInvitations',
+          response.status === 204 ? [] : response.data,
+        );
       } catch (err) {
         commit('loadedInvitations', null);
       }
@@ -65,6 +92,24 @@ export default {
         commit('loadedInventory', response.status === 204 ? [] : response.data);
       } catch (err) {
         commit('loadedInventory', null);
+      }
+    },
+    async loadOrders({ commit }) {
+      commit('loadOrders');
+      try {
+        const response = await axios.get('/api/player/orders');
+        commit('loadedOrders', response.status === 204 ? [] : response.data);
+      } catch (err) {
+        commit('loadedOrders', null);
+      }
+    },
+    async loadShipments({ commit }) {
+      commit('loadShipments');
+      try {
+        const response = await axios.get('/api/player/shipments');
+        commit('loadedShipments', response.status === 204 ? [] : response.data);
+      } catch (err) {
+        commit('loadedShipments', null);
       }
     },
   },

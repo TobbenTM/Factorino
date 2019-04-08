@@ -70,7 +70,6 @@ import { mapState, mapActions } from 'vuex';
 import LocationList from './LocationList';
 import StepItem from './StepItem';
 import FactoryMap from '@/components/FactoryMap';
-import Inlay from '@/directives/inlay';
 
 const State = {
   WAITING: 'WAITING',
@@ -84,9 +83,6 @@ export default {
     FactoryMap,
     LocationList,
     StepItem,
-  },
-  directives: {
-    Inlay,
   },
   computed: {
     ...mapState([ 'locations' ]),

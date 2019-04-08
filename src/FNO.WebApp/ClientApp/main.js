@@ -9,18 +9,24 @@ import FontAwesomeIcon from './icons';
 import AppSpinner from './components/AppSpinner';
 import FactorioButton from './components/FactorioButton';
 import FactorioPanelHeader from './components/FactorioPanelHeader';
+import FactorioPanelAction from './components/FactorioPanelAction';
 import FactorioPanel from './components/FactorioPanel';
 import FactorioDialog from './components/FactorioDialog';
 import FactorioIcon from './components/FactorioIcon';
+import Inlay from './directives/inlay';
 
 // Registration of global components
 Vue.component('icon', FontAwesomeIcon);
 Vue.component('app-spinner', AppSpinner);
 Vue.component('factorio-button', FactorioButton);
 Vue.component('factorio-panel-header', FactorioPanelHeader);
+Vue.component('factorio-panel-action', FactorioPanelAction);
 Vue.component('factorio-panel', FactorioPanel);
 Vue.component('factorio-dialog', FactorioDialog);
 Vue.component('factorio-icon', FactorioIcon);
+
+// Registration of global directives
+Vue.directive('inlay', Inlay);
 
 Vue.prototype.$http = axios;
 Vue.prototype.$signalR = signalR;

@@ -26,7 +26,6 @@
 
 <script>
 import FactoryMap from '@/components/FactoryMap';
-import Inlay from '@/directives/inlay';
 import DetailPane from './DetailPane';
 import ActivityPane from './ActivityPane';
 
@@ -36,9 +35,6 @@ export default {
       type: Object,
       required: true,
     },
-  },
-  directives: {
-    Inlay,
   },
   components: {
     FactoryMap,

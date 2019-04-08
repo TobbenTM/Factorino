@@ -1,10 +1,10 @@
 import variables from '@/css/variables.scss';
 
 export default {
-  bind(el, { arg }) {
+  bind(el, { arg, modifiers }) {
     Object.assign(el.style, {
       position: 'relative',
-      borderRadius: '6px',
+      borderRadius: modifiers.square ? '2px' : '6px',
       overflow: 'hidden',
       borderTop: `2px solid ${variables.embossDarkColor}`,
       borderBottom: `2px solid ${variables.embossLightColor}`,

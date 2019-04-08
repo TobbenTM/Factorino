@@ -25,6 +25,8 @@
         :inventory="remainingInventory"
         v-on:selected="selectedItem = $event"
       />
+      <player-orders class="player__orders"/>
+      <player-shipments class="player__shipments"/>
     </div>
   </div>
 </template>
@@ -32,11 +34,15 @@
 <script>
 import { mapState, mapActions } from 'vuex';
 import WarehouseInventory from '@/components/WarehouseInventory';
+import PlayerShipments from '@/components/PlayerShipments';
+import PlayerOrders from '@/components/PlayerOrders';
 
 export default{
   name: 'the-player',
   components: {
     WarehouseInventory,
+    PlayerShipments,
+    PlayerOrders,
   },
   computed: {
     ...mapState('user', [
@@ -97,12 +103,12 @@ export default{
     grid-template-columns: auto 1fr 1fr;
     grid-template-rows: 1fr 1fr;
     grid-gap: 15px;
-    padding: 0 15px;
+    padding: 15px 15px;
+    box-sizing: border-box;
   }
 
   &__details {
     grid-area: details;
-    margin-top: 15px;
 
     &__container {
       text-align: center;
@@ -122,7 +128,14 @@ export default{
 
   &__warehouse {
     grid-area: warehouse;
-    margin-top: 15px;
+  }
+
+  &__orders {
+    grid-area: orders;
+  }
+
+  &__shipments {
+    grid-area: shipments;
   }
 }
 </style>

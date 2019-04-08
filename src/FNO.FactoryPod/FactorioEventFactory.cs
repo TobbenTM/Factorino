@@ -89,19 +89,16 @@ namespace FNO.FactoryPod
                     };
                     break;
                 case "factorino_outgoing_train":
+                    yield return new FactoryOutgoingTrainEvent(factoryId, evnt.Type, evnt.Tick)
+                    {
+                        TrainName = evnt.TrainName,
+                        Inventory = evnt.Inventory.Select(i => (LuaItemStack)i).ToArray(),
+                    };
                     if (Guid.TryParse(evnt.TrainName, out var shipmentId))
                     {
                         yield return new ShipmentCompletedEvent(shipmentId, config.Factorino.FactoryId, null)
                         {
                             ReturningCargo = evnt.Inventory.Select(i => (LuaItemStack)i).ToArray(),
-                        };
-                    }
-                    else
-                    {
-                        yield return new FactoryOutgoingTrainEvent(factoryId, evnt.Type, evnt.Tick)
-                        {
-                            TrainName = evnt.TrainName,
-                            Inventory = evnt.Inventory.Select(i => (LuaItemStack)i).ToArray(),
                         };
                     }
                     break;
