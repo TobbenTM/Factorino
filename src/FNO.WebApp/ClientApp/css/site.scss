@@ -5,8 +5,14 @@ html, body {
   padding: 0;
   height: 100%;
   font-family: 'Roboto', sans-serif;
-  background: #424242;
   color: #ffffff;
+  background:
+    radial-gradient(black 15%, transparent 16%) 0 0,
+    radial-gradient(black 15%, transparent 16%) 6px 6px,
+    radial-gradient(rgba(255,255,255,.1) 15%, transparent 20%) 0 1px,
+    radial-gradient(rgba(255,255,255,.1) 15%, transparent 20%) 6px 7px;
+  background-color:#282828;
+  background-size:12px 12px;
 }
 
 a::-moz-focus-inner, button::-moz-focus-inner {
@@ -15,4 +21,15 @@ a::-moz-focus-inner, button::-moz-focus-inner {
 
 a:focus, button:focus {
   outline:none;
+}
+
+input, .factorino-input {
+  padding: 8px 0;
+  border: 0;
+  border-radius: 5px;
+  background: 0;
+  color: white;
+  line-height: 20px;
+  width: 100%;
+  display: inline-block;
 }

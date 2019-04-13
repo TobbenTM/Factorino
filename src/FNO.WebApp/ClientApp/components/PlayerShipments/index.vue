@@ -9,8 +9,15 @@
         />
       </factorio-panel-header>
       <div
+        class="shipments__loading"
+        v-if="loadingShipments"
+        v-inlay:light
+      >
+        <icon :icon="['fas', 'spinner']" spin/> Loading shipments..
+      </div>
+      <div
         class="shipments__empty"
-        v-if="shipments.length == 0"
+        v-else-if="shipments.length == 0"
         v-inlay:light
       >
         No shipments found!
@@ -61,13 +68,17 @@ export default {
     box-sizing: border-box;
   }
 
-  &__empty {
+  &__empty, &__loading {
     display: flex;
     justify-content: center;
     align-items: center;
     color: #666666;
     font-size: 2em;
     text-shadow: 2px 2px 3px rgba(0, 0, 0, 0.5);
+
+    svg {
+      margin-right: .2em;
+    }
   }
 
   &__list {

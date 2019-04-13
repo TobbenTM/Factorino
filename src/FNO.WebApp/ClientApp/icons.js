@@ -24,11 +24,12 @@ fontawesome.library.add(
   require('@fortawesome/fontawesome-free-solid/faQuestionCircle'),
   require('@fortawesome/fontawesome-free-solid/faCheckCircle'),
   require('@fortawesome/fontawesome-free-solid/faExclamationTriangle'),
+  require('@fortawesome/fontawesome-free-solid/faSignInAlt'),
   require('@fortawesome/fontawesome-free-solid/faSignOutAlt'),
 
   // Brands
   require('@fortawesome/fontawesome-free-brands/faSteam'),
-  require('@fortawesome/fontawesome-free-brands/faGithub'),
+  require('@fortawesome/fontawesome-free-brands/faGithub')
 );
 
 export default FontAwesomeIcon;

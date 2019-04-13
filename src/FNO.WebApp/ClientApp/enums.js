@@ -8,6 +8,7 @@ export const FactoryState = {
   Destroyed: 5,
 };
 
-export default {
-  FactoryState,
+export const OrderType = {
+  Buy: 0,
+  Sell: 1,
 };

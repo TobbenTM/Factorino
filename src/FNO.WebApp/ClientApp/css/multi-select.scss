@@ -1,0 +1,52 @@
+@import './mixins.scss';
+@import './variables.scss';
+
+.multiselect {
+  &__tags {
+    color: white;
+    background: #46464b;
+    @include emboss();
+
+    .multiselect--active & {
+      @include inlay();
+    }
+  }
+
+  &__input {
+    background: 0;
+  }
+
+  &__content-wrapper {
+    color: white;
+    background: #46464b;
+    box-shadow: 0 0 16px rgba(0, 0, 0, .5);
+    border-right: 2px solid $emboss_dark;
+    border-bottom: 2px solid $emboss_dark;
+    border-left: 2px solid $emboss_light;
+    border-radius: 0 0 3px 2px;
+  }
+
+  &__single {
+    background: 0;
+
+    .option__desc {
+      img {
+        margin-right: 8px;
+      }
+    }
+  }
+
+  &__option {
+    &--highlight {
+      background: #ff9f1b;
+      color: black;
+      padding: 8px;
+    }
+
+    .option__desc {
+      img {
+        margin-right: 8px;
+      }
+    }
+  }
+}

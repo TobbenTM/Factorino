@@ -6,7 +6,7 @@
   border-bottom: 2px solid $emboss_dark;
   border-left: 2px solid $emboss_light;
   border-radius: 4px 2px 3px 2px;
-  overflow: hidden;
+  // overflow: hidden;
 }
 
 @mixin inlay() {
@@ -15,7 +15,7 @@
   border-bottom: 2px solid $emboss_light;
   border-left: 2px solid $emboss_dark;
   border-radius: 4px 2px 3px 2px;
-  overflow: hidden;
+  // overflow: hidden;
 }
 
 @mixin shadow_inlay() {
