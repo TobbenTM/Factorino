@@ -1,9 +1,10 @@
-﻿using FNO.Domain;
+﻿using System;
+using System.Threading.Tasks;
+using FNO.Domain;
 using FNO.Domain.Events;
+using FNO.Domain.Models;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
-using System;
-using System.Threading.Tasks;
 
 namespace FNO.ReadModel.Tests.EventHandlers
 {
@@ -11,6 +12,10 @@ namespace FNO.ReadModel.Tests.EventHandlers
     {
         private readonly DbContextOptions<ReadModelDbContext> _dbOpts;
         protected readonly ILogger _logger;
+
+        protected readonly Guid _playerId = Guid.NewGuid();
+        protected readonly Guid _factoryId = Guid.NewGuid();
+        protected readonly Guid _locationId = Guid.NewGuid();
 
         public EventHandlerTestBase()
         {
@@ -35,6 +40,30 @@ namespace FNO.ReadModel.Tests.EventHandlers
                 dbContext.SaveChanges();
             }
         }
+
+        protected void Given(params object[][] entities)
+        {
+            using (var dbContext = GetInMemoryDatabase())
+            {
+                foreach (var set in entities)
+                {
+                    foreach (var entity in set)
+                    {
+                        dbContext.Add(entity);
+                    }
+                }
+                dbContext.SaveChanges();
+            }
+        }
+
+        protected Player[] DefaultPlayer => new[] { new Player { PlayerId = _playerId } };
+
+
+        protected object[] DefaultFactory => new object[]
+        {
+            new FactoryLocation { LocationId = _locationId },
+            new Factory { FactoryId = _factoryId },
+        };
 
         public void Dispose()
         {

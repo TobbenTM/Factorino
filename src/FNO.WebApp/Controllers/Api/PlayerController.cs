@@ -1,3 +1,6 @@
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using FNO.Domain.Events;
 using FNO.Domain.Events.Player;
 using FNO.Domain.Models;
@@ -7,9 +10,6 @@ using FNO.WebApp.Filters;
 using FNO.WebApp.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace FNO.WebApp.Controllers.Api
 {

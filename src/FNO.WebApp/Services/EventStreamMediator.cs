@@ -1,19 +1,20 @@
-using Confluent.Kafka;
-using FNO.Common;
-using FNO.Domain.Events;
-using FNO.Domain.Events.Factory;
-using FNO.EventStream;
-using FNO.WebApp.Hubs;
-using Microsoft.AspNetCore.SignalR;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Hosting;
-using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
+using Confluent.Kafka;
+using FNO.Common;
+using FNO.Domain.Events;
+using FNO.Domain.Events.Factory;
+using FNO.Domain.Events.Shipping;
+using FNO.EventStream;
+using FNO.WebApp.Hubs;
+using Microsoft.AspNetCore.SignalR;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
+using Serilog;
 
 namespace FNO.WebApp.Services
 {
@@ -31,7 +32,8 @@ namespace FNO.WebApp.Services
             IConfiguration configuration,
             ILogger logger,
             IHubContext<FactoryHub, IEventHandlerClient> factoryHubContext,
-            IHubContext<FactoryCreateHub, IEventHandlerClient> factoryCreateHubContext)
+            IHubContext<FactoryCreateHub, IEventHandlerClient> factoryCreateHubContext,
+            IHubContext<PlayerHub, IEventHandlerClient> playerHubContext)
         {
             _configuration = configuration;
             _logger = logger;
@@ -54,6 +56,13 @@ namespace FNO.WebApp.Services
                 typeof(FactoryDecommissionedEvent));
 
             RegisterHubContext(factoryHubContext.Clients, GetDecendantsOfClass<FactoryActivityBaseEvent>());
+
+            RegisterHubContext(playerHubContext.Clients,
+                typeof(ShipmentCompletedEvent),
+                typeof(ShipmentFulfilledEvent),
+                typeof(ShipmentReceivedEvent),
+                typeof(ShipmentRequestedEvent),
+                typeof(FactoryOutgoingTrainEvent));
         }
 
         private void RegisterHubContext(IHubClients<IEventHandlerClient> clients, params Type[] eventTypes)

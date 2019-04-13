@@ -2,7 +2,9 @@
 using FNO.Domain.Events;
 using FNO.Domain.Events.Corporation;
 using FNO.Domain.Events.Factory;
+using FNO.Domain.Events.Market;
 using FNO.Domain.Events.Player;
+using FNO.Domain.Events.Shipping;
 using FNO.EventSourcing;
 using FNO.ReadModel.EventHandlers;
 using Serilog;
@@ -49,6 +51,18 @@ namespace FNO.ReadModel
                 typeof(FactoryDecommissionedEvent));
 
             _resolver.Register(() => new FactoryActivityEventHandler(_dbContext, _logger), GetDecendantsOfClass<FactoryActivityBaseEvent>());
+
+            _resolver.Register(() => new ShippingEventHandler(_dbContext, _logger),
+                typeof(ShipmentRequestedEvent),
+                typeof(ShipmentFulfilledEvent),
+                typeof(ShipmentReceivedEvent),
+                typeof(ShipmentCompletedEvent));
+
+            _resolver.Register(() => new MarketEventHandler(_dbContext, _logger),
+                typeof(OrderCreatedEvent),
+                typeof(OrderPartiallyFulfilledEvent),
+                typeof(OrderFulfilledEvent),
+                typeof(OrderCancelledEvent));
         }
 
         public async Task Handle<TEvent>(TEvent evnt) where TEvent : IEvent

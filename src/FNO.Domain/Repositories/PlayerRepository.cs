@@ -1,10 +1,10 @@
-﻿using FNO.Domain.Models;
-using Microsoft.EntityFrameworkCore;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using FNO.Domain.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace FNO.Domain.Repositories
 {
@@ -45,6 +45,21 @@ namespace FNO.Domain.Repositories
         public async Task<IEnumerable<WarehouseInventory>> GetInventory(Player player)
         {
             return await _dbContext.WarehouseInventories
+                .Include(i => i.Item)
+                .Where(i => i.OwnerId == player.PlayerId)
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<Shipment>> GetShipments(Player player)
+        {
+            return await _dbContext.Shipments
+                .Where(i => i.OwnerId == player.PlayerId)
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<MarketOrder>> GetOrders(Player player)
+        {
+            return await _dbContext.Orders
                 .Include(i => i.Item)
                 .Where(i => i.OwnerId == player.PlayerId)
                 .ToListAsync();

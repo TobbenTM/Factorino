@@ -16,7 +16,7 @@ namespace FNO.Domain.Events.Shipping
         {
         }
 
-        public ShipmentRequestedEvent(Guid entityId, Guid factoryId, Models.Player initiator) : base(entityId, initiator)
+        public ShipmentRequestedEvent(Guid shipmentId, Guid factoryId, Models.Player initiator) : base(shipmentId, initiator)
         {
             FactoryId = factoryId;
             OwnerId = initiator.PlayerId;

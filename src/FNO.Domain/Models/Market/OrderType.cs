@@ -1,4 +1,4 @@
-﻿namespace FNO.Domain.Models
+﻿namespace FNO.Domain.Models.Market
 {
     public enum OrderType
     {

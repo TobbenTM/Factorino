@@ -1,8 +1,9 @@
-﻿using FNO.Domain.Models;
+﻿using System;
+using System.Linq;
+using FNO.Domain.Models;
+using FNO.Domain.Models.Market;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using System;
-using System.Linq;
 
 namespace FNO.Domain
 {
@@ -12,16 +13,14 @@ namespace FNO.Domain
         public DbSet<Factory> Factories { get; set; }
         // FactoryLocations
         public DbSet<FactoryLocation> FactoryLocations { get; set; }
-        // FactoryTrainstops
         // Warehouses
         // public DbSet<Warehouse> Warehouses { get; set; }
-        // WarehouseRules
         // WarehouseInventory
         public DbSet<WarehouseInventory> WarehouseInventories { get; set; }
-        // WarehouseTransactions
         // MarketOrders
-        public DbSet<MarketOrder> MarketOrders { get; set; }
-        // MarketTransactions
+        public DbSet<MarketOrder> Orders { get; set; }
+        // Shipments
+        public DbSet<Shipment> Shipments { get; set; }
         // Players
         public DbSet<Player> Players { get; set; }
         // Corporations
@@ -123,7 +122,7 @@ namespace FNO.Domain
                 {
                     OrderId = orderIds[i],
                     ItemId = entities[i].Name,
-                    CorporationId = bankCorpId,
+                    OwnerId = systemId,
                     OrderType = OrderType.Buy,
                     Price = 1,
                     Quantity = -1,
