@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Linq;
+using System.Threading.Tasks;
 using FNO.Domain;
 using FNO.Domain.Events.Player;
 using FNO.Domain.Models;
 using FNO.EventSourcing;
 using Serilog;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace FNO.ReadModel.EventHandlers
 {

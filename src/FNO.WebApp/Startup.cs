@@ -60,6 +60,7 @@ namespace FNO.WebApp
             services.AddScoped<IFactoryLocationRepository, FactoryLocationRepository>();
             services.AddScoped<ICorporationRepository, CorporationRepository>();
             services.AddScoped<IEntityRepository, EntityRepository>();
+            services.AddScoped<IMarketRepository, MarketRepository>();
             services.AddScoped<IEventStore, KafkaProducer>();
 
             services.AddHostedService<EventStreamMediator>();

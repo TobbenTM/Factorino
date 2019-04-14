@@ -43,7 +43,7 @@ import { mapState } from 'vuex';
 
 export default {
   computed: {
-    ...mapState('user', [ 'shipments', 'loadingShipments' ]),
+    ...mapState('user/shipments', [ 'shipments', 'loadingShipments' ]),
   },
   methods: {
     createShipment() {

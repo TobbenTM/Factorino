@@ -11,6 +11,9 @@ namespace FNO.WebApp.Services
             {
                 conf.MapHub<WorldHub>("/ws/world");
                 conf.MapHub<FactoryHub>("/ws/factory");
+                conf.MapHub<MarketHub>("/ws/market");
+                conf.MapHub<ShippingHub>("/ws/shipping");
+                conf.MapHub<PlayerHub>("/ws/player");
                 conf.MapHub<FactoryCreateHub>("/ws/factorycreate");
             });
 

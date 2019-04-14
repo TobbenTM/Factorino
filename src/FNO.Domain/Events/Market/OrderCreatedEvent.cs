@@ -5,6 +5,8 @@ namespace FNO.Domain.Events.Market
 {
     public class OrderCreatedEvent : EntityEvent
     {
+        public Guid OwnerId { get; set; }
+
         public string ItemId { get; set; }
         public int Quantity { get; set; }
         public int Price { get; set; }
@@ -16,6 +18,7 @@ namespace FNO.Domain.Events.Market
 
         public OrderCreatedEvent(Guid orderId, Models.Player initiator) : base(orderId, initiator)
         {
+            OwnerId = initiator.PlayerId;
         }
     }
 }

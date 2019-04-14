@@ -145,15 +145,10 @@ export default {
     @include inlay();
   }
 
-  &--disabled {
+  &--disabled, &--disabled:hover {
     cursor: not-allowed;
     background: #46464b;
-    color: white;
-  }
-
-  &--disabled:hover {
-    background: #46464b;
-    color: white;
+    color: gray;
   }
 }
 </style>

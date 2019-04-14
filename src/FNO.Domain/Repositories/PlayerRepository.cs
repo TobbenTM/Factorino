@@ -49,20 +49,5 @@ namespace FNO.Domain.Repositories
                 .Where(i => i.OwnerId == player.PlayerId)
                 .ToListAsync();
         }
-
-        public async Task<IEnumerable<Shipment>> GetShipments(Player player)
-        {
-            return await _dbContext.Shipments
-                .Where(i => i.OwnerId == player.PlayerId)
-                .ToListAsync();
-        }
-
-        public async Task<IEnumerable<MarketOrder>> GetOrders(Player player)
-        {
-            return await _dbContext.Orders
-                .Include(i => i.Item)
-                .Where(i => i.OwnerId == player.PlayerId)
-                .ToListAsync();
-        }
     }
 }

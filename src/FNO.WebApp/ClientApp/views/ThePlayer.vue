@@ -1,12 +1,12 @@
 <template>
   <div class="player">
-    <factorio-panel v-if="loadingInventory" title="Player">
+    <!-- <factorio-panel v-if="loading" title="Player">
       <app-spinner
         text="Loading Player.."
         class="player__loader"
       />
-    </factorio-panel>
-    <div v-else class="player__layout">
+    </factorio-panel> -->
+    <div class="player__layout">
       <div class="player__details">
         <factorio-panel title="Player" class="">
           <div class="player__details__container">
@@ -20,9 +20,8 @@
           </div>
         </factorio-panel>
       </div>
-      <warehouse-inventory
+      <player-inventory
         class="player__warehouse"
-        :inventory="remainingInventory"
         v-on:selected="selectedItem = $event"
       />
       <player-orders class="player__orders"/>
@@ -33,35 +32,19 @@
 
 <script>
 import { mapState, mapActions } from 'vuex';
-import WarehouseInventory from '@/components/WarehouseInventory';
+import PlayerInventory from '@/components/PlayerInventory';
 import PlayerShipments from '@/components/PlayerShipments';
 import PlayerOrders from '@/components/PlayerOrders';
 
 export default{
   name: 'the-player',
   components: {
-    WarehouseInventory,
+    PlayerInventory,
     PlayerShipments,
     PlayerOrders,
   },
   computed: {
-    ...mapState('user', [
-      'user',
-      'inventory',
-      'loadingInventory'
-    ]),
-    remainingInventory() {
-      if (!this.inventory || this.inventory.length === 0) {
-        return [];
-      }
-      return this.inventory.map(item => {
-        const selectedItem = this.trainInventory.find(i => i.itemId == item.itemId);
-        if (selectedItem) {
-          item.quantity -= selectedItem.quantity;
-        }
-        return item;
-      });
-    },
+    ...mapState('user', ['user']),
     netWorth() {
       // TODO: We need to figure out inventory worth
       return this.user.credits;
@@ -69,15 +52,8 @@ export default{
   },
   data() {
     return {
-      trainInventory: [],
       selectedItem: null,
     };
-  },
-  mounted() {
-    this.loadInventory();
-  },
-  methods: {
-    ...mapActions('user', ['loadInventory']),
   },
 }
 </script>
@@ -112,6 +88,7 @@ export default{
 
     &__container {
       text-align: center;
+      padding-top: 1em;
 
       > img {
         border-radius: 50%;

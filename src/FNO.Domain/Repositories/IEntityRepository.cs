@@ -7,5 +7,6 @@ namespace FNO.Domain.Repositories
     public interface IEntityRepository
     {
         IEnumerable<FactorioEntity> Search(string query);
+        FactorioEntity Get(string itemId);
     }
 }

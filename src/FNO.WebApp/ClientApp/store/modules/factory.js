@@ -22,7 +22,6 @@ export default {
   mutations: {
     hubReady(state, hub) {
       state.hub = hub;
-      console.log('Factory hub ready!');
     },
     loadingFactories(state) {
       state.loadedFactories = false;
@@ -54,11 +53,8 @@ export default {
   },
   actions: {
     async initHub({ commit }) {
-      console.log('Connecting to factory hub..');
-
       const hub = new signalR.HubConnectionBuilder()
         .withUrl('/ws/factory')
-        .configureLogging(signalR.LogLevel.Information)
         .build();
 
       // We'll also be handling all events coming through the subscription
@@ -78,10 +74,8 @@ export default {
       commit('loadingFactories');
       if (!state.hub) await dispatch('initHub');
       try {
-        console.log('Loading factories..');
         // GetFactories will also subscribe to events for the factories
         const factories = await state.hub.invoke('GetFactories');
-        console.log('Loaded factories:', factories);
         commit('loadedFactories', factories);
       } catch (err) {
         commit('error', err, { root: true });
@@ -91,8 +85,7 @@ export default {
       commit('destroyingFactory', factory.factoryId);
       if (!state.hub) await dispatch('initHub');
       try {
-        const result = await state.hub.invoke('DeleteFactory', factory.factoryId);
-        console.log('Destroyed factory..', result);
+        await state.hub.invoke('DeleteFactory', factory.factoryId);
       } catch (err) {
         commit('error', err, { root: true });
       }

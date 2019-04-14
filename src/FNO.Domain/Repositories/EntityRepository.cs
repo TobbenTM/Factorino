@@ -19,5 +19,11 @@ namespace FNO.Domain.Repositories
                 .Where(e => e.Name.StartsWith(query))
                 .ToList();
         }
+
+        public FactorioEntity Get(string itemId)
+        {
+            return _dbContext.EntityLibrary
+                .First(e => e.Name == itemId);
+        }
     }
 }

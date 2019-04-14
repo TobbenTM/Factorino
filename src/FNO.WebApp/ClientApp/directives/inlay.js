@@ -5,7 +5,8 @@ export default {
     Object.assign(el.style, {
       position: 'relative',
       borderRadius: modifiers.square ? '2px' : '6px',
-      overflow: 'hidden',
+      overflowX: 'hidden',
+      overflowY: 'hidden',
       borderTop: `2px solid ${variables.embossDarkColor}`,
       borderBottom: `2px solid ${variables.embossLightColor}`,
     });
@@ -31,6 +32,14 @@ export default {
       pointerEvents: 'none',
       boxShadow: 'inset 0 0 10px rgba(0, 0, 0, 1)',
     });
+    el.dataset.maskId = Math.random().toString(36).substr(2, 9);
+    mask.id = el.dataset.maskId;
     el.appendChild(mask);
+  },
+  unbind(el) {
+    const mask = document.getElementById(el.dataset.maskId);
+    if (mask) {
+      mask.remove();
+    }
   },
 };

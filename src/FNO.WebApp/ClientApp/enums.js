@@ -17,6 +17,16 @@ export const OrderType = {
 export const OrderState = {
   Created: 0,
   Active: 1,
-  Fulfilled: 2,
-  Cancelled: 3,
+  PartiallyFulfilled: 2,
+  Fulfilled: 3,
+  Cancelled: 4,
+  // Some front-end specific ones:
+  Cancelling: 101,
+};
+
+export const OrderCancellationReason = {
+  Unknown: 0,
+  User: 1,
+  NoFunds: 2,
+  NoResources: 3,
 };

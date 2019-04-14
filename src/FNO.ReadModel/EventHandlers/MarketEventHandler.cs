@@ -1,6 +1,9 @@
-﻿using System.Threading.Tasks;
+﻿using System.Linq;
+using System.Threading.Tasks;
 using FNO.Domain;
 using FNO.Domain.Events.Market;
+using FNO.Domain.Models;
+using FNO.Domain.Models.Market;
 using FNO.EventSourcing;
 using Serilog;
 
@@ -21,22 +24,50 @@ namespace FNO.ReadModel.EventHandlers
 
         public Task Handle(OrderCreatedEvent evnt)
         {
-            throw new System.NotImplementedException();
+            _dbContext.Orders.Add(new MarketOrder
+            {
+                OrderId = evnt.EntityId,
+                OwnerId = evnt.OwnerId,
+                ItemId = evnt.ItemId,
+                Quantity = evnt.Quantity,
+                Price = evnt.Price,
+                OrderType = evnt.OrderType,
+                State = OrderState.Active,
+            });
+            return Task.CompletedTask;
         }
 
         public Task Handle(OrderPartiallyFulfilledEvent evnt)
         {
-            throw new System.NotImplementedException();
+            var order = _dbContext.Orders.FirstOrDefault(o => o.OrderId == evnt.EntityId);
+            if (order != null)
+            {
+                order.QuantityFulfilled += evnt.QuantityFulfilled;
+                order.State = OrderState.PartiallyFulfilled;
+            }
+            return Task.CompletedTask;
         }
 
         public Task Handle(OrderFulfilledEvent evnt)
         {
-            throw new System.NotImplementedException();
+            var order = _dbContext.Orders.FirstOrDefault(o => o.OrderId == evnt.EntityId);
+            if (order != null)
+            {
+                order.QuantityFulfilled = order.Quantity;
+                order.State = OrderState.Fulfilled;
+            }
+            return Task.CompletedTask;
         }
 
         public Task Handle(OrderCancelledEvent evnt)
         {
-            throw new System.NotImplementedException();
+            var order = _dbContext.Orders.FirstOrDefault(o => o.OrderId == evnt.EntityId);
+            if (order != null)
+            {
+                order.CancellationReason = evnt.CancellationReason;
+                order.State = OrderState.Cancelled;
+            }
+            return Task.CompletedTask;
         }
     }
 }

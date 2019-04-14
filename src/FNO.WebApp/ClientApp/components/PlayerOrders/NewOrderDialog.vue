@@ -50,8 +50,14 @@
         >
         <span>$</span>
       </div>
-      <factorio-button class="order__button" :small="true">
-        <icon :icon="['fas', 'coins']"/> Create
+      <factorio-button
+        class="order__button"
+        :small="true"
+        :disabled="creating"
+        v-on:click="create"
+      >
+        <template v-if="creating"><icon :icon="['fas', 'spinner']" spin/> Creating..</template>
+        <template v-else><icon :icon="['fas', 'coins']"/> Create</template>
       </factorio-button>
     </div>
   </factorio-dialog>
@@ -60,6 +66,7 @@
 <script>
 import ItemSelect from '@/components/ItemSelect';
 import { OrderType } from '@/enums';
+import { mapActions } from 'vuex';
 
 export default {
   components: {
@@ -74,14 +81,32 @@ export default {
         quantity: 0,
         price: 0,
       },
+      selectedQuantity: 0,
       selectedItem: null,
       infinite: false,
+      creating: false,
     };
   },
   watch: {
     selectedItem(newItem) {
       this.order.itemId = newItem.name;
     },
+    infinite(isInfinite) {
+      if (isInfinite) {
+        this.selectedQuantity = this.order.quantity;
+        this.order.quantity = -1;
+      } else {
+        this.order.quantity = this.selectedQuantity;
+      }
+    }
+  },
+  methods: {
+    ...mapActions('user/orders', ['createOrder']),
+    async create() {
+      this.creating = true;
+      await this.createOrder(this.order);
+      setTimeout(() => this.$emit('close'), 500);
+    }
   },
 };
 </script>

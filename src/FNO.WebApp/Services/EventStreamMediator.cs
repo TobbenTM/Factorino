@@ -8,6 +8,7 @@ using Confluent.Kafka;
 using FNO.Common;
 using FNO.Domain.Events;
 using FNO.Domain.Events.Factory;
+using FNO.Domain.Events.Market;
 using FNO.Domain.Events.Shipping;
 using FNO.EventStream;
 using FNO.WebApp.Hubs;
@@ -33,7 +34,9 @@ namespace FNO.WebApp.Services
             ILogger logger,
             IHubContext<FactoryHub, IEventHandlerClient> factoryHubContext,
             IHubContext<FactoryCreateHub, IEventHandlerClient> factoryCreateHubContext,
-            IHubContext<PlayerHub, IEventHandlerClient> playerHubContext)
+            IHubContext<PlayerHub, IEventHandlerClient> playerHubContext,
+            IHubContext<MarketHub, IEventHandlerClient> marketHubContext,
+            IHubContext<ShippingHub, IEventHandlerClient> shippingHubContext)
         {
             _configuration = configuration;
             _logger = logger;
@@ -57,7 +60,15 @@ namespace FNO.WebApp.Services
 
             RegisterHubContext(factoryHubContext.Clients, GetDecendantsOfClass<FactoryActivityBaseEvent>());
 
-            RegisterHubContext(playerHubContext.Clients,
+            RegisterHubContext(playerHubContext.Clients); // TODO
+
+            RegisterHubContext(marketHubContext.Clients,
+                typeof(OrderCreatedEvent),
+                typeof(OrderPartiallyFulfilledEvent),
+                typeof(OrderFulfilledEvent),
+                typeof(OrderCancelledEvent));
+
+            RegisterHubContext(shippingHubContext.Clients,
                 typeof(ShipmentCompletedEvent),
                 typeof(ShipmentFulfilledEvent),
                 typeof(ShipmentReceivedEvent),

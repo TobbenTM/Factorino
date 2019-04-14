@@ -16,6 +16,7 @@ fontawesome.library.add(
   require('@fortawesome/fontawesome-free-solid/faSync'),
   require('@fortawesome/fontawesome-free-solid/faPlus'),
   require('@fortawesome/fontawesome-free-solid/faBars'),
+  require('@fortawesome/fontawesome-free-solid/faBan'),
   require('@fortawesome/fontawesome-free-solid/faTimes'),
   require('@fortawesome/fontawesome-free-solid/faTimesCircle'),
   require('@fortawesome/fontawesome-free-solid/faCheck'),

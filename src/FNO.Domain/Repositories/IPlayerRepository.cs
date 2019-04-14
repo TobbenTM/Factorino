@@ -1,8 +1,8 @@
-﻿using FNO.Domain.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using FNO.Domain.Models;
 
 namespace FNO.Domain.Repositories
 {
@@ -13,7 +13,5 @@ namespace FNO.Domain.Repositories
         Task<Player> GetPlayer(ClaimsPrincipal user);
         Task<IEnumerable<CorporationInvitation>> GetInvitations(ClaimsPrincipal user);
         Task<IEnumerable<WarehouseInventory>> GetInventory(Player player);
-        Task<IEnumerable<Shipment>> GetShipments(Player player);
-        Task<IEnumerable<MarketOrder>> GetOrders(Player player);
     }
 }

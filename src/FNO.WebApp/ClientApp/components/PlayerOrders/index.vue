@@ -23,16 +23,70 @@
         No orders found!
       </div>
       <div
-        class="orders__list"
         v-else
         v-inlay:light
+        style="max-height: 100%;"
       >
-        <order-item
-          v-for="order in orders"
-          :key="order.orderId"
-        >
-
-        </order-item>
+        <div class="orders__list">
+          <table>
+            <thead>
+              <tr>
+                <th>Item</th>
+                <th>Order</th>
+                <th>State</th>
+                <th>Quantity</th>
+                <th>Price</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr
+                v-for="order in orders"
+                :key="order.orderId"
+              >
+                <td>
+                  <factorio-icon :path="order.item.icon"/> {{ order.item.name }}
+                </td>
+                <td v-if="order.orderType === OrderType.Buy">
+                  <icon :icon="['fas', 'sign-in-alt']"/> Buy
+                </td>
+                <td v-else>
+                  <icon :icon="['fas', 'sign-out-alt']"/> Sell
+                </td>
+                <td>
+                  <template v-if="order.state === OrderState.Created"><icon :icon="['fas', 'spinner']" spin/> Creating..</template>
+                  <template v-else-if="order.state === OrderState.Active"><icon :icon="['fas', 'check']"/> Active</template>
+                  <template v-else-if="order.state === OrderState.PartiallyFulfilled"><icon :icon="['fas', 'check']"/> Active</template>
+                  <template v-else-if="order.state === OrderState.Fulfilled"><icon :icon="['fas', 'check']"/> Fulfilled</template>
+                  <template v-else-if="order.state === OrderState.Cancelled"><icon :icon="['fas', 'ban']"/> Cancelled</template>
+                  <template v-else-if="order.state === OrderState.Cancelling"><icon :icon="['fas', 'spinner']" spin/> Cancelling..</template>
+                  <template v-else><icon :icon="['fas', 'question-circle']"/> Unknown</template>
+                </td>
+                <td>{{ order.quantityFulfilled }} / <icon v-if="order.quantity === -1" :icon="['fas', 'infinity']"/><span v-else>{{ order.quantity }}</span></td>
+                <td>{{ order.price }} $</td>
+                <td>
+                  <factorio-button
+                    v-if="order.state !== OrderState.Cancelled"
+                    :disabled="order.state === OrderState.Cancelling"
+                    :small="true"
+                    v-on:click="cancelOrder(order.orderId)"
+                  >
+                    <template v-if="order.state === OrderState.Cancelling"><icon :icon="['fas', 'spinner']" spin/> Cancelling..</template>
+                    <template v-else><icon :icon="['fas', 'ban']"/> Cancel</template>
+                  </factorio-button>
+                  <template v-else>
+                    <template v-if="order.cancellationReason === OrderCancellationReason.NoFunds">
+                      <icon :icon="['fas', 'faExclamation-triangle']"/> No funds!
+                    </template>
+                    <template v-if="order.cancellationReason === OrderCancellationReason.NoResources">
+                      <icon :icon="['fas', 'faExclamation-triangle']"/> No resources!
+                    </template>
+                  </template>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
     <new-order-dialog
@@ -43,7 +97,12 @@
 </template>
 
 <script>
-import { mapState } from 'vuex';
+import { mapState, mapActions } from 'vuex';
+import {
+  OrderType,
+  OrderState,
+  OrderCancellationReason,
+} from '@/enums';
 import NewOrderDialog from './NewOrderDialog';
 
 export default {
@@ -51,14 +110,21 @@ export default {
     NewOrderDialog,
   },
   computed: {
-    ...mapState('user', [ 'orders', 'loadingOrders' ]),
+    ...mapState('user/orders', [ 'orders', 'loadingOrders' ]),
   },
   data() {
     return {
+      OrderType,
+      OrderState,
+      OrderCancellationReason,
       creatingOrder: false,
     };
   },
+  mounted() {
+    this.loadOrders();
+  },
   methods: {
+    ...mapActions('user/orders', ['loadOrders', 'cancelOrder']),
     createOrder() {
       this.creatingOrder = true;
     },
@@ -68,6 +134,7 @@ export default {
 
 <style lang="scss" scoped>
 @import '@/css/mixins.scss';
+@import '@/css/variables.scss';
 
 .orders {
 
@@ -95,7 +162,37 @@ export default {
   }
 
   &__list {
-    overflow-y: scroll;
+    max-height: 100%;
+    overflow-y: auto;
+
+    table {
+      width: 100%;
+      text-align: center;
+      border-collapse: collapse;
+
+      thead {
+        color: grey;
+        background: rgba(0, 0, 0, 0.3);
+      }
+
+      tbody > tr {
+        border-top: 1px solid $emboss_light;
+        border-bottom: 1px solid $emboss_dark;
+      }
+
+      td, th {
+        padding: .2em 0;
+      }
+
+      td:first-child, th:first-child {
+        text-align: left;
+        padding-left: .4em;
+      }
+
+      td:last-child, th:last-child {
+        padding-right: .4em;
+      }
+    }
   }
 }
 </style>

@@ -34,14 +34,6 @@ namespace FNO.WebApp.Controllers.Api
             return player;
         }
 
-        [HttpGet("inventory")]
-        [Authorize]
-        public async Task<IEnumerable<WarehouseInventory>> GetInventory()
-        {
-            var player = await _repo.GetPlayer(User);
-            return await _repo.GetInventory(player);
-        }
-
         [HttpGet("invitations")]
         public async Task<IEnumerable<CorporationInvitation>> GetInvitations()
         {

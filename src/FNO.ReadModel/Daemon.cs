@@ -61,6 +61,7 @@ namespace FNO.ReadModel
         public Task OnEndReached(string topic, int partition, long offset)
         {
             // noop
+            _logger.Debug($"Reached end of topic '{topic}' (offset: {offset})");
             return Task.CompletedTask;
         }
 

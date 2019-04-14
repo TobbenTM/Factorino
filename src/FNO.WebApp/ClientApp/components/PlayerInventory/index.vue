@@ -2,7 +2,14 @@
   <factorio-panel class="warehouse">
     <div class="warehouse__grid">
       <factorio-panel-header title="Warehouse"/>
-      <div class="warehouse__items" v-inlay:light>
+      <div
+        class="warehouse__loading"
+        v-if="loadingInventory"
+        v-inlay:light
+      >
+        <icon :icon="['fas', 'spinner']" spin/> Loading warehouse..
+      </div>
+      <div v-else class="warehouse__items" v-inlay:light>
         <!-- A div per inventory item -->
         <div
           v-for="stock in inventory"
@@ -27,28 +34,18 @@
       <div class="warehouse__stats">
         <span>Total items: {{ totalItems | humanizeNumber }}</span>
         <span>Net worth: {{ netWorth }} $</span>
-        <span>Slots used (stacks): {{ totalStacks }} / <icon v-if="maxStacks === Infinity" :icon="['fas', 'infinity']"/><template v-else>{{ maxStacks }}</template></span>
+        <span>Slots used (stacks): {{ totalStacks }} / <icon :icon="['fas', 'infinity']"/></span>
       </div>
     </div>
   </factorio-panel>
 </template>
 
 <script>
-// TODO: I'd like to rename this component, it's not only used for warehouse
+import { mapState, mapActions } from 'vuex';
 
 export default {
-  props: {
-    inventory: {
-      type: Array,
-      required: true,
-    },
-    maxStacks: {
-      type: Number,
-      required: false,
-      default: Infinity,
-    },
-  },
   computed: {
+    ...mapState('user', ['inventory', 'loadingInventory']),
     totalItems() {
       return this.inventory.reduce((acc, cur) => acc + cur.quantity, 0);
     },
@@ -59,6 +56,12 @@ export default {
     totalStacks() {
       return this.inventory.reduce((acc, cur) => acc + Math.ceil(cur.quantity / cur.item.stackSize), 0);
     },
+  },
+  mounted() {
+    this.loadInventory();
+  },
+  methods: {
+    ...mapActions('user', ['loadInventory']),
   },
   filters: {
     humanizeNumber(number) {
@@ -85,6 +88,19 @@ export default {
     display: grid;
     grid-template-columns: 1fr;
     grid-template-rows: auto 1fr auto;
+  }
+
+  &__empty, &__loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #666666;
+    font-size: 2em;
+    text-shadow: 2px 2px 3px rgba(0, 0, 0, 0.5);
+
+    svg {
+      margin-right: .2em;
+    }
   }
 
   &__items {

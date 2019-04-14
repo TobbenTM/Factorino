@@ -20,7 +20,6 @@ namespace FNO.WebApp.Hubs
             _eventStore = eventStore;
         }
 
-
         [Authorize]
         public async Task<Player> GetPlayer()
         {
@@ -33,22 +32,7 @@ namespace FNO.WebApp.Hubs
         public async Task<IEnumerable<WarehouseInventory>> GetInventory()
         {
             var player = await _repo.GetPlayer(Context.User);
-            var inventory = await _repo.GetInventory(player);
-            return inventory;
-        }
-
-        [Authorize]
-        public async Task<IEnumerable<WarehouseInventory>> GetShipments()
-        {
-            var player = await _repo.GetPlayer(Context.User);
-            var inventory = await _repo.GetInventory(player);
-            return inventory;
-        }
-
-        [Authorize]
-        public async Task<IEnumerable<WarehouseInventory>> GetOrders()
-        {
-            var player = await _repo.GetPlayer(Context.User);
+            await Subscribe(player.PlayerId);
             var inventory = await _repo.GetInventory(player);
             return inventory;
         }
