@@ -9,7 +9,7 @@ namespace FNO.WebApp.Security
 {
     public static class AuthenticationConfiguration
     {
-        public const string SteamCookieScheme = SteamAuthenticationDefaults.AuthenticationScheme + CookieAuthenticationDefaults.AuthenticationScheme;
+        public static string SteamCookieScheme => SteamAuthenticationDefaults.AuthenticationScheme + CookieAuthenticationDefaults.AuthenticationScheme;
 
         public static IServiceCollection AddFactorinoAuthentication(this IServiceCollection services, IConfiguration config)
         {
