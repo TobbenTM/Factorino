@@ -14,8 +14,8 @@ jobs:
           name: Install node
           command: > 
             apt-get install curl gnupg -yq
-              && curl -sL https://deb.nodesource.com/setup_8.x | bash
-              && apt-get install nodejs -yq
+            && curl -sL https://deb.nodesource.com/setup_8.x | bash
+            && apt-get install nodejs -yq
       - run:
           name: Add dotnet tool to path
           command: export PATH="${PATH}:/root/.dotnet/tools"
@@ -26,15 +26,15 @@ jobs:
           name: Init SonarQube analysis
           command: >
             dotnet sonarscanner begin 
-              /k:"TobbenTM_Factorino" 
-              /o:"tobbentm-github" 
-              /d:sonar.host.url="https://sonarcloud.io" 
-              /d:sonar.login="$sonarcloud_token" 
-              /d:sonar.language="cs" 
-              /d:sonar.exclusions="**/bin/**/*,**/obj/**/*,**/vendor/**/*,**/dist/**/*,**/node_modules/**/*" 
-              /d:sonar.coverage.exclusions="test/**" 
-              /d:sonar.sourceEncoding="UTF-8" 
-              /d:sonar.cs.opencover.reportsPath="/app/coverage/coverage.opencover.xml"
+            /k:"TobbenTM_Factorino" 
+            /o:"tobbentm-github" 
+            /d:sonar.host.url="https://sonarcloud.io" 
+            /d:sonar.login="$sonarcloud_token" 
+            /d:sonar.language="cs" 
+            /d:sonar.exclusions="**/bin/**/*,**/obj/**/*,**/vendor/**/*,**/dist/**/*,**/node_modules/**/*" 
+            /d:sonar.coverage.exclusions="test/**" 
+            /d:sonar.sourceEncoding="UTF-8" 
+            /d:sonar.cs.opencover.reportsPath="/app/coverage/coverage.opencover.xml"
       - run:
           name: Restore nuget packages
           command: dotnet restore
@@ -47,4 +47,3 @@ jobs:
       - run:
           name: Finish SonarQube analysis
           command: dotnet sonarscanner end /d:sonar.login="$sonarcloud_token"
-          
