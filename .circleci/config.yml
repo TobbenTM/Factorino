@@ -5,7 +5,7 @@ jobs:
       - image: microsoft/dotnet:2.1-sdk
         environment:
           sonarcloud_token: sonarcloud_token
-          BASH_ENV: ~/.bashrc
+          PATH: "/root/.dotnet/tools:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
     steps:
       - checkout
       - run:
@@ -17,9 +17,6 @@ jobs:
             apt-get install curl gnupg -yq
             && curl -sL https://deb.nodesource.com/setup_8.x | bash
             && apt-get install nodejs -yq
-      - run:
-          name: Add dotnet tool to path
-          command: echo 'export PATH=/root/.dotnet/tools:$PATH' >> $BASH_ENV
       - run:
           name: Install tools
           command: dotnet tool install --global dotnet-sonarscanner
