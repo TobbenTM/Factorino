@@ -1,36 +1,30 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
-
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp2.1</TargetFramework>
     <LangVersion>7.1</LangVersion>
+    <ProjectGuid>53D2544B-0C35-4A2F-BE5C-9B3007B368BA</ProjectGuid>
   </PropertyGroup>
-
   <ItemGroup>
     <None Remove="Seed\nordics_1.zip" />
   </ItemGroup>
-
   <ItemGroup>
     <EmbeddedResource Include="Seed\nordics_1.zip" />
   </ItemGroup>
-
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="8.0.0" />
   </ItemGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\..\vendor\CoreRCON\src\CoreRCON\CoreRCON.csproj" />
     <ProjectReference Include="..\FNO.Common\FNO.Common.csproj" />
     <ProjectReference Include="..\FNO.Domain\FNO.Domain.csproj" />
     <ProjectReference Include="..\FNO.EventStream\FNO.EventStream.csproj" />
   </ItemGroup>
-
   <ItemGroup>
     <Reference Include="Microsoft.Extensions.Logging.Abstractions">
       <HintPath>..\..\..\..\..\..\Program Files\dotnet\sdk\NuGetFallbackFolder\microsoft.extensions.logging.abstractions\2.1.0\lib\netstandard2.0\Microsoft.Extensions.Logging.Abstractions.dll</HintPath>
     </Reference>
   </ItemGroup>
-
   <ItemGroup>
     <None Update="appsettings.windows.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -42,5 +36,4 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
-
 </Project>

@@ -24,7 +24,7 @@ namespace FNO.EventStream
 
         private readonly CancellationTokenSource _cancellationToken = new CancellationTokenSource();
 
-        private Consumer<Ignore, string> _consumer;
+        private readonly Consumer<Ignore, string> _consumer;
         private Task _consumeTask;
 
         public KafkaConsumer(ConfigurationBase configuration, IEventConsumer handler, ILogger logger)

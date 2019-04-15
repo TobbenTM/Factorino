@@ -1,18 +1,15 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <LangVersion>7.1</LangVersion>
+    <ProjectGuid>25363D37-5B99-46EB-8974-78BE2F139234</ProjectGuid>
   </PropertyGroup>
-
   <ItemGroup>
     <PackageReference Include="Confluent.Kafka" Version="0.11.4" />
   </ItemGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\FNO.Common\FNO.Common.csproj" />
     <ProjectReference Include="..\FNO.Domain\FNO.Domain.csproj" />
     <ProjectReference Include="..\FNO.EventSourcing\FNO.EventSourcing.csproj" />
   </ItemGroup>
-
 </Project>

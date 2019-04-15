@@ -2,7 +2,7 @@
 
 namespace FNO.Orchestrator.Exceptions
 {
-    internal class UnableToDecommissionException : Exception
+    public class UnableToDecommissionException : Exception
     {
         public UnableToDecommissionException()
         {

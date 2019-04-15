@@ -168,7 +168,8 @@ export default {
     table {
       width: 100%;
       text-align: center;
-      border-collapse: collapse;
+      border-collapse: separate;
+      border-spacing: 0;
 
       thead {
         color: grey;
@@ -176,12 +177,16 @@ export default {
       }
 
       tbody > tr {
-        border-top: 1px solid $emboss_light;
-        border-bottom: 1px solid $emboss_dark;
       }
 
-      td, th {
+      td {
         padding: .2em 0;
+        border-top: 1px solid $emboss_light;
+        border-bottom: 2px solid $emboss_dark;
+
+        .button {
+          padding: 4px 8px;
+        }
       }
 
       td:first-child, th:first-child {

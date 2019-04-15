@@ -5,6 +5,7 @@
 charts
 infrastructure
 media
+coverage
 **/bin
 **/obj
 **/node_modules
