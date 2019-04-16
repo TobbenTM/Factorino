@@ -32,7 +32,7 @@ RUN dotnet sonarscanner begin \
       /d:sonar.exclusions="**/bin/**/*,**/obj/**/*,**/vendor/**/*,**/dist/**/*,**/node_modules/**/*" \
       /d:sonar.coverage.exclusions="test/**" \
       /d:sonar.sourceEncoding="UTF-8" \
-      /d:sonar.cs.opencover.reportsPath="/app/coverage/coverage.opencover.xml"
+      /d:sonar.cs.opencover.reportsPaths="/app/coverage/coverage.opencover.xml"
 
 # Build and test
 RUN dotnet restore
