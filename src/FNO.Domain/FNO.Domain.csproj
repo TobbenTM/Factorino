@@ -4,6 +4,12 @@
     <LangVersion>7.1</LangVersion>
     <ProjectGuid>3E45BC16-92BA-4720-B7EE-86DCC2956103</ProjectGuid>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <CodeAnalysisRuleSet>FNO.Domain.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <CodeAnalysisRuleSet>FNO.Domain.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
   <ItemGroup>
     <Folder Include="Commands\" />
   </ItemGroup>

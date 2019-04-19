@@ -41,6 +41,19 @@ namespace FNO.WebApp.Hubs
             return orders;
         }
 
+        public async Task<Page<MarketOrder>> Search(OrderSearchFilter filter, int pageIndex = 1, int pageSize = 100)
+        {
+            var pageResult = await _repo.SearchOrders(pageIndex, pageSize, filter);
+
+            // We need to forget the last page result, otherwise the client will end up getting events for all orders
+            await UnSubscribeFromAll();
+            foreach (var order in pageResult.Results)
+            {
+                await Subscribe(order.OrderId);
+            }
+            return pageResult;
+        }
+
         [Authorize]
         public async Task<MarketOrder> CreateOrder(MarketOrder order)
         {
@@ -61,7 +74,7 @@ namespace FNO.WebApp.Hubs
                 Price = order.Price,
                 Quantity = order.Quantity,
             };
-            var results = await _eventStore.ProduceAsync(evnt);
+            await _eventStore.ProduceAsync(evnt);
             return order;
         }
 

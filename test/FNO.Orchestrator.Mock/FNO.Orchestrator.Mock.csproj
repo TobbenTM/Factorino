@@ -5,6 +5,12 @@
     <LangVersion>7.1</LangVersion>
     <ProjectGuid>4E827D76-30E8-474F-A2BF-E367BBEA6271</ProjectGuid>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <CodeAnalysisRuleSet>FNO.Orchestrator.Mock.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <CodeAnalysisRuleSet>FNO.Orchestrator.Mock.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\FNO.EventSourcing\FNO.EventSourcing.csproj" />
     <ProjectReference Include="..\..\src\FNO.EventStream\FNO.EventStream.csproj" />

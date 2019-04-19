@@ -5,6 +5,12 @@
     <LangVersion>7.1</LangVersion>
     <ProjectGuid>53D2544B-0C35-4A2F-BE5C-9B3007B368BA</ProjectGuid>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <CodeAnalysisRuleSet>FNO.FactoryPod.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <CodeAnalysisRuleSet>FNO.FactoryPod.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
   <ItemGroup>
     <None Remove="Seed\nordics_1.zip" />
   </ItemGroup>

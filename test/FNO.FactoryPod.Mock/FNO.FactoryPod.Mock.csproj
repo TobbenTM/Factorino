@@ -5,6 +5,12 @@
     <LangVersion>7.1</LangVersion>
     <ProjectGuid>ACAD18DB-6B8C-4DC9-8CC4-823529E742F3</ProjectGuid>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <CodeAnalysisRuleSet>FNO.FactoryPod.Mock.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <CodeAnalysisRuleSet>FNO.FactoryPod.Mock.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\FNO.FactoryPod\FNO.FactoryPod.csproj" />
   </ItemGroup>

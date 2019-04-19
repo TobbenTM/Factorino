@@ -1,0 +1,15 @@
+{
+  "ServerUri": "https://sonarcloud.io/",
+  "Organization": {
+    "Key": "tobbentm-github",
+    "Name": "TobbenTM"
+  },
+  "ProjectKey": "TobbenTM_Factorino",
+  "ProjectName": "Factorino",
+  "Profiles": {
+    "CSharp": {
+      "ProfileKey": "AWofiCIMhu1O2E4k8Ojm",
+      "ProfileTimestamp": "2019-03-26T06:47:46+01:00"
+    }
+  }
+}

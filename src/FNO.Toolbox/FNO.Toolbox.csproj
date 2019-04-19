@@ -4,6 +4,12 @@
     <TargetFramework>netcoreapp2.1</TargetFramework>
     <ProjectGuid>D3E2C32F-CF3B-4B6D-A384-E00F9E0BFE17</ProjectGuid>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <CodeAnalysisRuleSet>FNO.Toolbox.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <CodeAnalysisRuleSet>FNO.Toolbox.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Terminal.Gui" Version="0.20.0" />
   </ItemGroup>

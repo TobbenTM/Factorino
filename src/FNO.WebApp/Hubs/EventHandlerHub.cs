@@ -23,5 +23,13 @@ namespace FNO.WebApp.Hubs
         {
             await Groups.RemoveFromGroupAsync(Context.ConnectionId, entityId.ToString());
         }
+
+        /// <summary>
+        /// Will unsubscribe from all groups
+        /// </summary>
+        protected Task UnSubscribeFromAll()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

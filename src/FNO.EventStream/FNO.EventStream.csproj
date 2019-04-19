@@ -4,6 +4,12 @@
     <LangVersion>7.1</LangVersion>
     <ProjectGuid>25363D37-5B99-46EB-8974-78BE2F139234</ProjectGuid>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <CodeAnalysisRuleSet>FNO.EventStream.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <CodeAnalysisRuleSet>FNO.EventStream.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Confluent.Kafka" Version="0.11.4" />
   </ItemGroup>

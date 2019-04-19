@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using FNO.Domain.Models;
+using FNO.Domain.Models.Market;
 
 namespace FNO.Domain.Repositories
 {
@@ -9,5 +10,6 @@ namespace FNO.Domain.Repositories
     {
         Task<MarketOrder> GetOrder(Guid orderId);
         Task<IEnumerable<MarketOrder>> GetOrders(Player player);
+        Task<Page<MarketOrder>> SearchOrders(int pageIndex, int pageSize, OrderSearchFilter filter);
     }
 }
