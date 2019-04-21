@@ -1,6 +1,5 @@
 import axios from 'axios';
 import * as signalR from '@aspnet/signalr';
-import orders from './player/orders';
 import shipments from './player/shipments';
 
 export default {
@@ -14,7 +13,6 @@ export default {
     loadingInventory: false,
   },
   modules: {
-    orders,
     shipments,
   },
   mutations: {

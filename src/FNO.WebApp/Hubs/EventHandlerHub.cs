@@ -29,7 +29,8 @@ namespace FNO.WebApp.Hubs
         /// </summary>
         protected Task UnSubscribeFromAll()
         {
-            throw new NotImplementedException();
+            // TODO throw new NotImplementedException();
+            return Task.CompletedTask;
         }
     }
 }

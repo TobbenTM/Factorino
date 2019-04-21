@@ -17,6 +17,7 @@
     v-else
     :to="route"
     class="button"
+    :event="disabled ? '' : 'click'"
     :class="{
       'button--small': small,
       'button--disabled': disabled,

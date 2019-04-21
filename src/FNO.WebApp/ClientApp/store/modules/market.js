@@ -63,7 +63,10 @@ export default {
     },
   },
   actions: {
-    async initHub({ commit }) {
+    async initHub({ commit, state }) {
+      // Don't want to create again if already in state
+      if (state.hub) return;
+
       const hub = new signalR.HubConnectionBuilder()
         .withUrl('/ws/market')
         .build();
@@ -83,11 +86,18 @@ export default {
         commit('error', err, { root: true });
       }
     },
-    async loadOrders({ dispatch, commit, state }) {
+    async loadOrders({ dispatch, commit, state }, filter, pageIndex) {
       commit('loadingOrders');
       if (!state.hub) await dispatch('initHub');
       try {
-        const orders = await state.hub.invoke('GetOrders');
+        let orders = [];
+        if (filter) {
+          // With a filter, we'll use the search functions
+          orders = await state.hub.invoke('SearchOrders', filter, pageIndex);
+        } else {
+          // Otherwise just get the current players orders
+          orders = await state.hub.invoke('GetOrders');
+        }
         commit('loadedOrders', orders);
       } catch (err) {
         commit('error', err, { root: true });

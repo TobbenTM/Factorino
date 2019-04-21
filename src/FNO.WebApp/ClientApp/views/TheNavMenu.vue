@@ -7,16 +7,18 @@
           :route="{name: 'world'}"
         />
         <factorio-button
-          text="Factory"
-          :route="{name: 'factory'}"
-        />
-        <factorio-button
           text="Market"
           :route="{name: 'market'}"
         />
         <factorio-button
+          text="Factory"
+          :route="{name: 'factory'}"
+          :disabled="!user"
+        />
+        <factorio-button
           text="Player"
           :route="{name: 'player'}"
+          :disabled="!user"
         />
       </div>
     </factorio-panel>
@@ -24,9 +26,13 @@
 </template>
 
 <script>
+import { mapState } from 'vuex';
 export default{
   name: 'the-nav-menu',
-}
+  computed: {
+    ...mapState('user', ['user']),
+  },
+};
 </script>
 
 <style lang="scss" scoped>

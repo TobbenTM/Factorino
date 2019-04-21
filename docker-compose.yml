@@ -1,4 +1,5 @@
 version: '3.5'
+
 services:
   zookeeper:
     image: wurstmeister/zookeeper
@@ -26,7 +27,38 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     restart: unless-stopped
+  postgres:
+    image: postgres
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-factorino}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-factorino}
+      PGDATA: /data/postgres
+    volumes:
+       - postgres:/data/postgres
+    ports:
+      - "5432:5432"
+    networks:
+      - factorino
+    restart: unless-stopped
+  pgadmin:
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-m@dsen.tv}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-factorino}
+    volumes:
+       - pgadmin:/root/.pgadmin
+    ports:
+      - "${PGADMIN_PORT:-5050}:80"
+    networks:
+      - factorino
+    restart: unless-stopped
+
 networks:
   factorino:
     driver: bridge
     name: factorino
+
+volumes:
+    postgres:
+    pgadmin:
+    

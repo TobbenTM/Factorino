@@ -101,7 +101,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions('user/orders', ['createOrder']),
+    ...mapActions('market', ['createOrder']),
     async create() {
       this.creating = true;
       await this.createOrder(this.order);

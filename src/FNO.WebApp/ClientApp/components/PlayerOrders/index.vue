@@ -110,7 +110,7 @@ export default {
     NewOrderDialog,
   },
   computed: {
-    ...mapState('user/orders', [ 'orders', 'loadingOrders' ]),
+    ...mapState('market', [ 'orders', 'loadingOrders' ]),
   },
   data() {
     return {
@@ -124,7 +124,7 @@ export default {
     this.loadOrders();
   },
   methods: {
-    ...mapActions('user/orders', ['loadOrders', 'cancelOrder']),
+    ...mapActions('market', ['loadOrders', 'cancelOrder']),
     createOrder() {
       this.creatingOrder = true;
     },
