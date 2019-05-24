@@ -28,6 +28,7 @@ export default {
   state: {
     hub: null,
     orders: [],
+    orderResults: [],
     loadingOrders: false,
   },
   mutations: {
@@ -40,6 +41,10 @@ export default {
     },
     loadedOrders(state, orders) {
       state.orders = orders;
+      state.loadingOrders = false;
+    },
+    loadedOrderResults(state, orders) {
+      state.orderResults = orders;
       state.loadingOrders = false;
     },
     createdOrder(state, order) {
@@ -86,19 +91,20 @@ export default {
         commit('error', err, { root: true });
       }
     },
-    async loadOrders({ dispatch, commit, state }, filter, pageIndex) {
+    async loadOrders({ dispatch, commit, state }, searchOptions) {
       commit('loadingOrders');
       if (!state.hub) await dispatch('initHub');
       try {
-        let orders = [];
-        if (filter) {
+        if (searchOptions) {
           // With a filter, we'll use the search functions
-          orders = await state.hub.invoke('SearchOrders', filter, pageIndex);
+          const { filter, pageIndex } = searchOptions;
+          const orders = await state.hub.invoke('Search', filter, pageIndex);
+          commit('loadedOrderResults', orders);
         } else {
           // Otherwise just get the current players orders
-          orders = await state.hub.invoke('GetOrders');
+          const orders = await state.hub.invoke('GetOrders');
+          commit('loadedOrders', orders);
         }
-        commit('loadedOrders', orders);
       } catch (err) {
         commit('error', err, { root: true });
       }

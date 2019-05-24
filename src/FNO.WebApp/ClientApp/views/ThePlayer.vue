@@ -8,7 +8,7 @@
     </factorio-panel> -->
     <div class="player__layout">
       <div class="player__details">
-        <factorio-panel title="Player" class="">
+        <factorio-panel title="Player">
           <div class="player__details__container">
             <img :src="user.avatarFull"/>
             <h2>{{ user.name }}</h2>
@@ -62,8 +62,6 @@ export default{
 .player {
   display: flex;
   height: 100%;
-  justify-content: center;
-  align-items: center;
 
   &__loader {
     margin: 2em;

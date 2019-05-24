@@ -30,3 +30,10 @@ export const OrderCancellationReason = {
   NoFunds: 2,
   NoResources: 3,
 };
+
+export const OrderSearchSortColumn = {
+  Default: 0,
+  Item: 1,
+  Player: 2,
+  Price: 3,
+};

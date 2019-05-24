@@ -41,8 +41,9 @@ namespace FNO.WebApp.Hubs
             return orders;
         }
 
-        public async Task<Page<MarketOrder>> Search(OrderSearchFilter filter, int pageIndex = 1, int pageSize = 100)
+        public async Task<Page<MarketOrder>> Search(OrderSearchFilter filter, int pageIndex)
         {
+            var pageSize = 100;
             var pageResult = await _repo.SearchOrders(pageIndex, pageSize, filter);
 
             // We need to forget the last page result, otherwise the client will end up getting events for all orders

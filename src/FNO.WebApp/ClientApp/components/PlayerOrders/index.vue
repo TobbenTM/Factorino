@@ -120,7 +120,7 @@ export default {
       creatingOrder: false,
     };
   },
-  mounted() {
+  created() {
     this.loadOrders();
   },
   methods: {
