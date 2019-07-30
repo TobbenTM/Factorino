@@ -60,6 +60,7 @@ export default {
 <style lang="scss" scoped>
 .market {
   margin: 15px;
+  overflow: hidden;
 
   &__content {
     display: grid;
