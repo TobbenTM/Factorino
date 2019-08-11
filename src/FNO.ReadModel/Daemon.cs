@@ -1,15 +1,18 @@
-﻿using Confluent.Kafka;
+﻿using System;
+using System.Linq;
+using System.Threading.Tasks;
+using Confluent.Kafka;
 using FNO.Common;
 using FNO.Domain;
 using FNO.Domain.Events;
+using FNO.Domain.Events.Market;
+using FNO.Domain.Events.Player;
 using FNO.Domain.Models;
+using FNO.Domain.Models.Market;
 using FNO.EventSourcing;
 using FNO.EventStream;
 using Microsoft.Extensions.Configuration;
 using Serilog;
-using System;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace FNO.ReadModel
 {
@@ -18,9 +21,8 @@ namespace FNO.ReadModel
     /// for the current readmodel database. This means we need to check
     /// the last consumer offset, and continue from that.
     /// </summary>
-    internal class Daemon : IConsumerDaemon, IEventConsumer
+    internal sealed class Daemon : IConsumerDaemon, IEventConsumer
     {
-        // TODO: Refactor these so they're readonly again
         private IConfiguration _configuration;
         private ConfigurationBase _configurationModel;
 
@@ -58,11 +60,47 @@ namespace FNO.ReadModel
             }
         }
 
-        public Task OnEndReached(string topic, int partition, long offset)
+        public async Task OnEndReached(string topic, int partition, long offset)
         {
-            // noop
             _logger.Debug($"Reached end of topic '{topic}' (offset: {offset})");
-            return Task.CompletedTask;
+
+            if (offset == 0 && topic == KafkaTopics.EVENTS)
+            {
+                // If there are no events, we need to seed with events
+                var systemId = Guid.Parse("00000000-0000-0000-0000-000000000001");
+
+                using (var producer = new KafkaProducer(_configurationModel, _logger))
+                {
+                    // Create a system player with infinite cash
+                    await producer.ProduceAsync(KafkaTopics.EVENTS, new PlayerCreatedEvent(new Player
+                    {
+                        Name = "<system>",
+                        SteamId = "<system>",
+                        PlayerId = systemId,
+                    }),
+                    new PlayerBalanceChangedEvent(systemId, null)
+                    {
+                        BalanceChange = long.MaxValue,
+                    }).ConfigureAwait(false);
+
+                    // Seeding the market with infinite (bad) buy orders
+                    var entities = Domain.Seed.EntityLibrary.Data();
+                    var orderIds = Enumerable.Range(0, entities.Length)
+                        .Select(n => Guid.Parse($"00000000-0000-0000-1111-{n.ToString().PadLeft(12, '0')}"))
+                        .ToArray();
+                    var orders = Enumerable.Range(0, entities.Length)
+                        .Select(i => new OrderCreatedEvent(orderIds[i], null)
+                        {
+                            ItemId = entities[i].Name,
+                            OwnerId = systemId,
+                            OrderType = OrderType.Buy,
+                            Price = 1,
+                            Quantity = -1,
+                        })
+                        .ToArray();
+                    await producer.ProduceAsync(KafkaTopics.EVENTS, orders);
+                }
+            }
         }
 
         public void Run()

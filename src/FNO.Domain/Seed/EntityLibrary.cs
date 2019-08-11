@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 namespace FNO.Domain.Seed
 {
-    internal static class EntityLibrary
+    public static class EntityLibrary
     {
-        internal static FactorioEntity[] Data()
+        public static FactorioEntity[] Data()
         {
             var result = new List<FactorioEntity>();
 
