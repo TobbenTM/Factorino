@@ -17,10 +17,16 @@ namespace FNO.Broker
     public class Evaluator
     {
         private readonly ILogger _logger;
+        private readonly Player _initiator;
 
         public Evaluator(ILogger logger)
         {
             _logger = logger;
+            _initiator = new Player
+            {
+                PlayerId = Guid.Parse("00000000-0000-0000-0000-000000000001"),
+                Name = "Factorino Broker",
+            };
         }
 
         public Task<IEnumerable<IEvent>> Evaluate(State state)
@@ -47,7 +53,7 @@ namespace FNO.Broker
                 {
                     shipment.State = ShipmentState.Fulfilled;
                     state.HandledShipments.Enqueue(shipment.ShipmentId);
-                    yield return new ShipmentFulfilledEvent(shipment.ShipmentId, shipment.FactoryId, null);
+                    yield return new ShipmentFulfilledEvent(shipment.ShipmentId, shipment.FactoryId, _initiator);
                     _logger.Information($"Fulfilled shipment {shipment.ShipmentId}!");
                 }
 
@@ -107,6 +113,7 @@ namespace FNO.Broker
                         {
                             yield return evnt;
                         }
+                        quantityToSell -= evnts.OfType<OrderTransactionEvent>().Sum(e => e.Quantity);
                     }
                     else
                     {
@@ -116,7 +123,7 @@ namespace FNO.Broker
 
                 if (sellOrder.QuantityFulfilled == sellOrder.Quantity)
                 {
-                    yield return new OrderFulfilledEvent(sellOrder.OrderId, null);
+                    yield return new OrderFulfilledEvent(sellOrder.OrderId, _initiator);
                     sellOrder.State = OrderState.Fulfilled;
                     _logger.Information($"Sell order ${sellOrder.OrderId} completely fulfilled!");
                 }
@@ -133,14 +140,15 @@ namespace FNO.Broker
             // 1. As much as the buyer can buy (credits)
             // 2. As much as the seller can sell (inventory/order size)
             // 3. As much as the buyer wants to buy (order size)
-            var affordableQuantity = (int)Math.Floor(buyOrder.Owner.Credits / (decimal)sellOrder.Price);
+            if (sellOrder.Price == 0) yield break;
+            var affordableQuantity = buyOrder.Owner.Credits / sellOrder.Price;
             var quantityToBuy = Math.Min(affordableQuantity, quantityToSell); // Case 1 & 2
             if (buyOrder.Quantity != -1) // Case 3
             {
                 quantityToBuy = Math.Min(quantityToBuy, buyOrder.Quantity - buyOrder.QuantityFulfilled);
             }
 
-            var evnt = new OrderTransactionEvent(Guid.NewGuid(), null)
+            var evnt = new OrderTransactionEvent(Guid.NewGuid(), _initiator)
             {
                 FromPlayer = sellOrder.Owner.PlayerId,
                 ToPlayer = buyOrder.Owner.PlayerId,
@@ -162,12 +170,12 @@ namespace FNO.Broker
 
             state.HandledTransactions.Enqueue(evnt.EntityId);
             yield return evnt;
-            yield return new OrderPartiallyFulfilledEvent(buyOrder.OrderId, null)
+            yield return new OrderPartiallyFulfilledEvent(buyOrder.OrderId, _initiator)
             {
                 Price = evnt.Price,
                 QuantityFulfilled = evnt.Quantity,
             };
-            yield return new OrderPartiallyFulfilledEvent(sellOrder.OrderId, null)
+            yield return new OrderPartiallyFulfilledEvent(sellOrder.OrderId, _initiator)
             {
                 Price = evnt.Price,
                 QuantityFulfilled = evnt.Quantity,
@@ -175,7 +183,7 @@ namespace FNO.Broker
 
             if (buyOrder.QuantityFulfilled == buyOrder.Quantity)
             {
-                yield return new OrderFulfilledEvent(buyOrder.OrderId, null);
+                yield return new OrderFulfilledEvent(buyOrder.OrderId, _initiator);
                 buyOrder.State = OrderState.Fulfilled;
                 _logger.Information($"Buy order ${buyOrder.OrderId} completely fulfilled!");
             }

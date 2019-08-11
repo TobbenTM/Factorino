@@ -80,6 +80,7 @@ namespace FNO.Broker
 
         public async Task OnEndReached(string topic, int partition, long offset)
         {
+            _logger.Information($"Reached end of topic at offset {offset}, evaluating state...");
             var evaluator = new Evaluator(_logger);
             var events = await evaluator.Evaluate(_state);
             await _producer.ProduceAsync(KafkaTopics.EVENTS, events.ToArray());
