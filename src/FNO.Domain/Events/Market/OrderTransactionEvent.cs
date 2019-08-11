@@ -8,8 +8,8 @@ namespace FNO.Domain.Events.Market
         public Guid FromPlayer { get; set; }
         public Guid ToBuyOrder { get; set; }
         public Guid ToPlayer { get; set; }
-        public int Quantity { get; set; }
-        public int Price { get; set; }
+        public long Quantity { get; set; }
+        public long Price { get; set; }
         public string ItemId { get; set; }
 
         public OrderTransactionEvent()

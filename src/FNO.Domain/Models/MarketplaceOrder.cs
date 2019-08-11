@@ -19,9 +19,9 @@ namespace FNO.Domain.Models
         public string ItemId { get; set; }
         public FactorioEntity Item { get; set; }
 
-        public int Quantity { get; set; }
-        public int Price { get; set; }
+        public long Quantity { get; set; }
+        public long Price { get; set; }
 
-        public int QuantityFulfilled { get; set; }
+        public long QuantityFulfilled { get; set; }
     }
 }

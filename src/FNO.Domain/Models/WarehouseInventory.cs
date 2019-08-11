@@ -6,7 +6,7 @@ namespace FNO.Domain.Models
     {
         public Guid WarehouseInventoryId { get; set; }
         
-        public int Quantity { get; set; }
+        public long Quantity { get; set; }
 
         public string ItemId { get; set; }
         public FactorioEntity Item { get; set; }

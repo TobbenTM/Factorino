@@ -11,7 +11,7 @@ namespace FNO.Domain.Models
         public string Name { get; set; }
         public string Description { get; set; }
 
-        public int Credits { get; set; }
+        public long Credits { get; set; }
 
         public Guid CreatedByPlayerId { get; set; }
         public Player CreatedByPlayer { get; set; }

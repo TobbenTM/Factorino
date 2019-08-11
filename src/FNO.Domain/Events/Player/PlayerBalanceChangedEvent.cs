@@ -4,7 +4,7 @@ namespace FNO.Domain.Events.Player
 {
     public class PlayerBalanceChangedEvent : EntityEvent
     {
-        public int BalanceChange { get; set; }
+        public long BalanceChange { get; set; }
 
         public PlayerBalanceChangedEvent()
         {

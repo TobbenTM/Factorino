@@ -11,7 +11,7 @@ namespace FNO.Domain.Models
         public string SteamId { get; set; }
         public string FactorioId { get; set; }
 
-        public int Credits { get; set; }
+        public long Credits { get; set; }
 
         #region Steam props
         public string ProfileURL { get; set; }

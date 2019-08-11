@@ -126,7 +126,7 @@ namespace FNO.Broker
         private IEnumerable<IEvent> EvaluateBuyOrder(
             BrokerOrder buyOrder,
             BrokerOrder sellOrder,
-            int quantityToSell,
+            long quantityToSell,
             State state)
         {
             // The quantity one order can buy will be the least of either:
@@ -162,6 +162,16 @@ namespace FNO.Broker
 
             state.HandledTransactions.Enqueue(evnt.EntityId);
             yield return evnt;
+            yield return new OrderPartiallyFulfilledEvent(buyOrder.OrderId, null)
+            {
+                Price = evnt.Price,
+                QuantityFulfilled = evnt.Quantity,
+            };
+            yield return new OrderPartiallyFulfilledEvent(sellOrder.OrderId, null)
+            {
+                Price = evnt.Price,
+                QuantityFulfilled = evnt.Quantity,
+            };
 
             if (buyOrder.QuantityFulfilled == buyOrder.Quantity)
             {
@@ -171,7 +181,7 @@ namespace FNO.Broker
             }
         }
 
-        private void UpdatePlayerInventory(BrokerPlayer player, string itemId, int quantity)
+        private void UpdatePlayerInventory(BrokerPlayer player, string itemId, long quantity)
         {
             if (player.Inventory.TryGetValue(itemId, out var inventory))
             {
