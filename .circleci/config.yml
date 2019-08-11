@@ -2,7 +2,7 @@ version: 2
 jobs:
   build:
     docker:
-      - image: microsoft/dotnet:2.1-sdk
+      - image: microsoft/dotnet:2.2-sdk
         environment:
           sonarcloud_token: sonarcloud_token
           PATH: "/root/.dotnet/tools:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
