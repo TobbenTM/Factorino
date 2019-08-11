@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using FNO.Domain.Models;
 
 namespace FNO.Broker.Models
 {
@@ -10,7 +9,6 @@ namespace FNO.Broker.Models
         {
             Players = new Dictionary<Guid, BrokerPlayer>();
             Orders = new Dictionary<Guid, BrokerOrder>();
-            OrdersByItemId = new Dictionary<string, BrokerOrder>();
             Shipments = new Dictionary<Guid, BrokerShipment>();
             FactoryOwners = new Dictionary<Guid, BrokerPlayer>();
             HandledTransactions = new Queue<Guid>();
@@ -26,11 +24,6 @@ namespace FNO.Broker.Models
         /// Orders indexed by order id
         /// </summary>
         public Dictionary<Guid, BrokerOrder> Orders { get; }
-
-        /// <summary>
-        /// Orders indexed by order item id
-        /// </summary>
-        public Dictionary<string, BrokerOrder> OrdersByItemId { get; }
 
         /// <summary>
         /// Shipments indexed by shipment id

@@ -17,7 +17,7 @@ namespace FNO.FactoryPod
     /// Responsible for handling communication between the factorio RCON
     /// interface and the cluster event stream
     /// </summary>
-    internal class Mediator : IEventConsumer, IDisposable
+    internal sealed class Mediator : IEventConsumer, IDisposable
     {
         private const int POLL_INTERVAL_MS = 2000;
         
@@ -118,7 +118,7 @@ namespace FNO.FactoryPod
             _rcon.OnDisconnected += () =>
             {
                 _logger.Error("RCON interface unexpectedly disconnected!");
-                OnDisconnect?.Invoke(this, null);
+                OnDisconnect?.Invoke(this, EventArgs.Empty);
             };
 
             // await _rcon.ConnectAsync(); // Should be unecessary

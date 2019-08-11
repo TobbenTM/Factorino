@@ -43,7 +43,6 @@ namespace FNO.Broker.Tests.EventHandlers
             // Assert
             Assert.Equal(expectedOrder.OrderId, _state.Orders.Values.Single().OrderId);
             Assert.Equal(expectedOrder.ItemId, _state.Orders.Values.Single().ItemId);
-            Assert.Equal(expectedOrder.OrderId, _state.OrdersByItemId[expectedOrder.ItemId].OrderId);
             Assert.Equal(OrderState.Active, _state.Orders.Values.Single().State);
             Assert.Same(expectedPlayer, _state.Orders.Values.Single().Owner);
         }

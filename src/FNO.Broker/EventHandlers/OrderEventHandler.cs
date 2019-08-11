@@ -35,7 +35,6 @@ namespace FNO.Broker.EventHandlers
                 Owner = player,
             };
             _state.Orders.Add(evnt.EntityId, order);
-            _state.OrdersByItemId.Add(evnt.ItemId, order);
             return Task.CompletedTask;
         }
 
