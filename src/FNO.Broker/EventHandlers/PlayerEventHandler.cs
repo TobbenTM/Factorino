@@ -8,7 +8,8 @@ using FNO.EventSourcing;
 namespace FNO.Broker.EventHandlers
 {
     public class PlayerEventHandler : IHandler,
-        IEventHandler<PlayerCreatedEvent>
+        IEventHandler<PlayerCreatedEvent>,
+        IEventHandler<PlayerBalanceChangedEvent>
     {
         private readonly State _state;
 
@@ -24,6 +25,13 @@ namespace FNO.Broker.EventHandlers
                 PlayerId = evnt.EntityId,
                 Inventory = new Dictionary<string, WarehouseInventory>(),
             });
+            return Task.CompletedTask;
+        }
+
+        public Task Handle(PlayerBalanceChangedEvent evnt)
+        {
+            var player = _state.Players[evnt.EntityId];
+            player.Credits += evnt.BalanceChange;
             return Task.CompletedTask;
         }
     }

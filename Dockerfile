@@ -1,6 +1,6 @@
 # This is the docker file for CI builds of Factorino
 
-FROM microsoft/dotnet:2.1-sdk AS build-env
+FROM microsoft/dotnet:2.2-sdk AS build-env
 WORKDIR /app
 
 # We need a token for this build

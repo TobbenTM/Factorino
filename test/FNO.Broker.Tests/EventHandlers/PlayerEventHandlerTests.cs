@@ -36,5 +36,26 @@ namespace FNO.Broker.Tests.EventHandlers
             Assert.Equal(expectedPlayer.PlayerId, _state.Players.Values.Single().PlayerId);
             Assert.NotNull(_state.Players.Values.Single().Inventory);
         }
+
+        [Fact]
+        public async Task HandlerShouldUpdateBalance()
+        {
+            // Arrange
+            var expectedBalance = new Random().Next();
+            var initialPlayer = new BrokerPlayer
+            {
+                PlayerId = Guid.NewGuid(),
+            };
+            _state.Players.Add(initialPlayer.PlayerId, initialPlayer);
+
+            // Act
+            await _handler.Handle(new PlayerBalanceChangedEvent(initialPlayer.PlayerId, null)
+            {
+                BalanceChange = expectedBalance,
+            });
+
+            // Assert
+            Assert.Equal(expectedBalance, initialPlayer.Credits);
+        }
     }
 }

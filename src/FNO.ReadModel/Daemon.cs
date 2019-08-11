@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Confluent.Kafka;
@@ -66,39 +67,45 @@ namespace FNO.ReadModel
 
             if (offset == 0 && topic == KafkaTopics.EVENTS)
             {
+                _logger.Information("No events found on stream, seeding with data...");
+
                 // If there are no events, we need to seed with events
+                var seedEvents = new List<IEvent>();
                 var systemId = Guid.Parse("00000000-0000-0000-0000-000000000001");
+                var systemPlayer = new Player
+                {
+                    Name = "Bank of Nauvis",
+                    SteamId = "<system>",
+                    PlayerId = systemId,
+                };
 
                 using (var producer = new KafkaProducer(_configurationModel, _logger))
                 {
                     // Create a system player with infinite cash
-                    await producer.ProduceAsync(KafkaTopics.EVENTS, new PlayerCreatedEvent(new Player
-                    {
-                        Name = "<system>",
-                        SteamId = "<system>",
-                        PlayerId = systemId,
-                    }),
-                    new PlayerBalanceChangedEvent(systemId, null)
+                    seedEvents.Add(new PlayerCreatedEvent(systemPlayer));
+                    seedEvents.Add(new PlayerBalanceChangedEvent(systemId, systemPlayer)
                     {
                         BalanceChange = long.MaxValue,
-                    }).ConfigureAwait(false);
+                    });
 
                     // Seeding the market with infinite (bad) buy orders
-                    var entities = Domain.Seed.EntityLibrary.Data();
-                    var orderIds = Enumerable.Range(0, entities.Length)
+                    var entities = Domain.Seed.EntityLibrary.Data().Select(e => e.Name);
+                    var orderIds = Enumerable.Range(0, entities.Count())
                         .Select(n => Guid.Parse($"00000000-0000-0000-1111-{n.ToString().PadLeft(12, '0')}"))
                         .ToArray();
-                    var orders = Enumerable.Range(0, entities.Length)
-                        .Select(i => new OrderCreatedEvent(orderIds[i], null)
+                    var orders = entities.Select((entity, i) => new OrderCreatedEvent(orderIds[i], systemPlayer)
                         {
-                            ItemId = entities[i].Name,
+                            ItemId = entity,
                             OwnerId = systemId,
                             OrderType = OrderType.Buy,
                             Price = 1,
                             Quantity = -1,
-                        })
-                        .ToArray();
-                    await producer.ProduceAsync(KafkaTopics.EVENTS, orders);
+                        });
+                    seedEvents.AddRange(orders);
+
+                    await producer.ProduceAsync(KafkaTopics.EVENTS, seedEvents.ToArray());
+
+                    _logger.Information("Done seeding!");
                 }
             }
         }
