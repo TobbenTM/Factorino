@@ -1,4 +1,4 @@
-﻿namespace FNO.Orchestrator
+﻿namespace FNO.Orchestrator.Models
 {
     public class ProvisioningResult
     {

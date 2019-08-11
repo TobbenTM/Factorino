@@ -1,6 +1,7 @@
 ﻿using FNO.Domain.Events.Factory;
 using FNO.Domain.Models;
 using FNO.EventSourcing;
+using FNO.Orchestrator.Models;
 using Serilog;
 using System.Threading.Tasks;
 

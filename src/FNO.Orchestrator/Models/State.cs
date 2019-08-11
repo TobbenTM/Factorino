@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace FNO.Orchestrator
+namespace FNO.Orchestrator.Models
 {
     public class State
     {

@@ -11,7 +11,7 @@ namespace FNO.Domain.Events.Shipping
         {
         }
 
-        public ShipmentFulfilledEvent(Guid entityId, Guid factoryId, Models.Player initiator) : base(entityId, initiator)
+        public ShipmentFulfilledEvent(Guid shipmentId, Guid factoryId, Models.Player initiator) : base(entityId, initiator)
         {
             FactoryId = factoryId;
         }

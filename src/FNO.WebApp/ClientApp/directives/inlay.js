@@ -37,6 +37,7 @@ export default {
     el.appendChild(mask);
   },
   unbind(el) {
+    if (!el.dataset) return;
     const mask = document.getElementById(el.dataset.maskId);
     if (mask) {
       mask.remove();

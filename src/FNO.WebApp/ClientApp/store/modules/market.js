@@ -2,7 +2,12 @@ import * as signalR from '@aspnet/signalr';
 import { OrderState } from '@/enums';
 
 function findOrder(state, orderId) {
-  return state.orders.find(f => f.orderId === orderId);
+  const order = state.orders.find(f => f.orderId === orderId);
+  if (order) return order;
+  if (state.orderResults.results) {
+    return state.orderResults.results.find(f => f.orderId === orderId);
+  }
+  return null;
 }
 
 const eventHandlers = {
@@ -28,7 +33,7 @@ export default {
   state: {
     hub: null,
     orders: [],
-    orderResults: [],
+    orderResults: {},
     loadingOrders: false,
   },
   mutations: {

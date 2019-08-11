@@ -11,15 +11,22 @@
           :route="{name: 'market'}"
         />
         <factorio-button
+          v-if="user"
           text="Factory"
           :route="{name: 'factory'}"
-          :disabled="!user"
         />
         <factorio-button
+          v-if="user"
           text="Player"
           :route="{name: 'player'}"
-          :disabled="!user"
         />
+        <factorio-button
+          v-if="!user"
+          href="/auth/login"
+        >
+          <icon :icon="['fab', 'steam']" class="nav-icon"/>
+          Log in
+        </factorio-button>
       </div>
     </factorio-panel>
   </div>

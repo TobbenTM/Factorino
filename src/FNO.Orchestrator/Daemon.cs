@@ -5,6 +5,7 @@ using FNO.Domain.Events.Factory;
 using FNO.EventSourcing;
 using FNO.EventStream;
 using FNO.Orchestrator.Docker;
+using FNO.Orchestrator.Models;
 using Microsoft.Extensions.Configuration;
 using Serilog;
 using System.Linq;

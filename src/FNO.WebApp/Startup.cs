@@ -19,7 +19,7 @@ namespace FNO.WebApp
 {
     public class Startup
     {
-        private readonly ILogger _logger;
+        private readonly ILogger _logger;  
         private readonly IConfiguration _configuration;
 
         public Startup()

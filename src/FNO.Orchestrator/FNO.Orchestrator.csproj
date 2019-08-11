@@ -4,6 +4,7 @@
     <TargetFramework>netcoreapp2.1</TargetFramework>
     <LangVersion>7.1</LangVersion>
     <ProjectGuid>CD7D47FC-8B00-4A25-841B-37C2B85A6D0C</ProjectGuid>
+    <ApplicationIcon>icon.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <CodeAnalysisRuleSet>FNO.Orchestrator.ruleset</CodeAnalysisRuleSet>
@@ -11,6 +12,12 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <CodeAnalysisRuleSet>FNO.Orchestrator.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
+  <ItemGroup>
+    <None Remove="icon.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="icon.ico" />
+  </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Docker.DotNet" Version="3.125.2" />
   </ItemGroup>

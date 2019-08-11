@@ -1,34 +1,33 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>netcoreapp2.1</TargetFramework>
-    <LangVersion>7.1</LangVersion>
-    <ProjectGuid>3B1BD3B2-3499-4D55-8F2B-CEDDECD54FE2</ProjectGuid>
-    <ApplicationIcon>icon.ico</ApplicationIcon>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
   </PropertyGroup>
+
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <CodeAnalysisRuleSet>FNO.ReadModel.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet>FNO.Broker.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
+
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <CodeAnalysisRuleSet>FNO.ReadModel.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet>FNO.Broker.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
+
   <ItemGroup>
-    <None Remove="icon.ico" />
+    <PackageReference Include="Confluent.Kafka" Version="0.11.4" />
   </ItemGroup>
-  <ItemGroup>
-    <Content Include="icon.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools.DotNet" Version="2.0.3" />
-  </ItemGroup>
+
   <ItemGroup>
     <ProjectReference Include="..\FNO.Common\FNO.Common.csproj" />
     <ProjectReference Include="..\FNO.Domain\FNO.Domain.csproj" />
+    <ProjectReference Include="..\FNO.EventSourcing\FNO.EventSourcing.csproj" />
     <ProjectReference Include="..\FNO.EventStream\FNO.EventStream.csproj" />
   </ItemGroup>
+
   <ItemGroup>
     <None Update="appsettings.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
+
 </Project>

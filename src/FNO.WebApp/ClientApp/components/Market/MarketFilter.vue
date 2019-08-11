@@ -24,13 +24,13 @@
     <div class="filter__input">
       <label>Minimum price</label>
       <div class="filter__input__field" v-inlay:light>
-        <input type="number" placeholder="Min price">
+        <input type="number" placeholder="Min price" v-model="selectedMinPrice">
       </div>
     </div>
     <div class="filter__input">
       <label>Maximum price</label>
       <div class="filter__input__field" v-inlay:light>
-        <input type="number" placeholder="Max price">
+        <input type="number" placeholder="Max price" v-model="selectedMaxPrice">
       </div>
     </div>
   </div>
@@ -55,11 +55,31 @@ export default {
       OrderType,
       selectedOrderType: null,
       selectedItem: null,
+      selectedMinPrice: null,
+      selectedMaxPrice: null,
     };
   },
   created() {
     this.selectedOrderType = this.value.orderType;
-  }
+    this.selectedMinPrice = this.value.minPrice;
+    this.selectedMaxPrice = this.value.maxPrice;
+  },
+  watch: {
+    selectedOrderType: function(){ this.emitFilter(); },
+    selectedItem: function(){ this.emitFilter(); },
+    selectedMinPrice: function(){ this.emitFilter(); },
+    selectedMaxPrice: function(){ this.emitFilter(); },
+  },
+  methods: {
+    emitFilter() {
+      this.$emit('input', {
+        orderType: this.selectedOrderType,
+        itemId: this.selectedItem ? this.selectedItem.name : null,
+        minPrice: this.selectedMinPrice,
+        maxPrice: this.selectedMaxPrice,
+      });
+    },
+  },
 };
 </script>
 

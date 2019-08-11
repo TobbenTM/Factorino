@@ -35,6 +35,7 @@ namespace FNO.Domain.Repositories
             var ordersQuery = _dbContext.Orders
                 .Include(o => o.Item)
                 .Include(o => o.Owner)
+                .Where(o => o.State != OrderState.Cancelled)
                 .Where(o => o.OrderType == filter.OrderType);
 
             if (!string.IsNullOrEmpty(filter.ItemId))

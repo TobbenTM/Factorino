@@ -70,6 +70,7 @@ import {
   OrderState,
   OrderCancellationReason,
 } from '@/enums';
+import debounce from '@/utils/debounce';
 
 export default {
   props: {
@@ -93,10 +94,26 @@ export default {
     };
   },
   mounted() {
-    this.loadOrders({ filter: this.filter, pageIndex: this.pageIndex });
+    this.search();
+  },
+  watch: {
+    filter: {
+      deep: true,
+      handler: function(newFilter) {
+        this.debounceSearch(newFilter);
+      },
+    },
   },
   methods: {
     ...mapActions('market', ['loadOrders']),
+    search(filter) {
+      this.loadOrders({ filter: filter || this.filter, pageIndex: this.pageIndex });
+    },
+    debounceSearch(filter) {
+      // TODO: Debounce
+      // debounce(() => this.search(filter), 500);
+      this.search(filter);
+    },
   },
 };
 </script>
@@ -107,7 +124,8 @@ export default {
 
 .orders {
 
-  &__empty, &__loading {
+  &__empty, &__loader {
+    height: 100%;
     display: flex;
     justify-content: center;
     align-items: center;

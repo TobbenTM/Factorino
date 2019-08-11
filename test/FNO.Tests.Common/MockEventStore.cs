@@ -4,7 +4,7 @@ using FNO.EventSourcing;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace FNO.Orchestrator.Tests
+namespace FNO.Tests.Common
 {
     internal class MockEventStore : IEventStore
     {

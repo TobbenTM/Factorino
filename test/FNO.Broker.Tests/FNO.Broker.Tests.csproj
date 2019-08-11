@@ -1,0 +1,30 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <LangVersion>7.1</LangVersion>
+    <ProjectGuid>{3B40A85B-505E-468E-8F29-CB38113BB09F}</ProjectGuid>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="coverlet.msbuild" Version="2.6.0">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="2.1.2" />
+    <PackageReference Include="xunit" Version="2.4.1" />
+    <PackageReference Include="xunit.runner.console" Version="2.4.1">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.4.1">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\FNO.Domain\FNO.Domain.csproj" />
+    <ProjectReference Include="..\..\src\FNO.EventSourcing\FNO.EventSourcing.csproj" />
+    <ProjectReference Include="..\..\src\FNO.Broker\FNO.Broker.csproj" />
+  </ItemGroup>
+
+</Project>

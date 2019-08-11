@@ -2,6 +2,7 @@
 using Docker.DotNet.Models;
 using FNO.Domain.Models;
 using FNO.Orchestrator.Exceptions;
+using FNO.Orchestrator.Models;
 using Serilog;
 using System;
 using System.Collections.Generic;
