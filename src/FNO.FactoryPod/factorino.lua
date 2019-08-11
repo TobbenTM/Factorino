@@ -33,6 +33,10 @@ local rejected_shipments = {}
 local accepted_shipments = {}
 local incoming_shipment_queue = {}
 
+-- Pickup train flag
+local pickup_train_en_route = false
+
+-- General event handler to buffer events
 function on_event(event)
   table.insert(event_buffer, event)
 end
@@ -95,7 +99,7 @@ function handle_shipment()
   if #incoming_shipment_queue == 0 then return end
 
   -- Do we have the room to spawn a train?
-  -- Length = 2 locomotives * x carts
+  -- Length = 2 locomotives + x carts
   local in_station = find_station('Factorino - Incoming')
   local train_length = 2 + #incoming_shipment_queue[1].carts
   local cart_positions = calculate_cart_positions(in_station, train_length)
@@ -110,6 +114,60 @@ function handle_shipment()
   else
     table.insert(rejected_shipments, shipment)
   end
+end
+
+-- We want to have pickup trains going every once in a while
+function create_pickup_train()
+  if pickup_train_en_route then return end
+
+  pickup_train_en_route = true
+
+  -- Do we have the room to spawn a train?
+  -- Length = 2 locomotives + 5 carts
+  local in_station = find_station('Factorino - Incoming')
+  local train_length = 2 + 5
+  local cart_positions = calculate_cart_positions(in_station, train_length)
+  -- Hopefully we'll try again once a train has changed state
+  if not station_has_room(in_station, cart_positions) then return end
+
+  local shipment = {
+    shipment_id = 'Pickup',
+    destination_station = 'Factorino - Pickup 1',
+    wait_conditions = {
+      {
+        type = 'time',
+        ticks = 2400,
+        compare_type = 'or'
+      },
+      {
+        type = 'full',
+        compare_type = 'or'
+      }
+    },
+    carts = {
+      {
+        cart_type = 'cargo-wagon',
+        inventory = {}
+      },
+      {
+        cart_type = 'cargo-wagon',
+        inventory = {}
+      },
+      {
+        cart_type = 'cargo-wagon',
+        inventory = {}
+      },
+      {
+        cart_type = 'cargo-wagon',
+        inventory = {}
+      },
+      {
+        cart_type = 'cargo-wagon',
+        inventory = {}
+      }
+    }
+  }
+  create_train(shipment, in_station, cart_positions)
 end
 
 function create_train(shipment, station, cart_positions)
@@ -241,9 +299,15 @@ script.on_event(defines.events.on_train_changed_state, function(event)
         inventory = inventory_stacks,
       })
 
+      if train.carriages[1].backer_name == 'Pickup' then
+        pickup_train_en_route = false
+      end
+
       for _, cart in pairs(train.carriages) do
         cart.destroy()
       end
+
+      create_pickup_train()
     else
       -- This is a good time to check if we have waiting shipments
       handle_shipment()
@@ -257,6 +321,11 @@ end)
 commands.add_command('factorino_export', 'n/a', on_export)
 commands.add_command('factorino_import', 'n/a', on_import)
 commands.add_command('factorino_researched', 'n/a', on_researched)
+
+
+-- Register handler for periodically creating pickup trains
+
+script.on_nth_tick(600, create_pickup_train)
 
 
 -- Bind all interesting events to simplified data
