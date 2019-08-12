@@ -7,6 +7,7 @@
         public string Topic { get; set; }
         public long? CreatedAt { get; set; }
         public long? ConsumedAt { get; set; }
+        public string SourceAssembly { get; set; }
 
         public override string ToString()
         {

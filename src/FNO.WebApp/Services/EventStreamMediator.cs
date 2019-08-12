@@ -9,6 +9,7 @@ using FNO.Common;
 using FNO.Domain.Events;
 using FNO.Domain.Events.Factory;
 using FNO.Domain.Events.Market;
+using FNO.Domain.Events.Player;
 using FNO.Domain.Events.Shipping;
 using FNO.EventStream;
 using FNO.WebApp.Hubs;
@@ -21,9 +22,6 @@ namespace FNO.WebApp.Services
 {
     public class EventStreamMediator : IHostedService, IEventConsumer
     {
-        private readonly IConfiguration _configuration;
-        private readonly ConfigurationBase _configurationModel;
-
         private readonly ILogger _logger;
         private readonly KafkaConsumer _consumer;
 
@@ -38,11 +36,10 @@ namespace FNO.WebApp.Services
             IHubContext<MarketHub, IEventHandlerClient> marketHubContext,
             IHubContext<ShippingHub, IEventHandlerClient> shippingHubContext)
         {
-            _configuration = configuration;
             _logger = logger;
 
-            _configurationModel = configuration.Bind<ConfigurationBase>();
-            _consumer = new KafkaConsumer(_configurationModel, this, _logger);
+            var configurationModel = configuration.Bind<ConfigurationBase>();
+            _consumer = new KafkaConsumer(configurationModel, this, _logger);
 
             _contexts = new Dictionary<Type, List<IHubClients<IEventHandlerClient>>>();
 
@@ -60,7 +57,9 @@ namespace FNO.WebApp.Services
 
             RegisterHubContext(factoryHubContext.Clients, GetDecendantsOfClass<FactoryActivityBaseEvent>());
 
-            RegisterHubContext(playerHubContext.Clients); // TODO
+            RegisterHubContext(playerHubContext.Clients,
+                typeof(PlayerBalanceChangedEvent),
+                typeof(PlayerInventoryChangedEvent));
 
             RegisterHubContext(marketHubContext.Clients,
                 typeof(OrderCreatedEvent),

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection;
 using FNO.Domain.Models;
 
 namespace FNO.Domain.Events
@@ -18,6 +19,7 @@ namespace FNO.Domain.Events
             Metadata = new EventMetadata
             {
                 CreatedAt = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
+                SourceAssembly = Assembly.GetExecutingAssembly().FullName,
             };
         }
 

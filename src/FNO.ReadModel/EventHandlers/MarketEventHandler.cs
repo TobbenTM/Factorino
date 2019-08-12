@@ -5,6 +5,7 @@ using FNO.Domain.Events.Market;
 using FNO.Domain.Models;
 using FNO.Domain.Models.Market;
 using FNO.EventSourcing;
+using Microsoft.EntityFrameworkCore;
 using Serilog;
 
 namespace FNO.ReadModel.EventHandlers

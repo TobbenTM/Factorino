@@ -4,6 +4,7 @@ using FNO.Domain;
 using FNO.Domain.Events.Player;
 using FNO.Domain.Models;
 using FNO.EventSourcing;
+using Microsoft.EntityFrameworkCore;
 using Serilog;
 
 namespace FNO.ReadModel.EventHandlers
@@ -13,7 +14,9 @@ namespace FNO.ReadModel.EventHandlers
         IEventHandler<PlayerInvitedToCorporationEvent>,
         IEventHandler<PlayerJoinedCorporationEvent>,
         IEventHandler<PlayerLeftCorporationEvent>,
-        IEventHandler<PlayerRejectedInvitationEvent>
+        IEventHandler<PlayerRejectedInvitationEvent>,
+        IEventHandler<PlayerBalanceChangedEvent>,
+        IEventHandler<PlayerInventoryChangedEvent>
     {
         private readonly ReadModelDbContext _dbContext;
 
@@ -84,6 +87,45 @@ namespace FNO.ReadModel.EventHandlers
             {
                 invitation.Accepted = false;
                 invitation.Completed = true;
+            }
+            return Task.CompletedTask;
+        }
+
+        public Task Handle(PlayerBalanceChangedEvent evnt)
+        {
+            var player = _dbContext.Players.FirstOrDefault(p => p.PlayerId == evnt.EntityId);
+            if (player != null)
+            {
+                player.Credits += evnt.BalanceChange;
+            }
+            return Task.CompletedTask;
+        }
+
+        public Task Handle(PlayerInventoryChangedEvent evnt)
+        {
+            var player = _dbContext.Players
+                .Include(p => p.WarehouseInventory)
+                .FirstOrDefault(p => p.PlayerId == evnt.EntityId);
+            if (player != null)
+            {
+                foreach (var stack in evnt.InventoryChange)
+                {
+                    var existingInventory = player.WarehouseInventory
+                        .FirstOrDefault(i => i.ItemId == stack.Name);
+
+                    if (existingInventory != null)
+                    {
+                        existingInventory.Quantity += stack.Count;
+                    }
+                    else
+                    {
+                        player.WarehouseInventory.Add(new WarehouseInventory
+                        {
+                            ItemId = stack.Name,
+                            Quantity = stack.Count,
+                        });
+                    }
+                }
             }
             return Task.CompletedTask;
         }

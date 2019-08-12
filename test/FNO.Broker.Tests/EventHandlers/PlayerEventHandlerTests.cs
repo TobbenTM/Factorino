@@ -57,5 +57,34 @@ namespace FNO.Broker.Tests.EventHandlers
             // Assert
             Assert.Equal(expectedBalance, initialPlayer.Credits);
         }
+
+        [Fact]
+        public async Task HandlerShouldUpdateInventory()
+        {
+            // Arrange
+            var expectedQuantity = new Random().Next();
+            var expectedItem = Guid.NewGuid().ToString();
+            var initialPlayer = new BrokerPlayer
+            {
+                PlayerId = Guid.NewGuid(),
+            };
+            _state.Players.Add(initialPlayer.PlayerId, initialPlayer);
+
+            // Act
+            await _handler.Handle(new PlayerInventoryChangedEvent(initialPlayer.PlayerId, null)
+            {
+                InventoryChange = new[]
+                {
+                    new LuaItemStack
+                    {
+                        Name = expectedItem,
+                        Count = expectedQuantity,
+                    },
+                },
+            });
+
+            // Assert
+            Assert.Equal(expectedQuantity, initialPlayer.Inventory[expectedItem].Quantity);
+        }
     }
 }

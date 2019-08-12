@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Reflection;
 using System.Threading.Tasks;
 using FNO.Broker.Models;
 using FNO.Domain.Events.Player;
@@ -9,7 +10,8 @@ namespace FNO.Broker.EventHandlers
 {
     public class PlayerEventHandler : IHandler,
         IEventHandler<PlayerCreatedEvent>,
-        IEventHandler<PlayerBalanceChangedEvent>
+        IEventHandler<PlayerBalanceChangedEvent>,
+        IEventHandler<PlayerInventoryChangedEvent>
     {
         private readonly State _state;
 
@@ -30,8 +32,43 @@ namespace FNO.Broker.EventHandlers
 
         public Task Handle(PlayerBalanceChangedEvent evnt)
         {
+            if (evnt.Metadata.SourceAssembly == Assembly.GetExecutingAssembly().FullName)
+            {
+                // We don't process these events if they come from this assembly
+                return Task.CompletedTask;
+            }
+
             var player = _state.Players[evnt.EntityId];
             player.Credits += evnt.BalanceChange;
+            return Task.CompletedTask;
+        }
+
+        public Task Handle(PlayerInventoryChangedEvent evnt)
+        {
+            if (evnt.Metadata.SourceAssembly == Assembly.GetExecutingAssembly().FullName)
+            {
+                // We don't process these events if they come from this assembly
+                return Task.CompletedTask;
+            }
+
+            var player = _state.Players[evnt.EntityId];
+
+            foreach (var stack in evnt.InventoryChange)
+            {
+                if (player.Inventory.TryGetValue(stack.Name, out var inventory))
+                {
+                    inventory.Quantity += stack.Count;
+                }
+                else
+                {
+                    player.Inventory.Add(stack.Name, new WarehouseInventory
+                    {
+                        ItemId = stack.Name,
+                        Quantity = stack.Count,
+                    });
+                }
+            }
+
             return Task.CompletedTask;
         }
     }

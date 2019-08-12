@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using FNO.Broker.Models;
 using FNO.Domain.Events;
 using FNO.Domain.Events.Market;
+using FNO.Domain.Events.Player;
 using FNO.Domain.Events.Shipping;
 using FNO.Domain.Extensions;
 using FNO.Domain.Models;
@@ -54,6 +55,10 @@ namespace FNO.Broker
                     shipment.State = ShipmentState.Fulfilled;
                     state.HandledShipments.Enqueue(shipment.ShipmentId);
                     yield return new ShipmentFulfilledEvent(shipment.ShipmentId, shipment.FactoryId, _initiator);
+                    yield return new PlayerInventoryChangedEvent(shipment.Owner.PlayerId, _initiator)
+                    {
+                        InventoryChange = shipment.Carts.Reduce(),
+                    };
                     _logger.Information($"Fulfilled shipment {shipment.ShipmentId}!");
                 }
 
@@ -179,6 +184,36 @@ namespace FNO.Broker
             {
                 Price = evnt.Price,
                 QuantityFulfilled = evnt.Quantity,
+            };
+            yield return new PlayerBalanceChangedEvent(buyOrder.Owner.PlayerId, _initiator)
+            {
+                BalanceChange = -evnt.Price,
+            };
+            yield return new PlayerBalanceChangedEvent(sellOrder.Owner.PlayerId, _initiator)
+            {
+                BalanceChange = evnt.Price,
+            };
+            yield return new PlayerInventoryChangedEvent(buyOrder.Owner.PlayerId, _initiator)
+            {
+                InventoryChange = new[]
+                {
+                    new LuaItemStack
+                    {
+                        Name = evnt.ItemId,
+                        Count = evnt.Quantity,
+                    },
+                },
+            };
+            yield return new PlayerInventoryChangedEvent(sellOrder.Owner.PlayerId, _initiator)
+            {
+                InventoryChange = new[]
+                {
+                    new LuaItemStack
+                    {
+                        Name = evnt.ItemId,
+                        Count = -evnt.Quantity,
+                    },
+                },
             };
 
             if (buyOrder.QuantityFulfilled == buyOrder.Quantity)

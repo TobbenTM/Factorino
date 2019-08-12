@@ -56,7 +56,8 @@ namespace FNO.Broker
 
             _resolver.Register(() => new PlayerEventHandler(_state),
                 typeof(PlayerCreatedEvent),
-                typeof(PlayerBalanceChangedEvent));
+                typeof(PlayerBalanceChangedEvent),
+                typeof(PlayerInventoryChangedEvent));
 
             _resolver.Register(() => new ShipmentEventHandler(_state),
                 typeof(ShipmentRequestedEvent),

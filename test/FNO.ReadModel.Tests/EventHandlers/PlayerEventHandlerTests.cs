@@ -1,6 +1,7 @@
 ﻿using FNO.Domain.Events.Corporation;
 using FNO.Domain.Events.Player;
 using FNO.Domain.Models;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -117,6 +118,62 @@ namespace FNO.ReadModel.Tests.EventHandlers
                 Assert.True(invitation.Accepted);
                 var player = dbContext.Players.First();
                 Assert.Equal(corporationId, player.CorporationId);
+            }
+        }
+
+        [Fact]
+        public async Task ShouldUpdateBalance()
+        {
+            // Arrange
+            var playerId = Guid.NewGuid();
+            var expectedBalance = new Random().Next();
+
+            // Act
+            await When(new PlayerCreatedEvent(new Player { PlayerId = playerId }));
+            await When(new PlayerBalanceChangedEvent(playerId, null)
+            {
+                BalanceChange = expectedBalance,
+            });
+
+            // Assert
+            using (var dbContext = GetInMemoryDatabase())
+            {
+                Assert.NotEmpty(dbContext.Players);
+                var player = dbContext.Players.First();
+                Assert.Equal(expectedBalance, player.Credits);
+            }
+        }
+
+        [Fact]
+        public async Task ShouldUpdateInventory()
+        {
+            // Arrange
+            var playerId = Guid.NewGuid();
+            var expectedItem = Domain.Seed.EntityLibrary.Data()[0];
+            var expectedBalance = new Random().Next();
+
+            // Act
+            await When(new PlayerCreatedEvent(new Player { PlayerId = playerId }));
+            await When(new PlayerInventoryChangedEvent(playerId, null)
+            {
+                InventoryChange = new[]
+                {
+                    new LuaItemStack
+                    {
+                        Name = expectedItem.Name,
+                        Count = expectedBalance,
+                    },
+                },
+            });
+
+            // Assert
+            using (var dbContext = GetInMemoryDatabase())
+            {
+                Assert.NotEmpty(dbContext.Players);
+                var player = dbContext.Players
+                    .Include(p => p.WarehouseInventory)
+                    .First();
+                Assert.Equal(expectedBalance, player.WarehouseInventory.Single().Quantity);
             }
         }
     }
