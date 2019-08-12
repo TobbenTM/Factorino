@@ -108,7 +108,8 @@ namespace FNO.Broker
                             && o.State == OrderState.Active
                             && o.ItemId == sellOrder.ItemId
                             && o.Price >= sellOrder.Price
-                            && o.Owner.Credits >= sellOrder.Price)
+                            && o.Owner.Credits >= sellOrder.Price
+                            && o.Owner.PlayerId != sellOrder.Owner.PlayerId)
                         .OrderByDescending(o => o.Price)
                         .FirstOrDefault();
                     if (buyOrder != null)

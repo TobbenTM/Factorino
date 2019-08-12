@@ -2,6 +2,17 @@ import axios from 'axios';
 import * as signalR from '@aspnet/signalr';
 import shipments from './player/shipments';
 
+const eventHandlers = {
+  PlayerBalanceChangedEvent(state, event) {
+    state.user.credits += event.balanceChange;
+  },
+  PlayerInventoryChangedEvent(state, event) {
+    for (var item in event.inventoryChange) {
+      console.log(item);
+    }
+  },
+};
+
 export default {
   namespaced: true,
   state: {
@@ -36,6 +47,11 @@ export default {
     loadedInventory(state, inventory) {
       state.inventory = inventory;
       state.loadingInventory = false;
+    },
+    handleEvent(state, event) {
+      if (eventHandlers[event.eventType]) {
+        eventHandlers[event.eventType](state, event);
+      }
     },
   },
   actions: {
