@@ -34,7 +34,8 @@ namespace FNO.WebApp.Services
             IHubContext<FactoryCreateHub, IEventHandlerClient> factoryCreateHubContext,
             IHubContext<PlayerHub, IEventHandlerClient> playerHubContext,
             IHubContext<MarketHub, IEventHandlerClient> marketHubContext,
-            IHubContext<ShippingHub, IEventHandlerClient> shippingHubContext)
+            IHubContext<ShippingHub, IEventHandlerClient> shippingHubContext,
+            IHubContext<WorldHub, IEventHandlerClient> worldHubContext)
         {
             _logger = logger;
 
@@ -73,6 +74,12 @@ namespace FNO.WebApp.Services
                 typeof(ShipmentReceivedEvent),
                 typeof(ShipmentRequestedEvent),
                 typeof(FactoryOutgoingTrainEvent));
+
+            RegisterHubContext(worldHubContext.Clients,
+                typeof(PlayerBalanceChangedEvent),
+                typeof(FactoryOutgoingTrainEvent),
+                typeof(ShipmentFulfilledEvent),
+                typeof(OrderTransactionEvent));
         }
 
         private void RegisterHubContext(IHubClients<IEventHandlerClient> clients, params Type[] eventTypes)
