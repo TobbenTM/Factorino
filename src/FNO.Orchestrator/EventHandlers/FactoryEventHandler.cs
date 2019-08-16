@@ -2,24 +2,21 @@
 using FNO.Domain.Models;
 using FNO.EventSourcing;
 using FNO.Orchestrator.Models;
-using Serilog;
 using System.Threading.Tasks;
 
-namespace FNO.Orchestrator
+namespace FNO.Orchestrator.EventHandlers
 {
-    public class EventHandler :
+    public class FactoryEventHandler : IHandler,
         IEventHandler<FactoryCreatedEvent>,
         IEventHandler<FactoryProvisionedEvent>,
         IEventHandler<FactoryDestroyedEvent>,
         IEventHandler<FactoryDecommissionedEvent>
     {
         private readonly State _state;
-        private readonly ILogger _logger;
 
-        public EventHandler(State state, ILogger logger)
+        public FactoryEventHandler(State state)
         {
             _state = state;
-            _logger = logger;
         }
 
         public Task Handle(FactoryCreatedEvent evnt)
@@ -28,6 +25,7 @@ namespace FNO.Orchestrator
             {
                 FactoryId = evnt.EntityId,
                 OwnerId = evnt.Initiator.PlayerId,
+                OwnerFactorioUsername = _state.GetUsername(evnt.Initiator.PlayerId),
                 State = FactoryState.Creating,
                 Seed = evnt.LocationSeed,
                 LocationId = evnt.LocationId,

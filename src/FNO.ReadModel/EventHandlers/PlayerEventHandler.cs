@@ -16,7 +16,8 @@ namespace FNO.ReadModel.EventHandlers
         IEventHandler<PlayerLeftCorporationEvent>,
         IEventHandler<PlayerRejectedInvitationEvent>,
         IEventHandler<PlayerBalanceChangedEvent>,
-        IEventHandler<PlayerInventoryChangedEvent>
+        IEventHandler<PlayerInventoryChangedEvent>,
+        IEventHandler<PlayerFactorioIdChangedEvent>
     {
         private readonly ReadModelDbContext _dbContext;
 
@@ -126,6 +127,16 @@ namespace FNO.ReadModel.EventHandlers
                         });
                     }
                 }
+            }
+            return Task.CompletedTask;
+        }
+
+        public Task Handle(PlayerFactorioIdChangedEvent evnt)
+        {
+            var player = _dbContext.Players.FirstOrDefault(p => p.PlayerId == evnt.EntityId);
+            if (player != null)
+            {
+                player.FactorioId = evnt.FactorioId;
             }
             return Task.CompletedTask;
         }

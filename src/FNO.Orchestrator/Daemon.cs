@@ -2,9 +2,11 @@
 using FNO.Common;
 using FNO.Domain.Events;
 using FNO.Domain.Events.Factory;
+using FNO.Domain.Events.Player;
 using FNO.EventSourcing;
 using FNO.EventStream;
 using FNO.Orchestrator.Docker;
+using FNO.Orchestrator.EventHandlers;
 using FNO.Orchestrator.Models;
 using Microsoft.Extensions.Configuration;
 using Serilog;
@@ -24,10 +26,12 @@ namespace FNO.Orchestrator
         private KafkaConsumer _consumer;
         private KafkaProducer _producer;
         private readonly State _state;
+        private readonly EventHandlerResolver _resolver;
 
         public Daemon()
         {
             _state = new State();
+            _resolver = new EventHandlerResolver();
         }
 
         public void Init(IConfiguration configuration, ILogger logger)
@@ -45,29 +49,32 @@ namespace FNO.Orchestrator
                     _provisioner = new DockerProvisioner(_configurationModel.Provisioner.Docker, _logger);
                     break;
             }
+
+            RegisterEventHandlers();
+        }
+
+        private void RegisterEventHandlers()
+        {
+            _resolver.Register(() => new FactoryEventHandler(_state),
+                typeof(FactoryCreatedEvent),
+                typeof(FactoryProvisionedEvent),
+                typeof(FactoryDestroyedEvent),
+                typeof(FactoryDecommissionedEvent));
+
+            _resolver.Register(() => new PlayerEventHandler(_state), typeof(PlayerFactorioIdChangedEvent));
         }
 
         public async Task HandleEvent<TEvent>(TEvent evnt) where TEvent : IEvent
         {
-            if (evnt is FactoryCreatedEvent createdEvent)
+            var handlers = _resolver.Resolve(evnt);
+            if (!handlers.Any())
             {
-                var handler = new EventHandler(_state, _logger);
-                await handler.Handle(createdEvent);
+                _logger.Debug($"Skipping event of type {evnt.GetType().FullName}, no handlers registered.");
+                return;
             }
-            else if (evnt is FactoryProvisionedEvent provisionedEvent)
+            foreach (var handler in handlers)
             {
-                var handler = new EventHandler(_state, _logger);
-                await handler.Handle(provisionedEvent);
-            }
-            else if (evnt is FactoryDestroyedEvent destroyedEvent)
-            {
-                var handler = new EventHandler(_state, _logger);
-                await handler.Handle(destroyedEvent);
-            }
-            else if (evnt is FactoryDecommissionedEvent decommissionedEvent)
-            {
-                var handler = new EventHandler(_state, _logger);
-                await handler.Handle(decommissionedEvent);
+                await handler.Handle(evnt);
             }
         }
 
