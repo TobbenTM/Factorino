@@ -96,19 +96,11 @@ namespace FNO.Broker.Tests.EventHandlers
             Assert.Empty(_state.HandledShipments);
         }
 
-        [Theory]
-        [InlineData(true)]
-        [InlineData(false)]
-        public async Task HandlerShouldHandleCompletedShipments(bool playerHasExistingInventory)
+        [Fact]
+        public async Task HandlerShouldHandleCompletedShipments()
         {
             // Arrange
-            var expectedItemId = Guid.NewGuid().ToString();
-            var expectedQuantity = new Random().Next();
             var expectedPlayer = new BrokerPlayer { PlayerId = Guid.NewGuid() };
-            if (playerHasExistingInventory)
-            {
-                expectedPlayer.Inventory.Add(expectedItemId, new WarehouseInventory());
-            }
             var initialShipment = new BrokerShipment
             {
                 ShipmentId = Guid.NewGuid(),
@@ -118,14 +110,10 @@ namespace FNO.Broker.Tests.EventHandlers
             _state.Shipments.Add(initialShipment.ShipmentId, initialShipment);
 
             // Act
-            await _handler.Handle(new ShipmentCompletedEvent(initialShipment.ShipmentId, initialShipment.FactoryId, expectedPlayer)
-            {
-                ReturningCargo = CreateCartContents(expectedItemId, expectedQuantity)[0].Inventory,
-            });
+            await _handler.Handle(new ShipmentCompletedEvent(initialShipment.ShipmentId, initialShipment.FactoryId, expectedPlayer));
 
             // Assert
             Assert.Equal(ShipmentState.Completed, initialShipment.State);
-            Assert.Equal(expectedQuantity, expectedPlayer.Inventory[expectedItemId].Quantity);
         }
 
         private Cart[] CreateCartContents(string itemId, int quantity)
