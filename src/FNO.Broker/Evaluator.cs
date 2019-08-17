@@ -57,7 +57,7 @@ namespace FNO.Broker
                     yield return new ShipmentFulfilledEvent(shipment.ShipmentId, shipment.FactoryId, _initiator);
                     yield return new PlayerInventoryChangedEvent(shipment.Owner.PlayerId, _initiator)
                     {
-                        InventoryChange = shipment.Carts.Reduce(),
+                        InventoryChange = shipment.Carts.Reduce().Negate(),
                     };
                     _logger.Information($"Fulfilled shipment {shipment.ShipmentId}!");
                 }
