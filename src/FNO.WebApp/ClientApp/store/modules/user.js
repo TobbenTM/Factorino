@@ -1,6 +1,5 @@
 import axios from 'axios';
 import * as signalR from '@aspnet/signalr';
-import shipments from './player/shipments';
 
 export default {
   namespaced: true,
@@ -11,9 +10,6 @@ export default {
     loadingUser: false,
     inventory: [],
     loadingInventory: false,
-  },
-  modules: {
-    shipments,
   },
   mutations: {
     hubReady(state, hub) {

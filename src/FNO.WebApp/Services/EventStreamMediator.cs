@@ -22,6 +22,8 @@ namespace FNO.WebApp.Services
 {
     public class EventStreamMediator : IHostedService, IEventConsumer
     {
+        public static string CatchAllGroup = "CATCH_ALL";
+
         private readonly ILogger _logger;
         private readonly KafkaConsumer _consumer;
 
@@ -113,7 +115,10 @@ namespace FNO.WebApp.Services
                     // to the specific groups that has subscribed to the entity
                     if (evnt is EntityEvent entityEvent)
                     {
+                        // Sending the event to concrete subscriptions..
                         await handler.Group(entityEvent.EntityId.ToString()).ReceiveEvent(evnt, evnt.GetType().Name);
+                        // ..and anyone that wants to catch all events
+                        await handler.Group(CatchAllGroup).ReceiveEvent(evnt, evnt.GetType().Name);
                     }
                     else
                     {

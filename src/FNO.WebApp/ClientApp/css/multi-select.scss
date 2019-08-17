@@ -36,6 +36,10 @@
     }
   }
 
+  &__spinner {
+    background: none;
+  }
+
   &__option {
     &--highlight {
       background: #ff9f1b;

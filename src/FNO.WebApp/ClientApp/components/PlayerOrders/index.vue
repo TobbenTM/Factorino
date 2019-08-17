@@ -7,6 +7,10 @@
           :icon="['fas', 'plus']"
           class="success"
         />
+        <factorio-panel-action
+          v-on:click="loadOrders"
+          :icon="['fas', 'sync']"
+        />
       </factorio-panel-header>
       <div
         class="orders__loading"

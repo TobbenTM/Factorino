@@ -40,6 +40,8 @@ export default {
 
   &__actions {
     margin-top: -1px;
+    display: flex;
+    flex-direction: row-reverse;
   }
 }
 </style>

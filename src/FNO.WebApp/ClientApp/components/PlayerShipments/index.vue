@@ -7,6 +7,10 @@
           :icon="['fas', 'plus']"
           class="success"
         />
+        <factorio-panel-action
+          v-on:click="loadShipments"
+          :icon="['fas', 'sync']"
+        />
       </factorio-panel-header>
       <div
         class="shipments__loading"
@@ -17,7 +21,7 @@
       </div>
       <div
         class="shipments__empty"
-        v-else-if="shipments.length == 0"
+        v-else-if="!shipments || shipments.length == 0"
         v-inlay:light
       >
         No shipments found!
@@ -35,19 +39,36 @@
         </shipment-item>
       </div>
     </div>
+    <new-shipment-dialog
+      v-if="creatingShipment"
+      v-on:close="creatingShipment = false"
+    />
   </factorio-panel>
 </template>
 
 <script>
-import { mapState } from 'vuex';
+import { mapState, mapActions } from 'vuex';
+import NewShipmentDialog from './NewShipmentDialog';
 
 export default {
+  components: {
+    NewShipmentDialog,
+  },
   computed: {
-    ...mapState('user/shipments', [ 'shipments', 'loadingShipments' ]),
+    ...mapState('shipping', [ 'shipments', 'loadingShipments' ]),
+  },
+  data() {
+    return {
+      creatingShipment: false,
+    };
+  },
+  created() {
+    this.loadShipments();
   },
   methods: {
+    ...mapActions('shipping', ['loadShipments']),
     createShipment() {
-
+      this.creatingShipment = true;
     },
   },
 };

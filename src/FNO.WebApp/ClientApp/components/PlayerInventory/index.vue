@@ -105,7 +105,7 @@ export default {
 
   &__items {
     display: flex;
-    justify-content: space-between;
+    // justify-content: space-between;
     align-content: flex-start;
     flex-wrap: wrap;
     margin-bottom: .5em;

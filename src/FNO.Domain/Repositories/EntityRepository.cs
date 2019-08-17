@@ -16,7 +16,7 @@ namespace FNO.Domain.Repositories
         public IEnumerable<FactorioEntity> Search(string query)
         {
             return _dbContext.EntityLibrary
-                .Where(e => e.Name.StartsWith(query))
+                .Where(e => e.Name.Contains(query))
                 .ToList();
         }
 

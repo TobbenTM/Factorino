@@ -3,6 +3,7 @@
     public class LuaItemStack
     {
         public string Name { get; set; }
+
         public long Count { get; set; }
     }
 }
