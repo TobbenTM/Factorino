@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using FNO.Domain.Models;
 using FNO.Domain.Repositories;
@@ -11,15 +12,18 @@ namespace FNO.WebApp.Hubs
     {
         private readonly IPlayerRepository _playerRepo;
         private readonly IShippingRepository _repo;
+        private readonly IEntityRepository _entityRepo;
         private readonly IEventStore _eventStore;
 
         public ShippingHub(
             IPlayerRepository playerRepository,
             IShippingRepository repo,
+            IEntityRepository entityRepo,
             IEventStore eventStore)
         {
             _playerRepo = playerRepository;
             _repo = repo;
+            _entityRepo = entityRepo;
             _eventStore = eventStore;
         }
 
@@ -30,8 +34,9 @@ namespace FNO.WebApp.Hubs
             var shipments = await _repo.GetShipments(player);
             foreach (var shipment in shipments)
             {
-                await Subscribe(shipment.ShipmentId);
+                _entityRepo.Enrich(shipment.Carts.SelectMany(c => c.Inventory));
             }
+            await Subscribe(shipments.Select(s => s.ShipmentId));
             return shipments;
         }
     }
