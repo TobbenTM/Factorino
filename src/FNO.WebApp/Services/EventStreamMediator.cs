@@ -22,7 +22,7 @@ namespace FNO.WebApp.Services
 {
     public class EventStreamMediator : IHostedService, IEventConsumer
     {
-        public static string CatchAllGroup = "CATCH_ALL";
+        public static string CatchAllGroup => "CATCH_ALL";
 
         private readonly ILogger _logger;
         private readonly KafkaConsumer _consumer;
