@@ -63,6 +63,9 @@ namespace FNO.Broker
                 }
 
                 // TODO: Should we cancel the shipment?
+                // Counterargument: if we don't cancel it, it will get fulfilled whenever
+                // the player has the inventory required to fulfill it. Does add to
+                // the processing time for each pass tho.
             }
         }
 
