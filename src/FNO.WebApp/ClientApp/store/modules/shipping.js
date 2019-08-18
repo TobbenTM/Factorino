@@ -1,11 +1,23 @@
 import * as signalR from '@aspnet/signalr';
+import { ShipmentState } from '@/enums';
 
 function findShipment(state, shipmentId) {
   return state.shipment.find(f => f.shipmentId === shipmentId);
 }
 
 const eventHandlers = {
-  // TODO
+  ShipmentRequestedEvent(shipment) {
+    shipment.state = ShipmentState.Requested;
+  },
+  ShipmentFulfilledEvent(shipment) {
+    shipment.state = ShipmentState.Fulfilled;
+  },
+  ShipmentReceivedEvent(shipment) {
+    shipment.state = ShipmentState.Received;
+  },
+  ShipmentCompletedEvent(shipment) {
+    shipment.state = ShipmentState.Completed;
+  },
 };
 
 export default {
