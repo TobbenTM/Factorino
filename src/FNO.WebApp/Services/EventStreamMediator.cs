@@ -62,6 +62,7 @@ namespace FNO.WebApp.Services
 
             RegisterHubContext(playerHubContext.Clients,
                 typeof(PlayerBalanceChangedEvent),
+                typeof(PlayerFactorioIdChangedEvent),
                 typeof(PlayerInventoryChangedEvent));
 
             RegisterHubContext(marketHubContext.Clients,

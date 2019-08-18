@@ -1,5 +1,13 @@
-import axios from 'axios';
 import * as signalR from '@aspnet/signalr';
+
+const eventHandlers = {
+  PlayerFactorioIdChangedEvent(player, evnt) {
+    player.factorioId = evnt.factorioId;
+  },
+  PlayerBalanceChangedEvent(player, evnt) {
+    player.credits += evnt.balanceChange;
+  },
+};
 
 export default {
   namespaced: true,
@@ -33,6 +41,11 @@ export default {
       state.inventory = inventory;
       state.loadingInventory = false;
     },
+    handleEvent(state, event) {
+      if (eventHandlers[event.eventType]) {
+        eventHandlers[event.eventType](state.user, event);
+      }
+    },
   },
   actions: {
     async initHub({ commit }) {
@@ -55,11 +68,12 @@ export default {
         commit('error', err, { root: true });
       }
     },
-    async loadUser({ commit }) {
+    async loadUser({ commit, dispatch, state }) {
       commit('loadUser');
+      if (!state.hub) await dispatch('initHub');
       try {
-        const response = await axios.get('/api/player');
-        commit('loadedUser', response.status === 204 ? null : response.data);
+        const player = await state.hub.invoke('GetPlayer');
+        commit('loadedUser', player);
       } catch (err) {
         commit('loadedUser', null);
       }
