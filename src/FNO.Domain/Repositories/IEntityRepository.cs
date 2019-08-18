@@ -8,5 +8,6 @@ namespace FNO.Domain.Repositories
     {
         IEnumerable<FactorioEntity> Search(string query);
         FactorioEntity Get(string itemId);
+        void Enrich(IEnumerable<LuaItemStack> stacksToEnrich);
     }
 }

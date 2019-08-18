@@ -1,6 +1,13 @@
 <template>
   <factorio-panel title="New Factory">
-    <div class="factory-select">
+    <div v-if="!user.factorioId">
+      <center>
+        <h2>Uh oh!</h2>
+        <p>Seems like you're missing a Factorio username!</p>
+        <p>Please contact the staff on Discord to get one assigned.</p>
+      </center>
+    </div>
+    <div class="factory-select" v-else>
       <location-list
         v-inlay:light
         class="factory-select__locations"
@@ -86,6 +93,7 @@ export default {
   },
   computed: {
     ...mapState([ 'locations' ]),
+    ...mapState('user', ['user']),
   },
   data() {
     return {

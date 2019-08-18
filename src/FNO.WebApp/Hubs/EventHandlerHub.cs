@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.SignalR;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace FNO.WebApp.Hubs
@@ -13,6 +14,19 @@ namespace FNO.WebApp.Hubs
         protected async Task Subscribe(Guid entityId)
         {
             await Groups.AddToGroupAsync(Context.ConnectionId, entityId.ToString());
+        }
+        /// <summary>
+        /// Will subscribe a client to all events related to the entites
+        /// </summary>
+        /// <param name="entities">The entities to subscribe to events for</param>
+        protected async Task Subscribe(IEnumerable<Guid> entities)
+        {
+            var tasks = new List<Task>();
+            foreach (var entity in entities)
+            {
+                tasks.Add(Subscribe(entity));
+            }
+            await Task.WhenAll(tasks.ToArray());
         }
 
         /// <summary>

@@ -38,6 +38,8 @@ namespace FNO.Domain.Models
         public Guid OwnerId { get; set; }
         public Player Owner { get; set; }
 
+        public string OwnerFactorioUsername { get; set; }
+
         public string CurrentlyResearchingId { get; set; }
         public FactorioTechnology CurrentlyResearching { get; set; }
 

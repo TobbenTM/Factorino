@@ -37,3 +37,11 @@ export const OrderSearchSortColumn = {
   Player: 2,
   Price: 3,
 };
+
+export const ShipmentState = {
+  Unknown: 0,
+  Requested: 1,
+  Fulfilled: 2,
+  Received: 3,
+  Completed: 4,
+};

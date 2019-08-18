@@ -27,6 +27,7 @@ fontawesome.library.add(
   require('@fortawesome/fontawesome-free-solid/faExclamationTriangle'),
   require('@fortawesome/fontawesome-free-solid/faSignInAlt'),
   require('@fortawesome/fontawesome-free-solid/faSignOutAlt'),
+  require('@fortawesome/fontawesome-free-solid/faSync'),
 
   // Brands
   require('@fortawesome/fontawesome-free-brands/faSteam'),

@@ -1,15 +1,18 @@
-﻿using CoreRCON;
-using FNO.Domain.Events;
-using FNO.Domain.Events.Factory;
-using FNO.EventStream;
-using FNO.FactoryPod.Models;
-using Newtonsoft.Json;
-using Serilog;
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.Net;
 using System.Threading.Tasks;
 using System.Timers;
+using CoreRCON;
+using FNO.Domain.Events;
+using FNO.Domain.Events.Factory;
+using FNO.Domain.Events.Shipping;
+using FNO.Domain.Models;
+using FNO.EventStream;
+using FNO.FactoryPod.Extensions;
+using FNO.FactoryPod.Models;
+using Newtonsoft.Json;
+using Serilog;
 
 namespace FNO.FactoryPod
 {
@@ -20,12 +23,12 @@ namespace FNO.FactoryPod
     internal sealed class Mediator : IEventConsumer, IDisposable
     {
         private const int POLL_INTERVAL_MS = 2000;
-        
+
         private readonly FactoryPodConfiguration _configuration;
         private readonly ILogger _logger;
         private readonly Timer _pollTimer;
         private readonly KafkaProducer _producer;
-
+        private readonly State _state;
         private RCON _rcon;
 
         internal event EventHandler OnDisconnect;
@@ -40,6 +43,7 @@ namespace FNO.FactoryPod
             };
             _pollTimer.Elapsed += new ElapsedEventHandler(PollHandler);
             _producer = new KafkaProducer(_configuration, _logger);
+            _state = new State();
         }
 
         private void PollHandler(object sender, ElapsedEventArgs e)
@@ -139,11 +143,58 @@ namespace FNO.FactoryPod
             _producer.Dispose();
         }
 
-        public Task HandleEvent<TEvent>(TEvent evnt) where TEvent : IEvent
+        public async Task HandleEvent<TEvent>(TEvent evnt) where TEvent : IEvent
         {
-            // TODO: Handle properly
-            _logger.Information($"Got event of type {evnt.GetType().FullName}!");
-            return Task.CompletedTask;
+            if (evnt is ShipmentRequestedEvent shipmentRequestedEvent)
+            {
+                if (shipmentRequestedEvent.FactoryId == _configuration.Factorino.FactoryId)
+                {
+                    _logger.Debug($"Shipment requested for factory, waiting for fulfillment...");
+                    _state.PendingShipments[shipmentRequestedEvent.EntityId] = new Shipment
+                    {
+                        ShipmentId = shipmentRequestedEvent.EntityId,
+                        DestinationStation = shipmentRequestedEvent.DestinationStation,
+                        Carts = shipmentRequestedEvent.Carts,
+                        WaitConditions = shipmentRequestedEvent.WaitConditions,
+                    };
+                }
+            }
+            else if (evnt is ShipmentFulfilledEvent shipmentFulfilledEvent)
+            {
+                if (shipmentFulfilledEvent.FactoryId == _configuration.Factorino.FactoryId)
+                {
+                    _logger.Debug($"Shipment fulfilled, spawning resources and producing event...");
+                    if (_state.PendingShipments.ContainsKey(shipmentFulfilledEvent.EntityId))
+                    {
+                        try
+                        {
+                            var shipment = _state.PendingShipments[shipmentFulfilledEvent.EntityId];
+                            await _rcon.SendCommandAsync($"/factorino_import {JsonConvert.SerializeObject(shipment.ToDTO())}");
+                            await _producer.ProduceAsync(new ShipmentReceivedEvent(shipment.ShipmentId, _configuration.Factorino.FactoryId, null));
+                            _state.PendingShipments.Remove(shipmentFulfilledEvent.EntityId);
+                        }
+                        catch (Exception e)
+                        {
+                            _logger.Error(e, $"Could not spawn shipment {shipmentFulfilledEvent.EntityId}!");
+                        }
+                    }
+                    else
+                    {
+                        _logger.Error($"Expected to find shipment with ID {shipmentFulfilledEvent.EntityId} in pending shipments, but could not find it!");
+                    }
+                }
+            }
+            else if (evnt is ShipmentReceivedEvent shipmentReceivedEvent)
+            {
+                if (shipmentReceivedEvent.FactoryId == _configuration.Factorino.FactoryId)
+                {
+                    _logger.Debug($"Shipment successfully received! Removing from pending shipments...");
+                    if (_state.PendingShipments.ContainsKey(shipmentReceivedEvent.EntityId))
+                    {
+                        _state.PendingShipments.Remove(shipmentReceivedEvent.EntityId);
+                    }
+                }
+            }
         }
 
         public Task OnEndReached(string topic, int partition, long offset)

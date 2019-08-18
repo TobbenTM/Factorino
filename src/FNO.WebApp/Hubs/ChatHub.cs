@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.SignalR;
 
 namespace FNO.WebApp.Hubs
 {
-    internal class ChatHub : Hub
+    public class ChatHub : Hub
     {
     }
 }

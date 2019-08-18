@@ -30,5 +30,14 @@ namespace FNO.Domain.Extensions
             }
             return stacks.Values.ToArray();
         }
+
+        public static LuaItemStack[] Negate(this LuaItemStack[] stacks)
+        {
+            foreach (var stack in stacks)
+            {
+                stack.Count *= -1;
+            }
+            return stacks;
+        }
     }
 }

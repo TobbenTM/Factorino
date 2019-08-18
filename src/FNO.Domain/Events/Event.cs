@@ -19,7 +19,7 @@ namespace FNO.Domain.Events
             Metadata = new EventMetadata
             {
                 CreatedAt = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
-                SourceAssembly = Assembly.GetExecutingAssembly().FullName,
+                SourceAssembly = Assembly.GetEntryAssembly().FullName,
             };
         }
 

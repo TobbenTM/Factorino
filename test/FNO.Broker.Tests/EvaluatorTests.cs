@@ -3,8 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using FNO.Broker.Models;
+using FNO.Domain.Events.Player;
+using FNO.Domain.Events.Shipping;
 using FNO.Domain.Models;
 using FNO.Domain.Models.Market;
+using FNO.Domain.Models.Shipping;
 using Serilog;
 using Serilog.Core;
 using Xunit;
@@ -36,7 +39,62 @@ namespace FNO.Broker.Tests
         }
 
         [Fact]
-        public async Task EvaluatorShouldCreateMatchOrders()
+        public async Task EvaluatorShouldFulfillShipments()
+        {
+            // Arrange
+            var rng = new Random();
+            var givenState = new State();
+            var expectedQuantity = rng.Next(1, 100);
+            var expectedItem = Guid.NewGuid().ToString();
+            var owner = new BrokerPlayer
+            {
+                Inventory = new Dictionary<string, WarehouseInventory>
+                {
+                    { expectedItem, new WarehouseInventory { Quantity = expectedQuantity } }
+                }
+            };
+            var shipment = new BrokerShipment
+            {
+                Owner = owner,
+                ShipmentId = Guid.NewGuid(),
+                FactoryId = Guid.NewGuid(),
+                State = ShipmentState.Requested,
+                Carts = new[]
+                {
+                    new Cart
+                    {
+                        CartType = CartType.Cargo,
+                        Inventory = new[]
+                        {
+                            new LuaItemStack
+                            {
+                                Name = expectedItem,
+                                Count = expectedQuantity,
+                            },
+                        },
+                    },
+                },
+            };
+            givenState.Shipments.Add(shipment.ShipmentId, shipment);
+
+            // Act
+            var result = await _evaluator.Evaluate(givenState);
+
+            // Assert
+            Assert.NotEmpty(result);
+
+            // Inventory reduced?
+            Assert.Equal(0, owner.Inventory[expectedItem].Quantity);
+            Assert.Equal(-expectedQuantity, result.OfType<PlayerInventoryChangedEvent>().Single().InventoryChange.Single().Count);
+
+            // Shipment fulfilled?
+            var evnt = result.OfType<ShipmentFulfilledEvent>().Single();
+            Assert.Equal(shipment.ShipmentId, evnt.EntityId);
+            Assert.Equal(shipment.FactoryId, evnt.FactoryId);
+        }
+
+        [Fact]
+        public async Task EvaluatorShouldMatchOrders()
         {
             // Arrange
             var rng = new Random();

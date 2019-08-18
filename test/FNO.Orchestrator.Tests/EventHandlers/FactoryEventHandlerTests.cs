@@ -1,7 +1,7 @@
 ﻿using FNO.Domain.Events.Factory;
 using FNO.Domain.Models;
+using FNO.Orchestrator.EventHandlers;
 using FNO.Orchestrator.Models;
-using Serilog;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -9,17 +9,15 @@ using Xunit;
 
 namespace FNO.Orchestrator.Tests
 {
-    public class EventHandlerTests
+    public class FactoryEventHandlerTests
     {
-        private readonly ILogger _logger;
         private readonly State _state;
-        private readonly EventHandler _handler;
+        private readonly FactoryEventHandler _handler;
 
-        public EventHandlerTests()
+        public FactoryEventHandlerTests()
         {
-            _logger = new LoggerConfiguration().CreateLogger();
             _state = new State();
-            _handler = new EventHandler(_state, _logger);
+            _handler = new FactoryEventHandler(_state);
         }
 
         [Fact]
@@ -31,14 +29,18 @@ namespace FNO.Orchestrator.Tests
                 FactoryId = Guid.NewGuid(),
                 State = FactoryState.Creating,
             };
+            var initiator = new Player { PlayerId = Guid.NewGuid() };
+            var expectedUsername = Guid.NewGuid().ToString();
+            _state.SetUsername(initiator.PlayerId, expectedUsername);
 
             // Act
-            await _handler.Handle(new FactoryCreatedEvent(expectedFactory.FactoryId, expectedFactory.LocationId, "seed", null));
+            await _handler.Handle(new FactoryCreatedEvent(expectedFactory.FactoryId, expectedFactory.LocationId, "seed", initiator));
 
             // Assert
             Assert.Single(_state.Factories);
             Assert.Equal(expectedFactory.FactoryId, _state.Factories.Single().FactoryId);
             Assert.Equal(expectedFactory.State, _state.Factories.Single().State);
+            Assert.Equal(expectedUsername, _state.Factories.Single().OwnerFactorioUsername);
         }
 
         [Fact]

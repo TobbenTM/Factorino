@@ -63,23 +63,6 @@ namespace FNO.Broker.EventHandlers
         public Task Handle(ShipmentCompletedEvent evnt)
         {
             var shipment = _state.Shipments[evnt.EntityId];
-
-            foreach (var stack in evnt.ReturningCargo)
-            {
-                if (shipment.Owner.Inventory.TryGetValue(stack.Name, out var inventory))
-                {
-                    inventory.Quantity += stack.Count;
-                }
-                else
-                {
-                    shipment.Owner.Inventory.Add(stack.Name, new WarehouseInventory
-                    {
-                        ItemId = stack.Name,
-                        Quantity = stack.Count,
-                    });
-                }
-            }
-
             shipment.State = ShipmentState.Completed;
             return Task.CompletedTask;
         }

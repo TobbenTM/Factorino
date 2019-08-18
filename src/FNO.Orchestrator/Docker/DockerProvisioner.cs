@@ -54,6 +54,7 @@ namespace FNO.Orchestrator.Docker
                 {
                     $"factorino__factoryId={factory.FactoryId}",
                     $"factorino__ownerId={factory.OwnerId}",
+                    $"factorino__ownerUsername={factory.OwnerFactorioUsername}",
                     $"factorino__seed={factory.Seed}",
                 },
                 HostConfig = new HostConfig

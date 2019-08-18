@@ -47,7 +47,7 @@ namespace FNO.FactoryPod
         /// Optional, default value is 0. 0 means unlimited
         /// </summary>
         [JsonProperty("max_upload_in_kilobytes_per_second")]
-        public int MaxUploadInKilobytesPerSecong { get; set; } = 0;
+        public int MaxUploadInKilobytesPerSecond { get; set; } = 0;
 
         /// <summary>
         /// Optional, one tick is 16ms in default speed, default value is 0. 0 means no minimum

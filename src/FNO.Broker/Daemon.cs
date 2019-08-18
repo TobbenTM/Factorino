@@ -70,7 +70,7 @@ namespace FNO.Broker
             var handlers = _resolver.Resolve(evnt);
             if (!handlers.Any())
             {
-                _logger.Information($"Skipping event of type {evnt.GetType().FullName}, no handlers registered.");
+                _logger.Debug($"Skipping event of type {evnt.GetType().FullName}, no handlers registered.");
                 return;
             }
             foreach (var handler in handlers)

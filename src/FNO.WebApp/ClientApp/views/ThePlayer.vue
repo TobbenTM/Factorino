@@ -15,7 +15,8 @@
             <fieldset>
               <legend>Details</legend>
               Credits: {{ user.credits }} $<br>
-              Net worth: {{ netWorth }} $
+              Net worth: {{ netWorth }} $<br>
+              Factorio Username: {{ user.factorioId || 'Missing!' }}
             </fieldset>
           </div>
         </factorio-panel>

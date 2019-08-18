@@ -22,6 +22,8 @@ namespace FNO.WebApp.Services
 {
     public class EventStreamMediator : IHostedService, IEventConsumer
     {
+        public static string CatchAllGroup = "CATCH_ALL";
+
         private readonly ILogger _logger;
         private readonly KafkaConsumer _consumer;
 
@@ -34,7 +36,8 @@ namespace FNO.WebApp.Services
             IHubContext<FactoryCreateHub, IEventHandlerClient> factoryCreateHubContext,
             IHubContext<PlayerHub, IEventHandlerClient> playerHubContext,
             IHubContext<MarketHub, IEventHandlerClient> marketHubContext,
-            IHubContext<ShippingHub, IEventHandlerClient> shippingHubContext)
+            IHubContext<ShippingHub, IEventHandlerClient> shippingHubContext,
+            IHubContext<WorldHub, IEventHandlerClient> worldHubContext)
         {
             _logger = logger;
 
@@ -59,6 +62,7 @@ namespace FNO.WebApp.Services
 
             RegisterHubContext(playerHubContext.Clients,
                 typeof(PlayerBalanceChangedEvent),
+                typeof(PlayerFactorioIdChangedEvent),
                 typeof(PlayerInventoryChangedEvent));
 
             RegisterHubContext(marketHubContext.Clients,
@@ -73,6 +77,12 @@ namespace FNO.WebApp.Services
                 typeof(ShipmentReceivedEvent),
                 typeof(ShipmentRequestedEvent),
                 typeof(FactoryOutgoingTrainEvent));
+
+            RegisterHubContext(worldHubContext.Clients,
+                typeof(PlayerBalanceChangedEvent),
+                typeof(FactoryOutgoingTrainEvent),
+                typeof(ShipmentFulfilledEvent),
+                typeof(OrderTransactionEvent));
         }
 
         private void RegisterHubContext(IHubClients<IEventHandlerClient> clients, params Type[] eventTypes)
@@ -106,7 +116,10 @@ namespace FNO.WebApp.Services
                     // to the specific groups that has subscribed to the entity
                     if (evnt is EntityEvent entityEvent)
                     {
+                        // Sending the event to concrete subscriptions..
                         await handler.Group(entityEvent.EntityId.ToString()).ReceiveEvent(evnt, evnt.GetType().Name);
+                        // ..and anyone that wants to catch all events
+                        await handler.Group(CatchAllGroup).ReceiveEvent(evnt, evnt.GetType().Name);
                     }
                     else
                     {

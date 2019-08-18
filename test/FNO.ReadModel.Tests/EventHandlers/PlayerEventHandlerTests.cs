@@ -176,5 +176,28 @@ namespace FNO.ReadModel.Tests.EventHandlers
                 Assert.Equal(expectedBalance, player.WarehouseInventory.Single().Quantity);
             }
         }
+
+        [Fact]
+        public async Task ShouldUpdateFactorioId()
+        {
+            // Arrange
+            var playerId = Guid.NewGuid();
+            var expectedUsername = Guid.NewGuid().ToString();
+
+            // Act
+            await When(new PlayerCreatedEvent(new Player { PlayerId = playerId }));
+            await When(new PlayerFactorioIdChangedEvent(playerId, null)
+            {
+                FactorioId = expectedUsername,
+            });
+
+            // Assert
+            using (var dbContext = GetInMemoryDatabase())
+            {
+                Assert.NotEmpty(dbContext.Players);
+                var player = dbContext.Players.Single();
+                Assert.Equal(expectedUsername, player.FactorioId);
+            }
+        }
     }
 }

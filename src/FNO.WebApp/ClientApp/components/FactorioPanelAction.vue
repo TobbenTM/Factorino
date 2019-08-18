@@ -53,5 +53,9 @@ export default {
     font-size: 18px;
     border-top: 2px solid $emboss_light;
   }
+
+  &:not(:last-child) {
+    margin-left: .4em;
+  }
 }
 </style>

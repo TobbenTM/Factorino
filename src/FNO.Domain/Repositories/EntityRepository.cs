@@ -16,7 +16,7 @@ namespace FNO.Domain.Repositories
         public IEnumerable<FactorioEntity> Search(string query)
         {
             return _dbContext.EntityLibrary
-                .Where(e => e.Name.StartsWith(query))
+                .Where(e => e.Name.Contains(query))
                 .ToList();
         }
 
@@ -24,6 +24,14 @@ namespace FNO.Domain.Repositories
         {
             return _dbContext.EntityLibrary
                 .First(e => e.Name == itemId);
+        }
+
+        public void Enrich(IEnumerable<LuaItemStack> stacksToEnrich)
+        {
+            foreach (var stack in stacksToEnrich)
+            {
+                stack.Item = _dbContext.EntityLibrary.FirstOrDefault(i => i.Name == stack.Name);
+            }
         }
     }
 }
