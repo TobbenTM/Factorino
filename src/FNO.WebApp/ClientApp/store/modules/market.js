@@ -1,4 +1,4 @@
-import * as signalR from '@aspnet/signalr';
+import initHub from '@/utils/signalr-hub';
 import { OrderState } from '@/enums';
 
 function findOrder(state, orderId) {
@@ -73,29 +73,7 @@ export default {
     },
   },
   actions: {
-    async initHub({ commit, state }) {
-      // Don't want to create again if already in state
-      if (state.hub) return;
-
-      const hub = new signalR.HubConnectionBuilder()
-        .withUrl('/ws/market')
-        .build();
-
-      // We'll also be handling all events coming through the subscription
-      hub.on('ReceiveEvent', (event, eventType) => {
-        commit('handleEvent', {
-          ...event,
-          eventType,
-        });
-      });
-
-      try {
-        await hub.start();
-        commit('hubReady', hub);
-      } catch (err) {
-        commit('error', err, { root: true });
-      }
-    },
+    initHub: initHub('/ws/market'),
     async loadOrders({ dispatch, commit, state }, searchOptions) {
       commit('loadingOrders');
       if (!state.hub) await dispatch('initHub');

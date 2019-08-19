@@ -1,4 +1,4 @@
-import * as signalR from '@aspnet/signalr';
+import initHub from '@/utils/signalr-hub';
 import { FactoryState } from '@/enums';
 
 function findFactory(state, factoryId) {
@@ -52,24 +52,7 @@ export default {
     },
   },
   actions: {
-    async initHub({ commit }) {
-      const hub = new signalR.HubConnectionBuilder()
-        .withUrl('/ws/factory')
-        .build();
-
-      // We'll also be handling all events coming through the subscription
-      hub.on('ReceiveEvent', (event, eventType) => commit('handleEvent', {
-        ...event,
-        eventType,
-      }));
-
-      try {
-        await hub.start();
-        commit('hubReady', hub);
-      } catch (err) {
-        commit('error', err, { root: true });
-      }
-    },
+    initHub: initHub('/ws/factory'),
     async loadFactories({ dispatch, commit, state }) {
       commit('loadingFactories');
       if (!state.hub) await dispatch('initHub');

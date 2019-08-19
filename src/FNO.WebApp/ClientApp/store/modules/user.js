@@ -1,4 +1,4 @@
-import * as signalR from '@aspnet/signalr';
+import initHub from '@/utils/signalr-hub';
 
 const eventHandlers = {
   PlayerFactorioIdChangedEvent(state, evnt) {
@@ -51,26 +51,7 @@ export default {
     },
   },
   actions: {
-    async initHub({ commit }) {
-      const hub = new signalR.HubConnectionBuilder()
-        .withUrl('/ws/player')
-        .build();
-
-      // We'll also be handling all events coming through the subscription
-      hub.on('ReceiveEvent', (event, eventType) => {
-        commit('handleEvent', {
-          ...event,
-          eventType,
-        });
-      });
-
-      try {
-        await hub.start();
-        commit('hubReady', hub);
-      } catch (err) {
-        commit('error', err, { root: true });
-      }
-    },
+    initHub: initHub('/ws/player'),
     async loadUser({ commit, dispatch, state }) {
       commit('loadUser');
       if (!state.hub) await dispatch('initHub');
