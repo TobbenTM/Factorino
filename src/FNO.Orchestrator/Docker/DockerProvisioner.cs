@@ -13,21 +13,19 @@ namespace FNO.Orchestrator.Docker
 {
     internal class DockerProvisioner : IProvisioner
     {
-        private static string FACTORIO_PORT = "34197/udp";
+        private static string FACTORIO_PORT => "34197/udp";
 
-        private readonly DockerConfiguration _configuration;
         private readonly ILogger _logger;
         private readonly DockerClient _client;
 
         public DockerProvisioner(DockerConfiguration configuration, ILogger logger)
         {
-            _configuration = configuration;
             _logger = logger;
 
             if (configuration.Native)
             {
                 var socket = Environment.OSVersion.Platform == PlatformID.Win32NT ?
-                    "npipe://./pipe/docker_engine" : "unix:///var/run/docker.sock";
+                    "npipe://./pipe/docker_engine" : "unix:///tmp/docker.sock";
                 _logger.Information($"Using the native Docker provisioner with socket/pipe '{socket}'");
                 _client = new DockerClientConfiguration(new Uri(socket))
                     .CreateClient();
@@ -65,7 +63,7 @@ namespace FNO.Orchestrator.Docker
             };
             var response = await _client.Containers.CreateContainerAsync(options);
 
-            var started = await _client.Containers.StartContainerAsync(response.ID, new ContainerStartParameters());
+            await _client.Containers.StartContainerAsync(response.ID, new ContainerStartParameters());
             var instance = await _client.Containers.InspectContainerAsync(response.ID);
 
             return new ProvisioningResult

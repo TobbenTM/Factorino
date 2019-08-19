@@ -60,16 +60,27 @@ services:
     networks:
       - factorino
     restart: unless-stopped
-  factorino_factory_pod:
-    image: factorino/factory-pod
-    build:
-      dockerfile: src/FNO.FactoryPod/Dockerfile
-      context: .
+  # The factory pod only needs to be built, it shouldn't be deployed
+  # factorino_factory_pod:
+  #   image: factorino/factory-pod
+  #   build:
+  #     dockerfile: src/FNO.FactoryPod/Dockerfile
+  #     context: .
   factorino_readmodel:
     image: factorino/readmodel
     build:
       dockerfile: src/FNO.ReadModel/Dockerfile
       context: .
+    networks:
+      - factorino
+    restart: unless-stopped
+  factorino_orchestrator:
+    image: factorino/orchestrator
+    build:
+      dockerfile: src/FNO.Orchestrator/Dockerfile
+      context: .
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock
     networks:
       - factorino
     restart: unless-stopped
@@ -81,6 +92,8 @@ services:
     networks:
       - factorino
     restart: unless-stopped
+    ports:
+      - "5000:5000"
 
 networks:
   factorino:
