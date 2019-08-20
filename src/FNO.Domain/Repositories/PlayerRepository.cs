@@ -35,6 +35,14 @@ namespace FNO.Domain.Repositories
             return GetPlayer(id);
         }
 
+        public Task<List<Player>> GetWealthiestPlayers()
+        {
+            return _dbContext.Players
+                .OrderByDescending(p => p.Credits)
+                .Take(50)
+                .ToListAsync();
+        }
+
         public async Task<IEnumerable<CorporationInvitation>> GetInvitations(ClaimsPrincipal user)
         {
             var player = await GetPlayer(user);

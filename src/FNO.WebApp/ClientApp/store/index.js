@@ -7,6 +7,7 @@ import CorporationModule from './modules/corporation';
 import FactoryModule from './modules/factory';
 import MarketModule from './modules/market';
 import ShippingModule from './modules/shipping';
+import WorldModule from './modules/world';
 
 Vue.use(Vuex);
 
@@ -82,5 +83,6 @@ export default new Vuex.Store({
     factory: FactoryModule,
     market: MarketModule,
     shipping: ShippingModule,
+    world: WorldModule,
   },
 });

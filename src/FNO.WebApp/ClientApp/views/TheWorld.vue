@@ -1,12 +1,7 @@
 <template>
   <div class="world">
     <div class="world__layout">
-        <factorio-panel class="world__highscores">
-          <div class="world__panel__content">
-            <factorio-panel-header title="Top Players"/>
-            <div v-inlay:dark></div>
-          </div>
-      </factorio-panel>
+      <highscores class="world__highscores"/>
       <factorio-panel class="world__worldmap">
         <div class="world__panel__content">
           <factorio-panel-header title="World Map"/>
@@ -24,22 +19,14 @@
 </template>
 
 <script>
+import Highscores from '@/components/World/Highscores';
+
 export default{
   name: 'the-world',
-  data() {
-    return {
-      loadingWorld: true,
-    };
+  components: {
+    Highscores,
   },
-  mounted() {
-    this.loadWorld();
-  },
-  methods: {
-    async loadWorld() {
-      this.loadingWorld = true;
-    },
-  },
-}
+};
 </script>
 
 <style lang="scss" scoped>
