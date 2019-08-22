@@ -130,7 +130,7 @@ namespace FNO.Broker
                     }
                 }
 
-                if (sellOrder.QuantityFulfilled == sellOrder.Quantity)
+                if (sellOrder.Quantity != -1 && sellOrder.QuantityFulfilled >= sellOrder.Quantity)
                 {
                     yield return new OrderFulfilledEvent(sellOrder.OrderId, _initiator);
                     sellOrder.State = OrderState.Fulfilled;
@@ -181,24 +181,29 @@ namespace FNO.Broker
             yield return evnt;
             yield return new OrderPartiallyFulfilledEvent(buyOrder.OrderId, _initiator)
             {
+                TransactionId = evnt.EntityId,
                 Price = evnt.Price,
                 QuantityFulfilled = evnt.Quantity,
             };
             yield return new OrderPartiallyFulfilledEvent(sellOrder.OrderId, _initiator)
             {
+                TransactionId = evnt.EntityId,
                 Price = evnt.Price,
                 QuantityFulfilled = evnt.Quantity,
             };
             yield return new PlayerBalanceChangedEvent(buyOrder.Owner.PlayerId, _initiator)
             {
+                TransactionId = evnt.EntityId,
                 BalanceChange = -evnt.Price,
             };
             yield return new PlayerBalanceChangedEvent(sellOrder.Owner.PlayerId, _initiator)
             {
+                TransactionId = evnt.EntityId,
                 BalanceChange = evnt.Price,
             };
             yield return new PlayerInventoryChangedEvent(buyOrder.Owner.PlayerId, _initiator)
             {
+                TransactionId = evnt.EntityId,
                 InventoryChange = new[]
                 {
                     new LuaItemStack
@@ -210,6 +215,7 @@ namespace FNO.Broker
             };
             yield return new PlayerInventoryChangedEvent(sellOrder.Owner.PlayerId, _initiator)
             {
+                TransactionId = evnt.EntityId,
                 InventoryChange = new[]
                 {
                     new LuaItemStack
@@ -220,7 +226,7 @@ namespace FNO.Broker
                 },
             };
 
-            if (buyOrder.QuantityFulfilled == buyOrder.Quantity)
+            if (buyOrder.Quantity != -1 && buyOrder.QuantityFulfilled >= buyOrder.Quantity)
             {
                 yield return new OrderFulfilledEvent(buyOrder.OrderId, _initiator);
                 buyOrder.State = OrderState.Fulfilled;

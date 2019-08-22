@@ -6,6 +6,8 @@ namespace FNO.Domain.Events.Player
     {
         public long BalanceChange { get; set; }
 
+        public Guid TransactionId { get; set; }
+
         public PlayerBalanceChangedEvent()
         {
         }

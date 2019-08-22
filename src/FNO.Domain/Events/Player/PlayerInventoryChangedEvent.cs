@@ -7,6 +7,8 @@ namespace FNO.Domain.Events.Player
     {
         public LuaItemStack[] InventoryChange { get; set; }
 
+        public Guid TransactionId { get; set; }
+
         public PlayerInventoryChangedEvent()
         {
         }

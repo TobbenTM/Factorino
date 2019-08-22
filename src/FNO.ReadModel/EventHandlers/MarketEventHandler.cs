@@ -54,7 +54,6 @@ namespace FNO.ReadModel.EventHandlers
             var order = _dbContext.Orders.FirstOrDefault(o => o.OrderId == evnt.EntityId);
             if (order != null)
             {
-                order.QuantityFulfilled = order.Quantity;
                 order.State = OrderState.Fulfilled;
             }
             return Task.CompletedTask;
