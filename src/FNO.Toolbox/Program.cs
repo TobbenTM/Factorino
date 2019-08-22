@@ -1,9 +1,10 @@
 ﻿using FNO.Toolbox.ProduceEvent;
+using FNO.Toolbox.StarterKit;
 using Terminal.Gui;
 
 namespace FNO.Toolbox
 {
-    internal class Program
+    public static class Program
     {
         private static void Main(string[] args)
         {
@@ -18,7 +19,7 @@ namespace FNO.Toolbox
                 Height = Dim.Fill() - 1
             };
 
-            var welcome = new Label("Welcome to the Factorino toolbox!")
+            var welcome = new Label("Welcome to the Factorino toolbox")
             {
                 X = Pos.Center(),
                 Y = Pos.Center() - 2,
@@ -26,11 +27,10 @@ namespace FNO.Toolbox
             };
             win.Add(welcome);
 
-            var produceBtn = new Button("Produce event")
+            var produceBtn = new Button("Produce events")
             {
                 X = Pos.Center(),
                 Y = Pos.Center() + 1,
-                Width = 15,
                 Height = 1,
             };
             produceBtn.Clicked += delegate ()
@@ -40,11 +40,23 @@ namespace FNO.Toolbox
             };
             win.Add(produceBtn);
 
-            var quitBtn = new Button("Quit")
+            var startKitBtn = new Button("Give Starter Kit")
             {
                 X = Pos.Center(),
                 Y = Pos.Center() + 3,
-                Width = 5,
+                Height = 1,
+            };
+            startKitBtn.Clicked += delegate ()
+            {
+                var starterKitDialog = new StarterKitDialog();
+                Application.Run(starterKitDialog);
+            };
+            win.Add(startKitBtn);
+
+            var quitBtn = new Button("Quit")
+            {
+                X = Pos.Center(),
+                Y = Pos.Center() + 5,
                 Height = 1,
             };
             quitBtn.Clicked += delegate ()

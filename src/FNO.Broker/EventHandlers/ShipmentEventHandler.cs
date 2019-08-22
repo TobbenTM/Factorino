@@ -1,7 +1,6 @@
 ﻿using System.Threading.Tasks;
 using FNO.Broker.Models;
 using FNO.Domain.Events.Shipping;
-using FNO.Domain.Models;
 using FNO.Domain.Models.Shipping;
 using FNO.EventSourcing;
 

@@ -20,7 +20,7 @@ namespace FNO.Toolbox.ProduceEvent
             Width = 50;
             Height = 20;
             _events = Assembly.GetAssembly(typeof(IEvent)).GetTypes()
-                .Where(myType => myType.IsClass && !myType.IsAbstract && myType.IsSubclassOf(typeof(Event)))
+                .Where(type => type.IsClass && !type.IsAbstract && type.IsSubclassOf(typeof(Event)))
                 .ToArray();
 
             _eventOptions = new ListView(_events.Select(t => $" - {t.Name}").ToList());

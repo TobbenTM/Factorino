@@ -6,7 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Terminal.Gui;
 
-namespace FNO.Toolbox.ProduceEvent
+namespace FNO.Toolbox.Common
 {
     internal class ProducerDialog : Dialog
     {
@@ -34,9 +34,14 @@ namespace FNO.Toolbox.ProduceEvent
         public async Task Produce(IEvent evnt)
         {
             _label.Text = $"Producing {evnt.GetType().Name} to {KafkaTopics.EVENTS}..";
-            Debug.WriteLine("Producing event...");
             var result = (await _producer.ProduceAsync(evnt)).Single();
-            Debug.WriteLine("Done producing event!");
+            _label.Text = $"Produced successfully!\nOffset: {result.Offset}, Partition: {result.Partition}, Topic: {result.Topic}";
+        }
+
+        public async Task Produce(IEvent[] evnts)
+        {
+            _label.Text = $"Producing {evnts.Length} events to {KafkaTopics.EVENTS}..";
+            var result = (await _producer.ProduceAsync(evnts)).Last();
             _label.Text = $"Produced successfully!\nOffset: {result.Offset}, Partition: {result.Partition}, Topic: {result.Topic}";
         }
     }

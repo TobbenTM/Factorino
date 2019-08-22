@@ -1,10 +1,10 @@
-﻿using FNO.Domain.Events;
-using FNO.Domain.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
+using FNO.Domain.Events;
+using FNO.Domain.Models;
+using FNO.Toolbox.Common;
 using Terminal.Gui;
 
 namespace FNO.Toolbox.ProduceEvent
@@ -45,31 +45,12 @@ namespace FNO.Toolbox.ProduceEvent
                 var label = new Label(prop.Name)
                 {
                     X = 2,
-                    Y = formLabels.Count * 2 + 3, // formLabels.Any() ? Pos.Top(formLabels.Last().view) + 2 : 3,
+                    Y = formLabels.Count * 2 + 3,
                     Width = 20,
                     Height = 1,
                 };
                 formLabels.Add((label, prop));
                 Add(label);
-
-                //if (!supportedPrimitives.Contains(prop.PropertyType))
-                //{
-                //    var innerProps = prop.PropertyType.GetProperties()
-                //        .Where(p => p.CanWrite)
-                //        .ToList();
-
-                //    foreach (var inner in innerProps)
-                //    {
-                //        var innerLabel = new Label(inner.Name)
-                //        {
-                //            X = 4,
-                //            Y = Pos.Top(formLabels.Last().view) + 2,
-                //            Width = 18,
-                //        };
-                //        formLabels.Add((innerLabel, inner));
-                //        Add(innerLabel);
-                //    }
-                //}
             }
 
             foreach (var (label, prop) in formLabels)
@@ -105,75 +86,80 @@ namespace FNO.Toolbox.ProduceEvent
                 Y = formLabels.Count * 2 + 3,
                 Clicked = delegate ()
                 {
-                    var evnt = Activator.CreateInstance(eventType);
+                    HandleClick(eventType, formFields, props);
+                }
+            });
+        }
 
-                    // Parse form fields and set values
-                    foreach (var field in formFields.Where(f => !string.IsNullOrEmpty(f.Text.ToString())))
-                    {
-                        var prop = eventType.GetProperty(field.Id.ToString());
-                        if (prop.PropertyType == typeof(string))
-                        {
-                            prop.SetValue(evnt, field.Text.ToString());
-                        }
-                        else if (prop.PropertyType == typeof(int))
-                        {
-                            prop.SetValue(evnt, int.Parse(field.Text.ToString()));
-                        }
-                        else if (prop.PropertyType == typeof(long))
-                        {
-                            prop.SetValue(evnt, long.Parse(field.Text.ToString()));
-                        }
-                        else if (prop.PropertyType == typeof(double))
-                        {
-                            prop.SetValue(evnt, double.Parse(field.Text.ToString()));
-                        }
-                        else if (prop.PropertyType == typeof(float))
-                        {
-                            prop.SetValue(evnt, float.Parse(field.Text.ToString()));
-                        }
-                        else if (prop.PropertyType == typeof(Guid))
-                        {
-                            prop.SetValue(evnt, Guid.Parse(field.Text.ToString()));
-                        }
-                    }
+        private void HandleClick(Type eventType, List<TextField> formFields, List<PropertyInfo> props)
+        {
+            var evnt = Activator.CreateInstance(eventType);
 
-                    // Set auto-generated values for certain prop types
-                    foreach (var prop in props)
+            // Parse form fields and set values
+            foreach (var field in formFields.Where(f => !string.IsNullOrEmpty(f.Text.ToString())))
+            {
+                var prop = eventType.GetProperty(field.Id.ToString());
+                if (prop.PropertyType == typeof(string))
+                {
+                    prop.SetValue(evnt, field.Text.ToString());
+                }
+                else if (prop.PropertyType == typeof(int))
+                {
+                    prop.SetValue(evnt, int.Parse(field.Text.ToString()));
+                }
+                else if (prop.PropertyType == typeof(long))
+                {
+                    prop.SetValue(evnt, long.Parse(field.Text.ToString()));
+                }
+                else if (prop.PropertyType == typeof(double))
+                {
+                    prop.SetValue(evnt, double.Parse(field.Text.ToString()));
+                }
+                else if (prop.PropertyType == typeof(float))
+                {
+                    prop.SetValue(evnt, float.Parse(field.Text.ToString()));
+                }
+                else if (prop.PropertyType == typeof(Guid))
+                {
+                    prop.SetValue(evnt, Guid.Parse(field.Text.ToString()));
+                }
+            }
+
+            // Set auto-generated values for certain prop types
+            foreach (var prop in props)
+            {
+                if (prop.PropertyType == typeof(LuaItemStack[]))
+                {
+                    var stack = new[]
                     {
-                        if (prop.PropertyType == typeof(LuaItemStack[]))
-                        {
-                            var stack = new[]
-                            {
                                 new LuaItemStack
                                 {
                                     Name = "iron-plate",
                                     Count = 420,
                                 },
                             };
-                            prop.SetValue(evnt, stack);
-                        }
-                    }
-
-                    if (evnt is Event baseEvent)
-                    {
-                        baseEvent.Initiator = new EventInitiator
-                        {
-                            PlayerName = "<toolbox>",
-                        };
-                        baseEvent.Metadata = new EventMetadata
-                        {
-                            CreatedAt = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
-                        };
-                        var producer = new ProducerDialog();
-                        producer.Produce(baseEvent);
-                        Application.Run(producer);
-                    }
-                    else
-                    {
-                        throw new Exception("Could not instantiate the event correctly!");
-                    }
+                    prop.SetValue(evnt, stack);
                 }
-            });
+            }
+
+            if (evnt is Event baseEvent)
+            {
+                baseEvent.Initiator = new EventInitiator
+                {
+                    PlayerName = "<toolbox>",
+                };
+                baseEvent.Metadata = new EventMetadata
+                {
+                    CreatedAt = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
+                };
+                var producer = new ProducerDialog();
+                producer.Produce(baseEvent);
+                Application.Run(producer);
+            }
+            else
+            {
+                throw new Exception("Could not instantiate the event correctly!");
+            }
         }
     }
 }
