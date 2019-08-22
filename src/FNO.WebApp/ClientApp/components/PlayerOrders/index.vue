@@ -166,8 +166,11 @@ export default {
   }
 
   &__list {
+    width: 100%;
     max-height: 100%;
     overflow-y: auto;
+    position: absolute;
+    box-sizing: border-box;
 
     table {
       width: 100%;
@@ -178,9 +181,6 @@ export default {
       thead {
         color: grey;
         background: rgba(0, 0, 0, 0.3);
-      }
-
-      tbody > tr {
       }
 
       td {

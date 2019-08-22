@@ -9,27 +9,26 @@
       >
         <icon :icon="['fas', 'spinner']" spin/> Loading warehouse..
       </div>
-      <div v-else class="warehouse__items" v-inlay:light>
-        <!-- A div per inventory item -->
-        <div
-          v-for="stock in inventory"
-          :key="stock.warehouseInventoryId"
-          class="warehouse__items__item"
-          v-inlay:dark.square
-        >
-          <factorio-icon
-            v-on:click="$emit('selected', stock)"
-            :path="stock.item.icon"
-          />
-          <span>{{ stock.quantity | humanizeNumber }}</span>
+      <div
+        style="max-height: 100%; overflow-y: auto;"
+        v-inlay:light
+        v-else
+      >
+        <div class="warehouse__items">
+          <!-- A div per inventory item -->
+          <div
+            v-for="stock in inventory"
+            :key="stock.warehouseInventoryId"
+            class="warehouse__items__item"
+            v-inlay:dark.square
+          >
+            <factorio-icon
+              v-on:click="$emit('selected', stock)"
+              :path="stock.item.icon"
+            />
+            <span>{{ stock.quantity | humanizeNumber }}</span>
+          </div>
         </div>
-
-        <!-- Filling the grid with otherwise empty slots -->
-        <!-- <div
-          class="warehouse__items__item warehouse__items__item--empty"
-          v-for="(_, index) in Array(120 - inventory.length)"
-          :key="index"
-        ></div> -->
       </div>
       <div class="warehouse__stats">
         <span>Total items: {{ totalItems | humanizeNumber }}</span>
@@ -66,10 +65,10 @@ export default {
   filters: {
     humanizeNumber(number) {
       if (number >= 1000000) {
-        return `${Math.round(number / 10000) / 100}M`;
+        return `${Math.round(number / 1000000)}M`;
       }
       if (number >= 1000) {
-        return `${Math.round(number / 10) / 100}k`;
+        return `${Math.round(number / 1000)}k`;
       }
       return number;
     },
@@ -88,6 +87,7 @@ export default {
     display: grid;
     grid-template-columns: 1fr;
     grid-template-rows: auto 1fr auto;
+    box-sizing: border-box;
   }
 
   &__empty, &__loading {
@@ -105,11 +105,14 @@ export default {
 
   &__items {
     display: flex;
-    // justify-content: space-between;
     align-content: flex-start;
     flex-wrap: wrap;
-    margin-bottom: .5em;
     padding: .5em;
+    width: 100%;
+    max-height: 100%;
+    overflow-y: auto;
+    position: absolute;
+    box-sizing: border-box;
 
     &__item {
       display: inline;
@@ -119,7 +122,7 @@ export default {
 
       > span {
         position: absolute;
-        font-size: .5em;
+        font-size: .4em;
         text-shadow: 0 0 .5em #000;
         bottom: 0;
         right: 0;
@@ -142,6 +145,7 @@ export default {
   &__stats {
     display: flex;
     justify-content: space-between;
+    padding-top: .8em;
   }
 }
 </style>

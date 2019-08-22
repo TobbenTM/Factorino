@@ -153,9 +153,6 @@ export default {
         background: rgba(0, 0, 0, 0.3);
       }
 
-      tbody > tr {
-      }
-
       td {
         padding: .2em 0;
         border-top: 1px solid $emboss_light;
