@@ -45,3 +45,9 @@ export const ShipmentState = {
   Received: 3,
   Completed: 4,
 };
+
+export const CartType = {
+  Unknown: 0,
+  Cargo: 1,
+  Fluid: 2,
+};

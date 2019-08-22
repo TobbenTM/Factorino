@@ -16,24 +16,19 @@
       >
         <div class="warehouse__items">
           <!-- A div per inventory item -->
-          <div
+          <warehouse-item
             v-for="stock in inventory"
             :key="stock.warehouseInventoryId"
+            :stock="stock"
             class="warehouse__items__item"
             v-inlay:dark.square
-          >
-            <factorio-icon
-              v-on:click="$emit('selected', stock)"
-              :path="stock.item.icon"
-            />
-            <span>{{ stock.quantity | humanizeNumber }}</span>
-          </div>
+          />
         </div>
       </div>
       <div class="warehouse__stats">
         <span>Total items: {{ totalItems | humanizeNumber }}</span>
-        <span>Net worth: {{ netWorth }} $</span>
-        <span>Slots used (stacks): {{ totalStacks }} / <icon :icon="['fas', 'infinity']"/></span>
+        <span>Net worth: {{ netWorth | humanizeNumber }} $</span>
+        <span>Slots used (stacks): {{ totalStacks | humanizeNumber }} / <icon :icon="['fas', 'infinity']"/></span>
       </div>
     </div>
   </factorio-panel>
@@ -41,8 +36,12 @@
 
 <script>
 import { mapState, mapActions } from 'vuex';
+import WarehouseItem from '@/components/WarehouseItem';
 
 export default {
+  components: {
+    WarehouseItem,
+  },
   computed: {
     ...mapState('user', ['inventory', 'loadingInventory']),
     totalItems() {
@@ -53,7 +52,7 @@ export default {
       return this.inventory.reduce((acc, cur) => acc + cur.quantity, 0);
     },
     totalStacks() {
-      return this.inventory.reduce((acc, cur) => acc + Math.ceil(cur.quantity / cur.item.stackSize), 0);
+      return this.inventory.reduce((acc, cur) => cur.item.stackSize === 0 ? 1 : acc + Math.ceil(cur.quantity / cur.item.stackSize), 0);
     },
   },
   mounted() {
@@ -113,37 +112,6 @@ export default {
     overflow-y: auto;
     position: absolute;
     box-sizing: border-box;
-
-    &__item {
-      display: inline;
-      font-size: 2em;
-      margin-right: .2em;
-      max-width: 48px;
-      min-width: 48px;
-      max-height: 48px;
-      min-height: 48px;
-      position: relative;
-
-      > span {
-        position: absolute;
-        font-size: .4em;
-        text-shadow: 0 0 .5em #000;
-        bottom: 0;
-        right: 0;
-        user-select: none;
-        margin-right: .3em;
-        margin-bottom: .2em;
-      }
-
-      > img {
-        box-sizing: border-box;
-        cursor: pointer;
-
-        &:hover {
-          background: #ff9f1b;
-        }
-      }
-    }
   }
 
   &__stats {
