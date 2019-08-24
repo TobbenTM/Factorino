@@ -14,8 +14,8 @@
             <h2>{{ user.name }}</h2>
             <fieldset>
               <legend>Details</legend>
-              Credits: {{ user.credits }} $<br>
-              Net worth: {{ netWorth }} $<br>
+              Credits: {{ user.credits | formatNumeral('0,0 $') }}<br>
+              Net worth: {{ netWorth | formatNumeral('0,0 $') }}<br>
               Factorio Username: {{ user.factorioId || 'Missing!' }}
             </fieldset>
           </div>
@@ -45,10 +45,10 @@ export default{
     PlayerOrders,
   },
   computed: {
-    ...mapState('user', ['user']),
+    ...mapState('user', ['user', 'inventory']),
     netWorth() {
       // TODO: We need to figure out inventory worth
-      return this.user.credits;
+      return this.user.credits + this.inventory.reduce((acc, cur) => acc + cur.quantity, 0);
     },
   },
   data() {

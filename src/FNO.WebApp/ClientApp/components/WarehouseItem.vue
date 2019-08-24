@@ -11,7 +11,7 @@
       :path="item.icon"
       :name="item.name"
     />
-    <span>{{ quantity | humanizeNumber }}</span>
+    <span>{{ quantity | formatNumeral('0a') }}</span>
   </div>
 </template>
 
@@ -30,17 +30,6 @@ export default {
       type: Boolean,
       required: false,
       default: false,
-    },
-  },
-  filters: {
-    humanizeNumber(number) {
-      if (number >= 1000000) {
-        return `${Math.round(number / 1000000)}M`;
-      }
-      if (number >= 1000) {
-        return `${Math.round(number / 1000)}k`;
-      }
-      return number;
     },
   },
   methods: {

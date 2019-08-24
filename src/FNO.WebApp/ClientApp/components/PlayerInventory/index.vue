@@ -27,9 +27,9 @@
         </div>
       </div>
       <div class="warehouse__stats">
-        <span>Total items: {{ totalItems | humanizeNumber }}</span>
-        <span>Net worth: {{ netWorth | humanizeNumber }} $</span>
-        <span>Slots used (stacks): {{ totalStacks | humanizeNumber }} / <icon :icon="['fas', 'infinity']"/></span>
+        <span>Total items: {{ totalItems | formatNumeral('0.0a') }}</span>
+        <span>Net worth: {{ netWorth | formatNumeral('0.0a $') }}</span>
+        <span>Slots used (stacks): {{ totalStacks | formatNumeral('0.0a') }} / <icon :icon="['fas', 'infinity']"/></span>
       </div>
     </div>
   </factorio-panel>
@@ -61,17 +61,6 @@ export default {
   },
   methods: {
     ...mapActions('user', ['loadInventory']),
-  },
-  filters: {
-    humanizeNumber(number) {
-      if (number >= 1000000) {
-        return `${Math.round(number / 1000000)}M`;
-      }
-      if (number >= 1000) {
-        return `${Math.round(number / 1000)}k`;
-      }
-      return number;
-    },
   },
 };
 </script>
