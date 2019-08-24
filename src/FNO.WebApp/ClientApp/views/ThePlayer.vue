@@ -10,7 +10,7 @@
       <div class="player__details">
         <factorio-panel title="Player">
           <div class="player__details__container">
-            <img :src="user.avatarFull"/>
+            <img :src="user.avatarFull" alt="Player avatar"/>
             <h2>{{ user.name }}</h2>
             <fieldset>
               <legend>Details</legend>

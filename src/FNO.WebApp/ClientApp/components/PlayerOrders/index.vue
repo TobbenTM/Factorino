@@ -35,12 +35,12 @@
           <table>
             <thead>
               <tr>
-                <th>Item</th>
-                <th>Order</th>
-                <th>State</th>
-                <th>Quantity</th>
-                <th>Price</th>
-                <th></th>
+                <th scope="col">Item</th>
+                <th scope="col">Order</th>
+                <th scope="col">State</th>
+                <th scope="col">Quantity</th>
+                <th scope="col">Price</th>
+                <th scope="col"></th>
               </tr>
             </thead>
             <tbody>

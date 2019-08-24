@@ -1,7 +1,7 @@
 <template>
   <div class="spinner">
-    <img src="@/assets/logo-outer.png" class="spin"/>
-    <img src="@/assets/logo-inner.png" class="static"/>
+    <img src="@/assets/logo-outer.png" class="spin" alt="Loading spinner"/>
+    <img src="@/assets/logo-inner.png" class="static" alt="Loading spinner"/>
     <h3 v-if="text">{{ text }}</h3>
   </div>
 </template>

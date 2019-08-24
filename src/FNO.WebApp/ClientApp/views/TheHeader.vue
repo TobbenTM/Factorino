@@ -5,7 +5,7 @@
       class="header__actions"
     >
       <div class="header__brand">
-        <img src="../assets/logo-inverse-layered.png" />
+        <img src="../assets/logo-inverse-layered.png" alt="App logo" />
         Factorino
       </div>
       <factorio-button
@@ -40,7 +40,7 @@
         v-else
         class="user-info"
       >
-        <img :src="user.avatar"/>
+        <img :src="user.avatar" alt="Player avatar"/>
         {{ user.name }}
       </div>
     </factorio-panel>

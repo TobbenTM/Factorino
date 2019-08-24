@@ -34,10 +34,10 @@
         <div class="shipments__list"><table>
             <thead>
               <tr>
-                <th>Destination</th>
-                <th>Station</th>
-                <th>Stock</th>
-                <th>State</th>
+                <th scope="col">Destination</th>
+                <th scope="col">Station</th>
+                <th scope="col">Stock</th>
+                <th scope="col">State</th>
               </tr>
             </thead>
             <tbody>

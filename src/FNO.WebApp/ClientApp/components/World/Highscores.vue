@@ -8,7 +8,7 @@
           v-for="player in highscores"
           :key="player.playerId"
         >
-          <img :src="player.avatar"/>
+          <img :src="player.avatar" alt="Player avatar"/>
           <h3>{{ player.name }}</h3>
           <p>Credits: {{ player.credits }}$</p>
         </div>

@@ -42,7 +42,7 @@ export default {
     createdShipment(state, shipment) {
       shipment.state = ShipmentState.Unknown;
       if (!findShipment(state, shipment.shipmentId)) {
-        state.orders.unshift(shipment);
+        state.shipments.unshift(shipment);
       }
     },
     handleEvent(state, event) {
