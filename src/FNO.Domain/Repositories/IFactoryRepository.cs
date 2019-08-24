@@ -8,6 +8,6 @@ namespace FNO.Domain.Repositories
     public interface IFactoryRepository
     {
         Task<Factory> GetFactory(Guid factoryId);
-        Task<IEnumerable<Factory>> GetFactories(Player player);
+        Task<List<Factory>> GetFactories(Player player);
     }
 }

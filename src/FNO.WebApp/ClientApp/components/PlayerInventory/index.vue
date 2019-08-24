@@ -19,7 +19,8 @@
           <warehouse-item
             v-for="stock in inventory"
             :key="stock.warehouseInventoryId"
-            :stock="stock"
+            :item="stock.item"
+            :quantity="stock.quantity"
             class="warehouse__items__item"
             v-inlay:dark.square
           />

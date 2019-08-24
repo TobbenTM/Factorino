@@ -19,13 +19,13 @@ namespace FNO.Domain.Repositories
         public Task<Factory> GetFactory(Guid factoryId)
         {
             return _dbContext.Factories
+                .Include(f => f.Location)
                 .FirstOrDefaultAsync(f => f.FactoryId.Equals(factoryId));
         }
 
-        // TODO: This should not await the task, just return it
-        public async Task<IEnumerable<Factory>> GetFactories(Player player)
+        public Task<List<Factory>> GetFactories(Player player)
         {
-            return await _dbContext.Factories
+            return  _dbContext.Factories
                 .Include(f => f.Location)
                 .Include(f => f.Owner)
                 .Include(f => f.CurrentlyResearching)

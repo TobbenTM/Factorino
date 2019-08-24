@@ -7,20 +7,24 @@
     v-on:click="$emit('click')"
   >
     <factorio-icon
-      v-on:click="$emit('selected', stock)"
-      :path="stock.item.icon"
-      :name="stock.item.name"
+      v-on:click="$emit('selected')"
+      :path="item.icon"
+      :name="item.name"
     />
-    <span>{{ stock.quantity | humanizeNumber }}</span>
+    <span>{{ quantity | humanizeNumber }}</span>
   </div>
 </template>
 
 <script>
 export default {
   props: {
-    stock: {
+    item: {
       type: Object,
       required: true,
+    },
+    quantity: {
+      type: Number,
+      required: false,
     },
     draggable: {
       type: Boolean,
@@ -44,8 +48,8 @@ export default {
       if (!this.draggable) {
         return false;
       }
-      e.dataTransfer.setData('application/warehouse-stock', this.stock.warehouseInventoryId);
-      this.$emit('dragging', this.stock);
+      e.dataTransfer.setData('application/warehouse-stock', this.item.name);
+      this.$emit('dragging');
     },
   },
 };

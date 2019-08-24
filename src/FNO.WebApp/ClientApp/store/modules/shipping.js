@@ -40,6 +40,7 @@ export default {
       state.loadingShipments = false;
     },
     createdShipment(state, shipment) {
+      shipment.state = ShipmentState.Unknown;
       if (!findShipment(state, shipment.shipmentId)) {
         state.orders.unshift(shipment);
       }

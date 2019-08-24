@@ -34,8 +34,9 @@
         >
           <warehouse-item
             v-for="stock in cart.inventory"
-            :key="stock.warehouseInventoryId"
-            :stock="stock"
+            :key="stock.name"
+            :item="stock.item"
+            :quantity="stock.count"
             v-on:click="removeStock(stock, cart)"
             class="shipment__item"
           />
@@ -48,10 +49,11 @@
         >
           <warehouse-item
             v-for="stock in availableInventory"
-            :key="stock.warehouseInventoryId"
-            :stock="stock"
+            :key="stock.name"
+            :item="stock.item"
+            :quantity="stock.count"
             draggable
-            v-on:dragging="item => draggingStock = item"
+            v-on:dragging="() => draggingStock = stock"
             class="shipment__item"
           />
         </div>
@@ -110,9 +112,9 @@ export default {
           const tempInventory = [...acc];
 
           cart.inventory.forEach(stock => {
-            const existingStock = tempInventory.find(s => s.warehouseInventoryId === stock.warehouseInventoryId);
+            const existingStock = tempInventory.find(s => s.name === stock.name);
             if (existingStock) {
-              existingStock.quantity += stock.quantity;
+              existingStock.count += stock.count;
             } else {
               const copy = Object.assign({}, stock);
               tempInventory.push(copy);
@@ -124,10 +126,14 @@ export default {
     },
     availableInventory() {
       return this.inventory.map(stock => {
-        const copy = Object.assign({}, stock);
-        const reserved = this.reservedInventory.find(s => s.warehouseInventoryId === stock.warehouseInventoryId);
+        const copy = {
+          count: stock.quantity,
+          name: stock.itemId,
+          item: stock.item,
+        };
+        const reserved = this.reservedInventory.find(s => s.name === stock.name);
         if (reserved) {
-          copy.quantity -= reserved.quantity;
+          copy.count -= reserved.count;
         }
         return copy;
       });
@@ -212,13 +218,12 @@ export default {
 
       if (cart.cartType === CartType.Cargo) {
         const stacks = cart.inventory
-          .reduce((acc, stock) => acc + (Math.ceil(stock.quantity/stock.item.stackSize)), 0);
+          .reduce((acc, stock) => acc + (Math.ceil(stock.count/stock.item.stackSize)), 0);
         return stacks === 40;
       }
 
       if (cart.cartType === CartType.Fluid) {
-        const fluid = cart.inventory
-          .reduce((acc, stock) => acc + stock.quantity, 0);
+        const fluid = cart.inventory[0].count;
         return fluid === 25000;
       }
     },
@@ -228,6 +233,11 @@ export default {
       }
 
       if (stock.item.fluid) {
+        // Since fluid wagon can only fit one type of liquid,
+        // we need to reject any new stock if it's not the same type
+        if (cart.inventory.length > 0) {
+          return cart.inventory[0].name === stock.name;
+        }
         return cart.cartType === CartType.Fluid;
       }
 
@@ -237,24 +247,24 @@ export default {
       if (stock.item.fluid) {
         cart.cartType = CartType.Fluid;
         const currentStock = cart.inventory
-          .reduce((acc, stock) => acc + stock.quantity, 0);
+          .reduce((acc, stock) => acc + stock.count, 0);
         const availableStock = 25000;
         this.addStockToInventory(stock, cart.inventory, availableStock - currentStock);
       } else {
         cart.cartType = CartType.Cargo;
         const currentStacks = cart.inventory
-          .reduce((acc, stock) => acc + (Math.ceil(stock.quantity/stock.item.stackSize)), 0);
+          .reduce((acc, stock) => acc + (Math.ceil(stock.count/stock.item.stackSize)), 0);
         const availableStacks = 40;
         this.addStockToInventory(stock, cart.inventory, (availableStacks - currentStacks) * stock.item.stackSize);
       }
     },
     addStockToInventory(stock, inventory, max) {
-      const existingStock = inventory.find(s => s.warehouseInventoryId === stock.warehouseInventoryId);
+      const existingStock = inventory.find(s => s.name === stock.name);
       if (existingStock) {
-        existingStock.quantity += Math.min(stock.quantity, max);
+        existingStock.count += Math.min(stock.count, max);
       } else {
         var copy = Object.assign({}, stock);
-        copy.quantity = Math.min(stock.quantity, max);
+        copy.count = Math.min(stock.count, max);
         inventory.push(copy);
       }
     },

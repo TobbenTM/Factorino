@@ -61,6 +61,7 @@ namespace FNO.WebApp.Hubs
             var shipmentId = Guid.NewGuid();
 
             shipment.ShipmentId = shipmentId;
+            shipment.Factory = factory;
             shipment.WaitConditions = new[]
             {
                 new WaitCondition

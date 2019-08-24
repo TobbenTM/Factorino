@@ -14,6 +14,7 @@ namespace FNO.Domain.Events.Shipping
         public ShipmentFulfilledEvent(Guid shipmentId, Guid factoryId, Models.Player initiator) : base(shipmentId, initiator)
         {
             FactoryId = factoryId;
+            OwnerId = initiator.PlayerId;
         }
     }
 }

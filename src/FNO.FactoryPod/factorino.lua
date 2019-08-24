@@ -191,12 +191,22 @@ function create_train(shipment, station, cart_positions)
     else
       -- Shipment carts (cargo or fluids)
       local content = shipment.carts[k-1]
-      rolling_stock = station.surface.create_entity{name = content.cart_type, position = pos, direction = station.direction, force = force}
-      local inventory = rolling_stock.get_inventory(defines.inventory.cargo_wagon)
+      if content.cart_type == 'fluid' then
+        rolling_stock = station.surface.create_entity{name = 'fluid-wagon', position = pos, direction = station.direction, force = force}
 
-      -- Insert all stacks in inventory
-      for _, item_stack in pairs(content.inventory) do
-        inventory.insert(item_stack)
+        -- Insert (hopefully) the only type of liquid into the fluidbox
+        rolling_stock.fluidbox[1] = {
+          name = content.inventory[1].name,
+          amount = content.inventory[1].count          
+        }
+      else
+        rolling_stock = station.surface.create_entity{name = 'cargo-wagon', position = pos, direction = station.direction, force = force}
+        local inventory = rolling_stock.get_inventory(defines.inventory.cargo_wagon)
+  
+        -- Insert all stacks in inventory
+        for _, item_stack in pairs(content.inventory) do
+          inventory.insert(item_stack)
+        end
       end
     end
 

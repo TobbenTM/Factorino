@@ -14,7 +14,7 @@ namespace FNO.FactoryPod.Extensions
                 DestinationStation = shipment.DestinationStation,
                 Carts = shipment.Carts.Select(c => new CartDTO
                 {
-                    CartType = c.CartType.ToString(),
+                    CartType = c.CartType.ToString().ToLowerInvariant(),
                     Inventory = c.Inventory.Select(i => new LuaItemStackDTO
                     {
                         Name = i.Name,
@@ -23,9 +23,9 @@ namespace FNO.FactoryPod.Extensions
                 }).ToArray(),
                 WaitConditions = shipment.WaitConditions.Select(w => new WaitConditionDTO
                 {
-                    CompareType = w.CompareType.ToString(),
+                    CompareType = w.CompareType.ToString().ToLowerInvariant(),
                     Ticks = w.Ticks,
-                    Type = w.Type.ToString(),
+                    Type = w.Type.ToString().ToLowerInvariant(),
                 }).ToArray(),
             };
         }
