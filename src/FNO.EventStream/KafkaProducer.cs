@@ -1,4 +1,10 @@
-﻿using Confluent.Kafka;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Confluent.Kafka;
 using Confluent.Kafka.Serialization;
 using FNO.Common;
 using FNO.Domain.Events;
@@ -7,28 +13,20 @@ using FNO.EventSourcing;
 using FNO.EventStream.Extensions;
 using FNO.EventStream.Serialization;
 using Serilog;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FNO.EventStream
 {
-    public class KafkaProducer : IEventStore, IDisposable
+    public sealed class KafkaProducer : IEventStore, IDisposable
     {
         private readonly Producer<Null, string> _producer;
-        private readonly ConfigurationBase _configuration;
         private readonly ILogger _logger;
 
         public KafkaProducer(ConfigurationBase configuration, ILogger logger)
         {
-            _configuration = configuration;
             _logger = logger;
 
             var config = new KafkaSettingsFactory()
-                .WithConfiguration(_configuration.Kafka)
+                .WithConfiguration(configuration.Kafka)
                 .Build();
 
             _producer = new Producer<Null, string>(config, null, new StringSerializer(Encoding.UTF8));
@@ -54,7 +52,7 @@ namespace FNO.EventStream
         {
             _logger.Information($"Producing {events.Length} events to {topic}..");
             var sw = Stopwatch.StartNew();
-            List<Task<Message<Null, string>>> tasks = new List<Task<Message<Null, string>>>();
+            var tasks = new List<Task<Message<Null, string>>>();
             foreach (var evnt in events)
             {
                 var content = JsonConverterExtensions.SerializeEvent(evnt);

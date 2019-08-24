@@ -28,6 +28,7 @@ fontawesome.library.add(
   require('@fortawesome/fontawesome-free-solid/faSignInAlt'),
   require('@fortawesome/fontawesome-free-solid/faSignOutAlt'),
   require('@fortawesome/fontawesome-free-solid/faSync'),
+  require('@fortawesome/fontawesome-free-solid/faDollyFlatbed'),
 
   // Brands
   require('@fortawesome/fontawesome-free-brands/faSteam'),

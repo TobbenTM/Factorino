@@ -2,10 +2,14 @@
   <div
     class="warehouse-item"
     v-inlay:dark.square
+    :draggable="draggable"
+    v-on:dragstart="dragStart"
+    v-on:click="$emit('click')"
   >
     <factorio-icon
       v-on:click="$emit('selected', stock)"
       :path="stock.item.icon"
+      :name="stock.item.name"
     />
     <span>{{ stock.quantity | humanizeNumber }}</span>
   </div>
@@ -16,6 +20,12 @@ export default {
   props: {
     stock: {
       type: Object,
+      required: true,
+    },
+    draggable: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
   },
   filters: {
@@ -27,6 +37,15 @@ export default {
         return `${Math.round(number / 1000)}k`;
       }
       return number;
+    },
+  },
+  methods: {
+    dragStart(e) {
+      if (!this.draggable) {
+        return false;
+      }
+      e.dataTransfer.setData('application/warehouse-stock', this.stock.warehouseInventoryId);
+      this.$emit('dragging', this.stock);
     },
   },
 };
@@ -42,6 +61,9 @@ export default {
   max-height: 48px;
   min-height: 48px;
   position: relative;
+  cursor: pointer;
+  user-select: none;
+  -moz-user-select: none;
 
   > span {
     position: absolute;
@@ -49,14 +71,13 @@ export default {
     text-shadow: 0 0 .5em #000;
     bottom: 0;
     right: 0;
-    user-select: none;
     margin-right: .3em;
     margin-bottom: .2em;
+    pointer-events : none;
   }
 
   > img {
     box-sizing: border-box;
-    cursor: pointer;
 
     &:hover {
       background: #ff9f1b;

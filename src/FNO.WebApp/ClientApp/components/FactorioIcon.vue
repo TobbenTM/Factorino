@@ -1,5 +1,5 @@
 <template>
-  <img :src="path"/>
+  <img :src="path" :alt="name" draggable="false"/>
 </template>
 
 <script>
@@ -8,6 +8,11 @@ export default {
     path: {
       required: true,
       type: String,
+    },
+    name: {
+      required: false,
+      type: String,
+      default: 'Factorio Item',
     },
   },
 };

@@ -135,7 +135,7 @@ function create_pickup_train()
     destination_station = 'Factorino - Pickup 1',
     wait_conditions = {
       {
-        type = 'time',
+        type = 'inactivity',
         ticks = 2400,
         compare_type = 'or'
       },

@@ -71,7 +71,16 @@ namespace FNO.Broker
 
         private bool TryUpdateInventory(BrokerPlayer player, BrokerShipment shipment)
         {
-            var totalInventory = shipment.Carts.Reduce();
+            LuaItemStack[] totalInventory;
+            try
+            {
+                totalInventory = shipment.Carts.Reduce();
+            } catch (InvalidOperationException e)
+            {
+                _logger.Error(e, $"Could not read inventory for shipment {shipment.ShipmentId}!");
+                return false;
+            }
+
             foreach (var stack in totalInventory)
             {
                 if (!player.Inventory.ContainsKey(stack.Name) || player.Inventory[stack.Name].Quantity < stack.Count)

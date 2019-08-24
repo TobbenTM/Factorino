@@ -22,6 +22,8 @@ namespace FNO.Broker
         private ILogger _logger;
         private KafkaConsumer _consumer;
         private KafkaProducer _producer;
+        private Task _evalTask;
+
         private readonly EventHandlerResolver _resolver;
         private readonly State _state;
 
@@ -67,6 +69,12 @@ namespace FNO.Broker
 
         public async Task HandleEvent<TEvent>(TEvent evnt) where TEvent : IEvent
         {
+            if (_evalTask != null)
+            {
+                await _evalTask;
+                _evalTask = null;
+            }
+
             var handlers = _resolver.Resolve(evnt);
             if (!handlers.Any())
             {
@@ -79,9 +87,15 @@ namespace FNO.Broker
             }
         }
 
-        public async Task OnEndReached(string topic, int partition, long offset)
+        public Task OnEndReached(string topic, int partition, long offset)
         {
             _logger.Information($"Reached end of topic at offset {offset}, evaluating state...");
+            _evalTask = Evaluate();
+            return _evalTask;
+        }
+
+        private async Task Evaluate()
+        {
             var evaluator = new Evaluator(_logger);
             var events = await evaluator.Evaluate(_state);
             await _producer.ProduceAsync(KafkaTopics.EVENTS, events.ToArray());

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using FNO.Domain.Models;
 using FNO.Domain.Models.Shipping;
@@ -14,6 +15,11 @@ namespace FNO.Domain.Extensions
             {
                 foreach (var stack in cart.Inventory)
                 {
+                    if (string.IsNullOrEmpty(stack.Name))
+                    {
+                        throw new InvalidOperationException($"LuaItemStack is malformed!");
+                    }
+
                     if (stacks.ContainsKey(stack.Name))
                     {
                         stacks[stack.Name].Count += stack.Count;

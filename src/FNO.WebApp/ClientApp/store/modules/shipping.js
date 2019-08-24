@@ -39,6 +39,11 @@ export default {
       state.shipments = shipments;
       state.loadingShipments = false;
     },
+    createdShipment(state, shipment) {
+      if (!findShipment(state, shipment.shipmentId)) {
+        state.orders.unshift(shipment);
+      }
+    },
     handleEvent(state, event) {
       const shipment = findShipment(state, event.entityId);
       if (!shipment) {
@@ -62,6 +67,14 @@ export default {
         commit('error', err, { root: true });
       }
       commit('loadedShipments');
+    },
+    async createShipment({ commit, state }, shipment) {
+      try {
+        const createdShipment = await state.hub.invoke('CreateShipment', shipment);
+        commit('createdShipment', createdShipment);
+      } catch (err) {
+        commit('error', err, { root: true });
+      }
     },
   },
 };

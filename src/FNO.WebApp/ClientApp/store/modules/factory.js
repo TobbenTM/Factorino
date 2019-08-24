@@ -6,8 +6,9 @@ function findFactory(state, factoryId) {
 }
 
 const eventHandlers = {
-  FactoryDecommissionedEvent(factory) {
+  FactoryDecommissionedEvent(state, factory) {
     factory.state = FactoryState.Destroyed;
+    state.factories = state.factories.filter(f => f.factoryId !== factory.factoryId);
   },
 };
 
@@ -47,7 +48,7 @@ export default {
         factory.activity.pop();
       }
       if (eventHandlers[event.eventType]) {
-        eventHandlers[event.eventType](factory, event);
+        eventHandlers[event.eventType](state, factory, event);
       }
     },
   },

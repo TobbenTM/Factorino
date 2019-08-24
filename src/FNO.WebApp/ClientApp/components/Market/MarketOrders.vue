@@ -93,7 +93,7 @@ export default {
       pageIndex: 1,
     };
   },
-  mounted() {
+  created() {
     this.search();
   },
   watch: {
