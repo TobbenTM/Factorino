@@ -91,7 +91,7 @@ namespace FNO.Broker.Tests.EventHandlers
             _state.HandledShipments.Enqueue(expectedShipmentId);
 
             // Act
-            await _handler.Handle(new ShipmentFulfilledEvent(expectedShipmentId, default, null));
+            await _handler.Handle(new ShipmentFulfilledEvent(expectedShipmentId, default, new Player()));
 
             // Assert
             Assert.Empty(_state.HandledShipments);
