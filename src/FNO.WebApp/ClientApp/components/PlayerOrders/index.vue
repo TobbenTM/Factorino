@@ -40,7 +40,7 @@
                 <th scope="col">State</th>
                 <th scope="col">Quantity</th>
                 <th scope="col">Price</th>
-                <th scope="col"></th>
+                <th></th>
               </tr>
             </thead>
             <tbody>
@@ -68,7 +68,7 @@
                 </td>
                 <td>{{ order.quantityFulfilled }} / <icon v-if="order.quantity === -1" :icon="['fas', 'infinity']"/><span v-else>{{ order.quantity }}</span></td>
                 <td>{{ order.price }} $</td>
-                <td>
+                <td scope="row">
                   <factorio-button
                     v-if="order.state !== OrderState.Cancelled"
                     :disabled="order.state === OrderState.Cancelling"

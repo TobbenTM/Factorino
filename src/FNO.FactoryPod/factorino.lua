@@ -294,9 +294,17 @@ script.on_event(defines.events.on_train_changed_state, function(event)
       local inventory = train.get_contents()
       print('[factorino.lua] Outgoing train has inventory: ' .. json.encode(inventory))
 
-      -- TODO: Get fluids as well
+      local fluids = train.get_fluid_contents()
+      print('[factorino.lua] Outgoing train has fluids: ' .. json.encode(fluids))
+
       local inventory_stacks = {}
       for item_name, item_count in pairs(inventory) do
+        table.insert(inventory_stacks, {
+          name = item_name,
+          count = item_count,
+        })
+      end
+      for item_name, item_count in pairs(fluids) do
         table.insert(inventory_stacks, {
           name = item_name,
           count = item_count,

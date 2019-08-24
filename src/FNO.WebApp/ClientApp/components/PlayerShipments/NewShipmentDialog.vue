@@ -137,7 +137,7 @@ export default {
           name: stock.itemId,
           item: stock.item,
         };
-        const reserved = this.reservedInventory.find(s => s.name === stock.name);
+        const reserved = this.reservedInventory.find(s => s.name === copy.name);
         if (reserved) {
           copy.count -= reserved.count;
         }

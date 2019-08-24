@@ -8,7 +8,18 @@ const eventHandlers = {
     state.user.credits += evnt.balanceChange;
   },
   PlayerInventoryChangedEvent(state, event) {
-    event.inventoryChange.forEach(item => console.log(item));
+    event.inventoryChange.forEach(item => {
+      const existing = state.inventory.find(i => i.itemId === item.name);
+      if (existing) {
+        existing.quantity += item.count;
+      } else {
+        state.inventory.push({
+          itemId: item.name,
+          quantity: item.count,
+          item: item.item,
+        });
+      }
+    });
   },
 };
 

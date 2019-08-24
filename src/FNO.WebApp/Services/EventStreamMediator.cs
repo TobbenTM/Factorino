@@ -24,6 +24,7 @@ namespace FNO.WebApp.Services
     {
         public static string CatchAllGroup => "CATCH_ALL";
 
+        private readonly IConfiguration _configuration;
         private readonly ILogger _logger;
         private readonly KafkaConsumer _consumer;
 
@@ -39,6 +40,7 @@ namespace FNO.WebApp.Services
             IHubContext<ShippingHub, IEventHandlerClient> shippingHubContext,
             IHubContext<WorldHub, IEventHandlerClient> worldHubContext)
         {
+            _configuration = configuration;
             _logger = logger;
 
             var configurationModel = configuration.Bind<ConfigurationBase>();
@@ -105,11 +107,17 @@ namespace FNO.WebApp.Services
 
         public async Task HandleEvent<TEvent>(TEvent evnt) where TEvent : IEvent
         {
+            if (evnt is PlayerInventoryChangedEvent inventoryChangedEvent)
+            {
+                var enrichment = new EventEnrichment(_configuration);
+                await enrichment.Handle(inventoryChangedEvent);
+            }
+
             var eventType = evnt.GetType();
             if (_contexts.ContainsKey(eventType))
             {
                 var handlers = _contexts[eventType];
-                _logger.Debug($"Found {handlers.Count} handlers for event with type {eventType}, forwarding to hub..");
+                _logger.Debug($"Found {handlers.Count} handlers for event with type {eventType}, forwarding to hub(s)..");
                 foreach (var handler in handlers)
                 {
                     // If the event is attached to an entity, we'll forward it

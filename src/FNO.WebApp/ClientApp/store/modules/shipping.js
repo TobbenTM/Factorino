@@ -63,7 +63,6 @@ export default {
       if (!state.hub) await dispatch('initHub');
       try {
         const shipments = await state.hub.invoke('GetShipments');
-        console.log(shipments);
         commit('loadedShipments', shipments);
       } catch (err) {
         commit('error', err, { root: true });
