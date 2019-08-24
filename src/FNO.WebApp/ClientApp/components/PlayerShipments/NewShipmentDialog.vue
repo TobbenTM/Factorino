@@ -103,6 +103,12 @@ export default {
     Multiselect,
     WarehouseItem,
   },
+  props: {
+    copyShipment: {
+      type: Object,
+      required: false,
+    },
+  },
   computed: {
     ...mapState('user', ['inventory']),
     ...mapState('factory', ['factories', 'loadingFactories']),
@@ -174,6 +180,10 @@ export default {
     };
   },
   async created() {
+    if (this.copyShipment) {
+      Object.assign(this.shipment, this.copyShipment);
+    }
+
     if (!this.factories || this.factories.length === 0) {
       await this.loadFactories();
 

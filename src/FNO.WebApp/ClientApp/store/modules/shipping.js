@@ -2,7 +2,7 @@ import initHub from '@/utils/signalr-hub';
 import { ShipmentState } from '@/enums';
 
 function findShipment(state, shipmentId) {
-  return state.shipment.find(f => f.shipmentId === shipmentId);
+  return state.shipments.find(f => f.shipmentId === shipmentId);
 }
 
 const eventHandlers = {
@@ -62,12 +62,12 @@ export default {
       commit('loadingShipments');
       if (!state.hub) await dispatch('initHub');
       try {
-        const orders = await state.hub.invoke('GetShipments');
-        commit('loadedShipments', orders);
+        const shipments = await state.hub.invoke('GetShipments');
+        console.log(shipments);
+        commit('loadedShipments', shipments);
       } catch (err) {
         commit('error', err, { root: true });
       }
-      commit('loadedShipments');
     },
     async createShipment({ commit, state }, shipment) {
       try {

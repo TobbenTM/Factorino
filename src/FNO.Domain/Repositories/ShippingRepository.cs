@@ -15,9 +15,11 @@ namespace FNO.Domain.Repositories
             _dbContext = dbContext;
         }
 
-        public async Task<IEnumerable<Shipment>> GetShipments(Player player)
+        public Task<List<Shipment>> GetShipments(Player player)
         {
-            return await _dbContext.Shipments
+            return _dbContext.Shipments
+                .Include(s => s.Factory)
+                .ThenInclude(f => f.Location)
                 .Where(s => s.OwnerId == player.PlayerId)
                 .ToListAsync();
         }

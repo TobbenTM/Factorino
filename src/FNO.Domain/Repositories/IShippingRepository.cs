@@ -6,6 +6,6 @@ namespace FNO.Domain.Repositories
 {
     public interface IShippingRepository
     {
-        Task<IEnumerable<Shipment>> GetShipments(Player player);
+        Task<List<Shipment>> GetShipments(Player player);
     }
 }
