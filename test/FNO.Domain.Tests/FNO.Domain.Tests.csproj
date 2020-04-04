@@ -1,8 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
-
+    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <ProjectGuid>BA4BFBD9-91F8-4B00-9348-72321B36895E</ProjectGuid>
     <IsPackable>false</IsPackable>
   </PropertyGroup>
 
@@ -10,7 +10,7 @@
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.2.0" />
     <PackageReference Include="xunit" Version="2.4.0" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.4.0" />
-    <PackageReference Include="coverlet.collector" Version="1.0.1" />
+    <PackageReference Include="coverlet.msbuild" Version="2.6.0"/>
   </ItemGroup>
 
   <ItemGroup>
