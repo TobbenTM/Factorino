@@ -1,0 +1,38 @@
+﻿<#@ template hostspecific="true" language="C#" #>
+<#@ output extension=".cs" #>
+<#@ assembly name="$(TargetPath)" #>
+<# // Hardcoded references for now, maybe this will get easier/better in the future #>
+<#@ assembly name="%userprofile%\.nuget\packages\keralua\1.0.29\lib\netstandard2.0\KeraLua.dll" #>
+<#@ assembly name="%userprofile%\.nuget\packages\nlua\1.4.30\lib\netstandard2.0\NLua.dll" #>
+<#@ assembly name="NetStandard" #>
+<#@ import namespace="System.IO" #>
+<#@ import namespace="FNO.Domain.Models" #>
+<#@ import namespace="FNO.Domain.Seed" #>
+<#
+    string filePath = this.Host.ResolvePath("data.raw");
+    SeedGenerator generator = new SeedGenerator(filePath);
+#>
+using FNO.Domain.Models;
+
+namespace FNO.Domain.Seed
+{
+    public static class EntityLibrary
+    {
+        public static FactorioEntity[] Data()
+        {
+            return new[]
+            {
+<# foreach (FactorioEntity entity in generator.GetAllEntities()) { #>
+                new FactorioEntity {
+                    Type = "<#= entity.Type #>",
+                    Name = "<#= entity.Name #>",
+                    Icon = "<#= entity.Icon #>",
+                    StackSize = <#= entity.StackSize #>,
+                    Subgroup = "<#= entity.Subgroup ?? "null" #>",
+                    Fluid = <#= entity.Fluid ? "true" : "false" #>,
+                },
+<# } #>
+            };
+        }
+    }
+}
