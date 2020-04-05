@@ -6,7 +6,7 @@ WORKDIR /opt
 RUN apt-get update && apt-get install xz-utils
 
 # Download and extract factorio into /opt
-RUN curl -SL https://www.factorio.com/get-download/0.16.51/headless/linux64 | tar -xJ
+RUN curl -SL https://www.factorio.com/get-download/0.18.17/headless/linux64 | tar -xJ
 
 # Changing to application workdir
 WORKDIR /app
