@@ -24,13 +24,13 @@
     <template
       slot="singleLabel"
       slot-scope="{ option }">
-      <div class="option__desc"><factorio-icon :path="option.icon"/><span class="option__title">{{ option.name }}</span></div>
+      <div class="option__desc"><factorio-icon :path="option.icon"/><span class="option__title">{{ option.name | separate | capitalize }}</span></div>
     </template>
     <template
       slot="option"
       slot-scope="{ option }"
     >
-      <div class="option__desc"><factorio-icon :path="option.icon"/><span class="option__title">{{ option.name }}</span></div>
+      <div class="option__desc"><factorio-icon :path="option.icon"/><span class="option__title">{{ option.name | separate | capitalize }}</span></div>
     </template>
     <span slot="noResult">Oops! No elements found. Consider changing the search query.</span>
   </multiselect>

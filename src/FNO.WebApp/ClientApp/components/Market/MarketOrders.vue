@@ -31,7 +31,7 @@
               :key="order.orderId"
             >
               <td v-if="order.item">
-                <factorio-icon :path="order.item.icon"/> {{ order.item.name }}
+                <factorio-icon :path="order.item.icon"/> {{ order.item.name | separate | capitalize }}
               </td>
               <td v-else>
                 ??

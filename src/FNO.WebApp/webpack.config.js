@@ -7,6 +7,8 @@ const OptimizeCSSPlugin = require('optimize-css-assets-webpack-plugin');
 const bundleOutputDir = './wwwroot/dist';
 
 module.exports = (env, argv) => {
+  console.log('Building using environment', process.env.NODE_ENV);
+
   const isDevBuild = !(
     process.env.NODE_ENV && process.env.NODE_ENV === 'production'
   );

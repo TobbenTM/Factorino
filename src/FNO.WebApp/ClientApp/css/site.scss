@@ -1,11 +1,11 @@
-@import url('https://fonts.googleapis.com/css?family=Roboto:300,400,700');
+@import url('https://fonts.googleapis.com/css?family=IBM+Plex+Sans:300,400,700&display=swap');
 @import './variables.scss';
 
 html, body {
   margin: 0;
   padding: 0;
   height: 100%;
-  font-family: 'Roboto', sans-serif;
+  font-family: 'IBM Plex Sans', sans-serif;
   color: #ffffff;
   background:
     radial-gradient(black 15%, transparent 16%) 0 0,

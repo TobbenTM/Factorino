@@ -11,7 +11,7 @@
           <img v-if="player.avatar" :src="player.avatar" alt="Player avatar"/>
           <span v-else/>
           <h3>{{ player.name }}</h3>
-          <p>Credits: {{ player.credits }}$</p>
+          <p>Credits: {{ player.credits | formatNumeral('0,0a $') }}</p>
         </div>
       </div>
     </div>

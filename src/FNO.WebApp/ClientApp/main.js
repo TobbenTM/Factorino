@@ -15,6 +15,9 @@ import FactorioDialog from './components/FactorioDialog';
 import FactorioIcon from './components/FactorioIcon';
 import Inlay from './directives/inlay';
 import Numeral from './filters/numeral';
+import { separate, capitalize } from './filters/string';
+
+Vue.config.devtools = true;
 
 // Registration of global components
 Vue.component('icon', FontAwesomeIcon);
@@ -31,6 +34,8 @@ Vue.directive('inlay', Inlay);
 
 // Registration of global filters
 Vue.filter('formatNumeral', Numeral);
+Vue.filter('separate', separate);
+Vue.filter('capitalize', capitalize);
 
 Vue.prototype.$http = axios;
 Vue.prototype.$signalR = signalR;

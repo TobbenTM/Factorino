@@ -49,7 +49,7 @@
                 :key="order.orderId"
               >
                 <td>
-                  <factorio-icon :path="order.item.icon"/> {{ order.item.name }}
+                  <factorio-icon :path="order.item.icon"/> {{ order.item.name | separate | capitalize }}
                 </td>
                 <td v-if="order.orderType === OrderType.Buy">
                   <icon :icon="['fas', 'sign-in-alt']"/> Buy
