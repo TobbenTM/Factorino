@@ -28,12 +28,9 @@ namespace FNO.Domain.Models
             get => TrainStationData == null ? null : JsonConvert.DeserializeObject<IEnumerable<string>>(TrainStationData);
             set => TrainStationData = value == null ? null : JsonConvert.SerializeObject(value);
         }
-        
-        // The location seed is kept on entity as well (location might change, seed will not)
-        public string Seed { get; set; }
 
-        public Guid LocationId { get; set; }
-        public FactoryLocation Location { get; set; }
+        public Guid DeedId { get; set; }
+        public Deed Deed { get; set; }
 
         public Guid OwnerId { get; set; }
         public Player Owner { get; set; }

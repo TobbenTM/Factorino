@@ -1,15 +1,15 @@
-﻿using Confluent.Kafka;
+﻿using System;
+using System.Threading;
+using Confluent.Kafka;
 using FNO.Common;
 using FNO.EventStream;
 using Serilog;
-using System;
-using System.Threading;
 
 namespace FNO.FactoryPod
 {
-    internal class Program : IDisposable
+    public sealed class Program : IDisposable
     {
-        static void Main(string[] args)
+        public static void Main(string[] args)
         {
             using (var program = new Program())
             {

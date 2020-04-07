@@ -28,7 +28,7 @@
   <ItemGroup>
     <Compile Update="Seed\EntityLibrary.cs">
       <DesignTime>True</DesignTime>
-      <AutoGen>False</AutoGen>
+      <AutoGen>True</AutoGen>
       <DependentUpon>EntityLibrary.tt</DependentUpon>
     </Compile>
   </ItemGroup>

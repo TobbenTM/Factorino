@@ -15,9 +15,9 @@ namespace FNO.ReadModel.Tests.EventHandlers
 
         protected readonly Guid _playerId = Guid.NewGuid();
         protected readonly Guid _factoryId = Guid.NewGuid();
-        protected readonly Guid _locationId = Guid.NewGuid();
+        protected readonly Guid _deedId = Guid.NewGuid();
 
-        public EventHandlerTestBase()
+        protected EventHandlerTestBase()
         {
             _logger = new LoggerConfiguration().CreateLogger();
 
@@ -61,12 +61,19 @@ namespace FNO.ReadModel.Tests.EventHandlers
 
         protected object[] DefaultFactory => new object[]
         {
-            new FactoryLocation { LocationId = _locationId },
+            new Deed { DeedId = _deedId },
             new Factory { FactoryId = _factoryId },
         };
 
         public void Dispose()
         {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            // noop
         }
     }
 }

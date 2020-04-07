@@ -4,17 +4,18 @@ namespace FNO.Domain.Events.Factory
 {
     public class FactoryCreatedEvent : EntityEvent
     {
-        public Guid LocationId { get; set; }
-        public string LocationSeed { get; set; }
+        public Guid DeedId { get; set; }
 
         public FactoryCreatedEvent()
         {
         }
 
-        public FactoryCreatedEvent(Guid factoryId, Guid locationId, string locationSeed, Models.Player initiator) : base(factoryId, initiator)
+        public FactoryCreatedEvent(
+            Guid factoryId,
+            Guid deedId,
+            Models.Player initiator) : base(factoryId, initiator)
         {
-            LocationId = locationId;
-            LocationSeed = locationSeed;
+            DeedId = deedId;
         }
 
         public override string ReadableEvent => $"{Initiator?.PlayerName ?? "An unknown entity"} created the factory";

@@ -14,18 +14,15 @@ namespace FNO.WebApp.Controllers.Api
     {
         private readonly IPlayerRepository _playerRepo;
         private readonly IFactoryRepository _factoryRepo;
-        private readonly IFactoryLocationRepository _factoryLocationRepo;
         private readonly IEventStore _eventStore;
 
         public FactoryController(
             IPlayerRepository playerRepo,
             IFactoryRepository factoryRepo,
-            IFactoryLocationRepository factoryLocationRepo,
             IEventStore eventStore)
         {
             _playerRepo = playerRepo;
             _factoryRepo = factoryRepo;
-            _factoryLocationRepo = factoryLocationRepo;
             _eventStore = eventStore;
         }
 
@@ -36,12 +33,6 @@ namespace FNO.WebApp.Controllers.Api
             var player = await _playerRepo.GetPlayer(User);
             var factories = await _factoryRepo.GetFactories(player);
             return factories;
-        }
-
-        [HttpGet("locations")]
-        public async Task<IEnumerable<FactoryLocation>> GetLocations()
-        {
-            return await _factoryLocationRepo.GetAll();
         }
     }
 }

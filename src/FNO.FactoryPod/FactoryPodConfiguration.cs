@@ -16,7 +16,8 @@ namespace FNO.FactoryPod
     {
         public Guid FactoryId{ get; set; }
         public Guid OwnerId { get; set; }
-        public string Seed { get; set; }
+        public Guid DeedId { get; set; }
+
         public string SavePath { get; set; }
         public string DataPath { get; set; }
         public string SaveFile { get; set; }

@@ -29,8 +29,7 @@ namespace FNO.ReadModel.EventHandlers
                 FactoryId = evnt.EntityId,
                 OwnerId = evnt.Initiator.PlayerId,
                 State = FactoryState.Creating,
-                LocationId = evnt.LocationId,
-                Seed = evnt.LocationSeed,
+                DeedId = evnt.DeedId,
                 TrainStations = new[] { "Factorino - Dropoff 1" },
             });
             return Task.CompletedTask;

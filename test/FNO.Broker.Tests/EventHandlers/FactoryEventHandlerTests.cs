@@ -32,7 +32,7 @@ namespace FNO.Broker.Tests.EventHandlers
             _state.Players.Add(expectedOwner.PlayerId, expectedOwner);
 
             // Act
-            await _handler.Handle(new FactoryCreatedEvent(expectedFactoryId, default, default, expectedOwner));
+            await _handler.Handle(new FactoryCreatedEvent(expectedFactoryId, default, expectedOwner));
 
             // Assert
             Assert.Equal(expectedOwner.PlayerId, _state.FactoryOwners[expectedFactoryId].PlayerId);

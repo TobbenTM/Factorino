@@ -19,7 +19,7 @@ namespace FNO.Domain.Repositories
         {
             return _dbContext.Shipments
                 .Include(s => s.Factory)
-                .ThenInclude(f => f.Location)
+                .ThenInclude(f => f.Deed)
                 .Where(s => s.OwnerId == player.PlayerId)
                 .ToListAsync();
         }

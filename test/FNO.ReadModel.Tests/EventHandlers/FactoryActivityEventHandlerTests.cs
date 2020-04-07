@@ -18,12 +18,12 @@ namespace FNO.ReadModel.Tests.EventHandlers
             var expectedFactory = new Factory
             {
                 FactoryId = Guid.NewGuid(),
-                LocationId = Guid.NewGuid(),
+                DeedId = Guid.NewGuid(),
                 CurrentlyResearchingId = Guid.NewGuid().ToString(),
             };
 
             // Act
-            await When(new FactoryCreatedEvent(expectedFactory.FactoryId, expectedFactory.LocationId, "seed", null));
+            await When(new FactoryCreatedEvent(expectedFactory.FactoryId, expectedFactory.DeedId, null));
             await When(new FactoryResearchStartedEvent(expectedFactory.FactoryId, null, 0)
             {
                 Technology = new LuaTechnology
@@ -49,12 +49,12 @@ namespace FNO.ReadModel.Tests.EventHandlers
             var expectedFactory = new Factory
             {
                 FactoryId = Guid.NewGuid(),
-                LocationId = Guid.NewGuid(),
+                DeedId = Guid.NewGuid(),
                 CurrentlyResearchingId = Guid.NewGuid().ToString(),
             };
 
             // Act
-            await When(new FactoryCreatedEvent(expectedFactory.FactoryId, expectedFactory.LocationId, "seed", null));
+            await When(new FactoryCreatedEvent(expectedFactory.FactoryId, expectedFactory.DeedId, null));
             await When(new FactoryResearchFinishedEvent(expectedFactory.FactoryId, null, 0));
 
             // Assert
@@ -79,7 +79,7 @@ namespace FNO.ReadModel.Tests.EventHandlers
             {
                 OwnerId = expectedOwner.PlayerId,
                 FactoryId = Guid.NewGuid(),
-                LocationId = Guid.NewGuid(),
+                DeedId = Guid.NewGuid(),
                 CurrentlyResearchingId = Guid.NewGuid().ToString(),
             };
             var expectedItem = new LuaItemStack
@@ -90,7 +90,7 @@ namespace FNO.ReadModel.Tests.EventHandlers
 
             // Act
             await When(new PlayerCreatedEvent(expectedOwner));
-            await When(new FactoryCreatedEvent(expectedFactory.FactoryId, expectedFactory.LocationId, "seed", expectedOwner));
+            await When(new FactoryCreatedEvent(expectedFactory.FactoryId, expectedFactory.DeedId, expectedOwner));
             await When(new FactoryOutgoingTrainEvent(expectedFactory.FactoryId, null, 0)
             {
                 Inventory = new[] { expectedItem },

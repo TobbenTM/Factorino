@@ -19,14 +19,14 @@ namespace FNO.Domain.Repositories
         public Task<Factory> GetFactory(Guid factoryId)
         {
             return _dbContext.Factories
-                .Include(f => f.Location)
+                .Include(f => f.Deed)
                 .FirstOrDefaultAsync(f => f.FactoryId.Equals(factoryId));
         }
 
         public Task<List<Factory>> GetFactories(Player player)
         {
             return  _dbContext.Factories
-                .Include(f => f.Location)
+                .Include(f => f.Deed)
                 .Include(f => f.Owner)
                 .Include(f => f.CurrentlyResearching)
                 .Where(f => f.OwnerId == player.PlayerId)

@@ -5,6 +5,12 @@
    "version": "0.2.0",
    "configurations": [
         {
+            "type": "factoriomod",
+            "request": "launch",
+            "name": "Factorio MapMaker Mod",
+            "factorioPath": "factorio.exe",
+        },
+        {
             "name": ".NET Core Launch (console)",
             "type": "coreclr",
             "request": "launch",

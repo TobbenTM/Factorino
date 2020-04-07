@@ -53,7 +53,7 @@ namespace FNO.Orchestrator.Docker
                     $"factorino__factoryId={factory.FactoryId}",
                     $"factorino__ownerId={factory.OwnerId}",
                     $"factorino__ownerUsername={factory.OwnerFactorioUsername}",
-                    $"factorino__seed={factory.Seed}",
+                    $"factorino__deedId={factory.DeedId}",
                 },
                 HostConfig = new HostConfig
                 {
@@ -77,10 +77,7 @@ namespace FNO.Orchestrator.Docker
         public async Task DecommissionFactory(Factory factory)
         {
             _logger.Information($"Decommissioning factory {factory.FactoryId}...");
-            if (string.IsNullOrEmpty(factory.ResourceId))
-            {
-                throw new ArgumentException($"Factory {factory.FactoryId} does not have a resource id attached!");
-            }
+            ValidateFactoryForDecommision(factory);
 
             var decommissioned = await _client.Containers.StopContainerAsync(factory.ResourceId, new ContainerStopParameters());
 
@@ -91,6 +88,14 @@ namespace FNO.Orchestrator.Docker
             else
             {
                 throw new UnableToDecommissionException($"The Docker client was unable to stop factory pod {factory.ResourceId}!");
+            }
+        }
+
+        private void ValidateFactoryForDecommision(Factory factory)
+        {
+            if (string.IsNullOrEmpty(factory.ResourceId))
+            {
+                throw new ArgumentException($"Factory {factory.FactoryId} does not have a resource id attached!");
             }
         }
     }

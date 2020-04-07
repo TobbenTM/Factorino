@@ -17,11 +17,11 @@ namespace FNO.ReadModel.Tests.EventHandlers
             {
                 FactoryId = Guid.NewGuid(),
                 State = FactoryState.Creating,
-                LocationId = Guid.NewGuid(),
+                DeedId = Guid.NewGuid(),
             };
 
             // Act
-            await When(new FactoryCreatedEvent(expectedFactory.FactoryId, expectedFactory.LocationId, "seed", null));
+            await When(new FactoryCreatedEvent(expectedFactory.FactoryId, expectedFactory.DeedId, null));
 
             // Assert
             using (var dbContext = GetInMemoryDatabase())
@@ -29,7 +29,7 @@ namespace FNO.ReadModel.Tests.EventHandlers
                 Assert.NotEmpty(dbContext.Factories);
                 var factory = dbContext.Factories.First();
                 Assert.Equal(expectedFactory.FactoryId, factory.FactoryId);
-                Assert.Equal(expectedFactory.LocationId, factory.LocationId);
+                Assert.Equal(expectedFactory.DeedId, factory.DeedId);
             }
         }
 
@@ -41,11 +41,11 @@ namespace FNO.ReadModel.Tests.EventHandlers
             {
                 FactoryId = Guid.NewGuid(),
                 State = FactoryState.Starting,
-                LocationId = Guid.NewGuid(),
+                DeedId = Guid.NewGuid(),
             };
 
             // Act
-            await When(new FactoryCreatedEvent(expectedFactory.FactoryId, expectedFactory.LocationId, "seed", null));
+            await When(new FactoryCreatedEvent(expectedFactory.FactoryId, expectedFactory.DeedId, null));
             await When(new FactoryProvisionedEvent(expectedFactory.FactoryId, null));
 
             // Assert
@@ -66,11 +66,11 @@ namespace FNO.ReadModel.Tests.EventHandlers
             {
                 FactoryId = Guid.NewGuid(),
                 State = FactoryState.Online,
-                LocationId = Guid.NewGuid(),
+                DeedId = Guid.NewGuid(),
             };
 
             // Act
-            await When(new FactoryCreatedEvent(expectedFactory.FactoryId, expectedFactory.LocationId, "seed", null));
+            await When(new FactoryCreatedEvent(expectedFactory.FactoryId, expectedFactory.DeedId, null));
             await When(new FactoryProvisionedEvent(expectedFactory.FactoryId, null));
             await When(new FactoryOnlineEvent(expectedFactory.FactoryId));
 
@@ -92,11 +92,11 @@ namespace FNO.ReadModel.Tests.EventHandlers
             {
                 FactoryId = Guid.NewGuid(),
                 State = FactoryState.Destroying,
-                LocationId = Guid.NewGuid(),
+                DeedId = Guid.NewGuid(),
             };
 
             // Act
-            await When(new FactoryCreatedEvent(expectedFactory.FactoryId, expectedFactory.LocationId, "seed", null));
+            await When(new FactoryCreatedEvent(expectedFactory.FactoryId, expectedFactory.DeedId, null));
             await When(new FactoryProvisionedEvent(expectedFactory.FactoryId, null));
             await When(new FactoryDestroyedEvent(expectedFactory.FactoryId, null));
 
@@ -118,11 +118,11 @@ namespace FNO.ReadModel.Tests.EventHandlers
             {
                 FactoryId = Guid.NewGuid(),
                 State = FactoryState.Destroyed,
-                LocationId = Guid.NewGuid(),
+                DeedId = Guid.NewGuid(),
             };
 
             // Act
-            await When(new FactoryCreatedEvent(expectedFactory.FactoryId, expectedFactory.LocationId, "seed", null));
+            await When(new FactoryCreatedEvent(expectedFactory.FactoryId, expectedFactory.DeedId, null));
             await When(new FactoryProvisionedEvent(expectedFactory.FactoryId, null));
             await When(new FactoryDecommissionedEvent(expectedFactory.FactoryId, null));
 

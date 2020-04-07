@@ -27,8 +27,7 @@ namespace FNO.Orchestrator.EventHandlers
                 OwnerId = evnt.Initiator.PlayerId,
                 OwnerFactorioUsername = _state.GetUsername(evnt.Initiator.PlayerId),
                 State = FactoryState.Creating,
-                Seed = evnt.LocationSeed,
-                LocationId = evnt.LocationId,
+                DeedId = evnt.DeedId,
             });
             return Task.CompletedTask;
         }

@@ -11,7 +11,7 @@ namespace FNO.FactoryPod
     /// <summary>
     /// Responsible for starting and managing the Factorio server executable
     /// </summary>
-    internal class Daemon : IDisposable
+    internal sealed class Daemon : IDisposable
     {
         private readonly FactoryPodConfiguration _configuration;
         private readonly ILogger _logger;
@@ -139,7 +139,7 @@ namespace FNO.FactoryPod
             var destFile = _configuration.Factorino.FactorySavePath;
             if (!File.Exists(destFile))
             {
-                var seedPath = $"{GetType().Namespace}.Seed.{_configuration.Factorino.Seed}.zip";
+                var seedPath = $"{GetType().Namespace}.Seed.{_configuration.Factorino.DeedId}.zip";
                 _logger.Information($"Factorio seed file not found, importing to {destFile} from embedded resource {seedPath}...");
 
                 var seed = GetType().Assembly.GetManifestResourceStream(seedPath);
@@ -149,7 +149,7 @@ namespace FNO.FactoryPod
                     seed.CopyTo(save);
                 }
 
-                _logger.Information($"Successfully imported seed {_configuration.Factorino.Seed} into {destFile}!");
+                _logger.Information($"Successfully imported seed {_configuration.Factorino.DeedId} into {destFile}!");
             }
         }
 

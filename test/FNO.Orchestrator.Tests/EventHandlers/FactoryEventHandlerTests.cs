@@ -34,7 +34,7 @@ namespace FNO.Orchestrator.Tests
             _state.SetUsername(initiator.PlayerId, expectedUsername);
 
             // Act
-            await _handler.Handle(new FactoryCreatedEvent(expectedFactory.FactoryId, expectedFactory.LocationId, "seed", initiator));
+            await _handler.Handle(new FactoryCreatedEvent(expectedFactory.FactoryId, expectedFactory.DeedId, initiator));
 
             // Assert
             Assert.Single(_state.Factories);
@@ -54,7 +54,7 @@ namespace FNO.Orchestrator.Tests
             };
 
             // Act
-            await _handler.Handle(new FactoryCreatedEvent(expectedFactory.FactoryId, expectedFactory.LocationId, "seed", null));
+            await _handler.Handle(new FactoryCreatedEvent(expectedFactory.FactoryId, expectedFactory.DeedId, null));
             await _handler.Handle(new FactoryProvisionedEvent(expectedFactory.FactoryId, null));
 
             // Assert

@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using FNO.Common;
 using FNO.Domain;
 using FNO.Domain.Repositories;
@@ -20,7 +19,7 @@ namespace FNO.WebApp
 {
     public class Startup
     {
-        private readonly ILogger _logger;  
+        private readonly ILogger _logger;
         private readonly IConfiguration _configuration;
 
         public Startup()
@@ -58,7 +57,7 @@ namespace FNO.WebApp
 
             services.AddScoped<IPlayerRepository, PlayerRepository>();
             services.AddScoped<IFactoryRepository, FactoryRepository>();
-            services.AddScoped<IFactoryLocationRepository, FactoryLocationRepository>();
+            services.AddScoped<DeedRepository, DeedRepository>();
             services.AddScoped<ICorporationRepository, CorporationRepository>();
             services.AddScoped<IEntityRepository, EntityRepository>();
             services.AddScoped<IMarketRepository, MarketRepository>();
