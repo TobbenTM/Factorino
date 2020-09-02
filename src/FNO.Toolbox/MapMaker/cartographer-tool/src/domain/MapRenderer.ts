@@ -7,12 +7,16 @@ import {
     BoxBufferGeometry,
     DirectionalLight,
     AxesHelper,
+    BufferGeometry,
+    Matrix4,
 } from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
+import { BufferGeometryUtils } from 'three/examples/jsm/utils/BufferGeometryUtils';
 import IChunkGeneratorSettings from "./models/IChunkGeneratorSettings";
 import MapGenerator from "./MapGenerator";
 import Chunk from './models/Chunk';
-import Tile from './models/Tile';
+import TileType from './models/TileType';
+import Stats from 'stats.js';
 
 const materials = {
     deepWater: new MeshLambertMaterial({ color: 0x3791b5 }),
@@ -24,6 +28,8 @@ const materials = {
     default: new MeshLambertMaterial({ color: 0x060606 }),
 };
 
+const baseTileGeometry = new BoxBufferGeometry(1, 1, 1);
+
 class MapRenderer {
     // The Map Generator will generate chunks for us
     mapGenerator: MapGenerator;
@@ -32,6 +38,9 @@ class MapRenderer {
     renderer: WebGLRenderer;
     camera: OrthographicCamera;
     scene: Scene;
+
+    // And a way to keep render stats
+    stats: Stats;
 
     // Flag for when we want to stop animating
     isDestroyed: boolean = false;
@@ -43,6 +52,11 @@ class MapRenderer {
                 context: WebGLRenderingContext,
                 canvas: HTMLCanvasElement) {
         this.mapGenerator = new MapGenerator(chunkGeneratorSettings);
+
+        // Stats init
+        this.stats = new Stats();
+        this.stats.showPanel(1);
+        document.body.appendChild(this.stats.dom);
 
         this.renderer = new WebGLRenderer({
             context: context,
@@ -79,15 +93,13 @@ class MapRenderer {
         // TODO: Determine which chunks to generate
         const chunks = [
             this.mapGenerator.getChunkAt(0, 0),
-            this.mapGenerator.getChunkAt(1, 0),
-            this.mapGenerator.getChunkAt(0, -1),
             this.mapGenerator.getChunkAt(-1, 0),
-            this.mapGenerator.getChunkAt(1, -1),
+            this.mapGenerator.getChunkAt(0, -1),
             this.mapGenerator.getChunkAt(-1, -1),
         ];
-            
+
         chunks.forEach(chunk => {
-            const chunkMesh = this.renderChunk(chunk);
+            const chunkMesh = this.renderBufferedChunk(chunk);
             chunkMesh.forEach(mesh => this.scene.add(mesh));
         });
     }
@@ -101,13 +113,17 @@ class MapRenderer {
     animate = () => {
         if (this.isDestroyed) return;
 
+        this.stats.begin();
+
         // TODO: Update scene content
 
         // Render the context
         this.renderer.render(this.scene, this.camera);
 
+        this.stats.end();
+
         // Schedule a new animation frame
-        // this.animationRequestId = window.requestAnimationFrame(this.animate);
+        this.animationRequestId = window.requestAnimationFrame(this.animate);
     }
 
     destroy = () => {
@@ -123,44 +139,67 @@ class MapRenderer {
         chunk.tiles.forEach((column, x) => {
             column.forEach((tile, y) => {
                 let height = 1;
-                if ((chunk.x+chunk.y) % 2 === 0) {
-                    height = Math.max(15/3, tile[1] * 15);
+                if (true || (chunk.x+chunk.y) % 2 === 0) {
+                    height = Math.max(15/3, tile.height * 15);
                 }
-                const mesh = new Mesh(new BoxBufferGeometry(1, height, 1), this.tileToMaterial(tile[0]));
+                const geometry = baseTileGeometry.clone();
+                const mesh = new Mesh(geometry, this.tileToMaterial(tile.type));
                 mesh.position.x = ((chunk.x * column.length) + x);
                 mesh.position.z = -((chunk.y * column.length) + y);
-                mesh.position.y = 0;
+                mesh.position.y = height/2;
                 resultMesh.push(mesh);
             })
         });
 
         return resultMesh;
     }
+
+    renderBufferedChunk = (chunk: Chunk): Array<Mesh> => {
+        const tileGeometry: Array<BufferGeometry> = [];
+
+        chunk.tiles.forEach((column, x) => {
+            column.forEach((tile, y) => {
+                let height = 1;
+                if (true || (chunk.x+chunk.y) % 2 === 0) {
+                    height = Math.max(15/3, tile.height * 15);
+                }
+                const geometry = baseTileGeometry.clone();
+                const xTranslate = ((chunk.x * column.length) + x);
+                const zTranslate = -((chunk.y * column.length) + y);
+                const yTranslate = height/2;
+                geometry.applyMatrix4(new Matrix4().makeTranslation(xTranslate, yTranslate, zTranslate))
+                tileGeometry.push(geometry);
+            })
+        });
+
+        const resultGeometry = BufferGeometryUtils.mergeBufferGeometries(tileGeometry);
+        return [new Mesh(resultGeometry, materials.grass)];
+    }
     
-    tileToMaterial = (tile: Tile): MeshLambertMaterial => {
+    tileToMaterial = (tile: TileType): MeshLambertMaterial => {
         switch (tile) {
-            case Tile.deepwater:
+            case TileType.deepwater:
                 return materials.deepWater;
-            case Tile.water:
+            case TileType.water:
                 return materials.water;
-            case Tile.sand_1:
-            case Tile.sand_2:
-            case Tile.sand_3:
+            case TileType.sand_1:
+            case TileType.sand_2:
+            case TileType.sand_3:
                 return materials.sand;
-            case Tile.grass_1:
-            case Tile.grass_2:
-            case Tile.grass_3:
-            case Tile.grass_4:
+            case TileType.grass_1:
+            case TileType.grass_2:
+            case TileType.grass_3:
+            case TileType.grass_4:
                 return materials.grass;
-            case Tile.dirt_1:
-            case Tile.dirt_2:
-            case Tile.dirt_3:
-            case Tile.dirt_4:
-            case Tile.dirt_5:
-            case Tile.dirt_6:
-            case Tile.dirt_7:
+            case TileType.dirt_1:
+            case TileType.dirt_2:
+            case TileType.dirt_3:
+            case TileType.dirt_4:
+            case TileType.dirt_5:
+            case TileType.dirt_6:
+            case TileType.dirt_7:
                 return materials.dirt;
-            case Tile.concrete:
+            case TileType.concrete:
                 return materials.concrete;
             default:
                 return materials.default;

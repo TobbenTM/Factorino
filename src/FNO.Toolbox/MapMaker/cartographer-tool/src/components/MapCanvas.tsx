@@ -12,6 +12,7 @@ export const MapCanvas: FunctionComponent<MapCanvasProps> = ({ chunkGeneratorSet
 
     React.useEffect(() => {
         if (canvasRef.current && !mapRenderer) {
+            console.log('Creating renderer...');
             // We haven't created the renderer yet, do it now
             const context = canvasRef.current.getContext('webgl');
             if (!context) throw new Error('Could not get webgl context from canvas!');

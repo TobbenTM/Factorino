@@ -4,7 +4,7 @@ import { MapCanvas } from './components/MapCanvas';
 import IChunkGeneratorSettings from './domain/models/IChunkGeneratorSettings';
 
 const chunkGeneratorSettings: IChunkGeneratorSettings = {
-  seed: 1,
+  seed: 2,
   scale: 25,
   chunkSize: 32,
 }
