@@ -2,33 +2,15 @@ import {
     Scene,
     OrthographicCamera,
     WebGLRenderer,
-    Mesh,
-    MeshLambertMaterial,
-    BoxBufferGeometry,
-    DirectionalLight,
     AxesHelper,
-    BufferGeometry,
-    Matrix4,
+    Vector3,
 } from 'three';
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
-import { BufferGeometryUtils } from 'three/examples/jsm/utils/BufferGeometryUtils';
+import TWEEN from '@tweenjs/tween.js';
 import IChunkGeneratorSettings from "./models/IChunkGeneratorSettings";
 import MapGenerator from "./MapGenerator";
-import Chunk from './models/Chunk';
-import TileType from './models/TileType';
+import RenderedChunk from './models/RenderedChunk';
 import Stats from 'stats.js';
-
-const materials = {
-    deepWater: new MeshLambertMaterial({ color: 0x3791b5 }),
-    water: new MeshLambertMaterial({ color: 0x68d3fd }),
-    sand: new MeshLambertMaterial({ color: 0xfffcd4 }),
-    grass: new MeshLambertMaterial({ color: 0x6bc345 }),
-    dirt: new MeshLambertMaterial({ color: 0x9b7a55 }),
-    concrete: new MeshLambertMaterial({ color: 0x606060 }),
-    default: new MeshLambertMaterial({ color: 0x060606 }),
-};
-
-const baseTileGeometry = new BoxBufferGeometry(1, 1, 1);
+import Chunk from './models/Chunk';
 
 class MapRenderer {
     // The Map Generator will generate chunks for us
@@ -68,15 +50,10 @@ class MapRenderer {
         this.scene = new Scene();
         
         const aspectRatio = canvas.width / canvas.height;
-        const viewSize = 50;
-        // this.camera = new PerspectiveCamera(90, width / height, 1, 10_000);
-        this.camera = new OrthographicCamera(aspectRatio * (-viewSize), aspectRatio * viewSize, viewSize, - viewSize / 2, -1000, 2000); // width / - 10, width / 10, height / 10, height / - 10
-        this.camera.position.set(50, 25, 50);
+        const viewSize = 100;
+        this.camera = new OrthographicCamera(aspectRatio * (-viewSize), aspectRatio * viewSize, viewSize, - viewSize, -300, 300);
+        this.camera.position.set(1, 1, 1);
         this.camera.lookAt(this.scene.position);
-
-        const light = new DirectionalLight(0xffffff, .5);
-        light.position.set(0, 1, 0);
-        this.scene.add(light);
 
         this.scene.add(new AxesHelper(3000));
 
@@ -85,23 +62,41 @@ class MapRenderer {
         // const grid = new Mesh( gridGeometry, gridMaterial );
         // this.scene.add( grid );
 
-        const controls = new OrbitControls(this.camera, canvas);
-        controls.addEventListener('change', () => this.renderer.render(this.scene, this.camera));
-        controls.enableZoom = true;
-        controls.enablePan = true;
+        // const controls = new OrbitControls(this.camera, canvas);
+        // // controls.addEventListener('change', () => this.renderer.render(this.scene, this.camera));
+        // // controls.enableDamping = true;
+        // controls.enableZoom = true;
+        // controls.enablePan = true;
 
         // TODO: Determine which chunks to generate
         const chunks = [
             this.mapGenerator.getChunkAt(0, 0),
+            this.mapGenerator.getChunkAt(1, 0),
+            this.mapGenerator.getChunkAt(0, 1),
+            this.mapGenerator.getChunkAt(1, 1),
             this.mapGenerator.getChunkAt(-1, 0),
             this.mapGenerator.getChunkAt(0, -1),
             this.mapGenerator.getChunkAt(-1, -1),
+            this.mapGenerator.getChunkAt(1, -1),
+            this.mapGenerator.getChunkAt(-1, 1),
+            this.mapGenerator.getChunkAt(2, 0),
+            this.mapGenerator.getChunkAt(0, 2),
+            this.mapGenerator.getChunkAt(2, 2),
+            this.mapGenerator.getChunkAt(-2, 0),
+            this.mapGenerator.getChunkAt(0, -2),
+            this.mapGenerator.getChunkAt(-2, -2),
+            this.mapGenerator.getChunkAt(2, -2),
+            this.mapGenerator.getChunkAt(-2, 2),
         ];
 
         chunks.forEach(chunk => {
-            const chunkMesh = this.renderBufferedChunk(chunk);
-            chunkMesh.forEach(mesh => this.scene.add(mesh));
+            const renderedChunk = new RenderedChunk(chunk);
+            this.scene.add(renderedChunk.object);
         });
+
+        setInterval(() => {
+            this.focusOn(chunks[Math.random() * chunks.length >> 0]);
+        }, 5_000);
     }
 
     onResize = (width: number, height: number) => {
@@ -110,18 +105,17 @@ class MapRenderer {
         this.renderer.setSize(width, height);
     }
 
-    animate = () => {
+    animate = (time: number) => {
         if (this.isDestroyed) return;
-
         this.stats.begin();
+
+        TWEEN.update(time);
 
         // TODO: Update scene content
 
-        // Render the context
         this.renderer.render(this.scene, this.camera);
 
         this.stats.end();
-
         // Schedule a new animation frame
         this.animationRequestId = window.requestAnimationFrame(this.animate);
     }
@@ -133,77 +127,23 @@ class MapRenderer {
         }
     }
 
-    renderChunk = (chunk: Chunk): Array<Mesh> => {
-        const resultMesh: Array<Mesh> = [];
+    focusOn = (chunk: Chunk) => {
+        const position = this.camera.position.clone();
+        const toPos = new Vector3((chunk.x+0.5)*chunk.tiles.length, position.y, (chunk.y+0.5)*chunk.tiles[0].length);
+        
+        console.log(`Focusing on chunk ${chunk.getId()}`, toPos);
 
-        chunk.tiles.forEach((column, x) => {
-            column.forEach((tile, y) => {
-                let height = 1;
-                if (true || (chunk.x+chunk.y) % 2 === 0) {
-                    height = Math.max(15/3, tile.height * 15);
-                }
-                const geometry = baseTileGeometry.clone();
-                const mesh = new Mesh(geometry, this.tileToMaterial(tile.type));
-                mesh.position.x = ((chunk.x * column.length) + x);
-                mesh.position.z = -((chunk.y * column.length) + y);
-                mesh.position.y = height/2;
-                resultMesh.push(mesh);
+        const tween = new TWEEN.Tween(position as any)
+            .to(toPos as any, 2000)
+            .easing(TWEEN.Easing.Cubic.InOut)
+            .onUpdate(() => {
+                this.camera.position.copy(position);
             })
-        });
-
-        return resultMesh;
-    }
-
-    renderBufferedChunk = (chunk: Chunk): Array<Mesh> => {
-        const tileGeometry: Array<BufferGeometry> = [];
-
-        chunk.tiles.forEach((column, x) => {
-            column.forEach((tile, y) => {
-                let height = 1;
-                if (true || (chunk.x+chunk.y) % 2 === 0) {
-                    height = Math.max(15/3, tile.height * 15);
-                }
-                const geometry = baseTileGeometry.clone();
-                const xTranslate = ((chunk.x * column.length) + x);
-                const zTranslate = -((chunk.y * column.length) + y);
-                const yTranslate = height/2;
-                geometry.applyMatrix4(new Matrix4().makeTranslation(xTranslate, yTranslate, zTranslate))
-                tileGeometry.push(geometry);
-            })
-        });
-
-        const resultGeometry = BufferGeometryUtils.mergeBufferGeometries(tileGeometry);
-        return [new Mesh(resultGeometry, materials.grass)];
-    }
-    
-    tileToMaterial = (tile: TileType): MeshLambertMaterial => {
-        switch (tile) {
-            case TileType.deepwater:
-                return materials.deepWater;
-            case TileType.water:
-                return materials.water;
-            case TileType.sand_1:
-            case TileType.sand_2:
-            case TileType.sand_3:
-                return materials.sand;
-            case TileType.grass_1:
-            case TileType.grass_2:
-            case TileType.grass_3:
-            case TileType.grass_4:
-                return materials.grass;
-            case TileType.dirt_1:
-            case TileType.dirt_2:
-            case TileType.dirt_3:
-            case TileType.dirt_4:
-            case TileType.dirt_5:
-            case TileType.dirt_6:
-            case TileType.dirt_7:
-                return materials.dirt;
-            case TileType.concrete:
-                return materials.concrete;
-            default:
-                return materials.default;
-        }
+            .onComplete(() => {
+                console.log('Completed camera position..', position);
+                this.camera.position.copy(toPos);
+            });
+        tween.start(TWEEN.now());
     }
 }
 

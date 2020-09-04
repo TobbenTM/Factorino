@@ -29,7 +29,7 @@ export const MapCanvas: FunctionComponent<MapCanvasProps> = ({ chunkGeneratorSet
 
             mapRenderer.onResize(canvasRef.current.width, canvasRef.current.height);
 
-            mapRenderer.animate();
+            window.requestAnimationFrame(mapRenderer.animate);
         }
 
         return () => mapRenderer?.destroy();
