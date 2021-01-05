@@ -22,7 +22,7 @@
     "@fortawesome/fontawesome-free-solid": "^5.0.13",
     "@fortawesome/fontawesome-svg-core": "^1.2.0",
     "@fortawesome/vue-fontawesome": "^0.1.0",
-    "axios": "^0.18.0",
+    "axios": "^0.21.1",
     "core-js": "^2.5.7",
     "d3": "^5.7.0",
     "d3-geo": "^1.11.3",
